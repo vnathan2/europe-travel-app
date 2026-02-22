@@ -1,0 +1,20 @@
+# Variables de entorno y secretos
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# GCP
+*.json
+gcp-key*.json
+
+# Streamlit
+.streamlit/
+
+# VS
+.vs/
+*.user
