@@ -1,5 +1,8 @@
-# Variables de entorno y secretos
+# Credenciales y secretos
 .env
+*.json
+service-account*.json
+credentials*.json
 
 # Python
 __pycache__/
@@ -8,13 +11,12 @@ __pycache__/
 .venv/
 venv/
 
-# GCP
-*.json
-gcp-key*.json
+# Docker
+.dockerignore
 
-# Streamlit
-.streamlit/
+# VS Code
+.vscode/
 
-# VS
-.vs/
-*.user
+# Datos locales
+data/*.xlsx
+data/*.csv

@@ -1,27 +1,25 @@
-# Imagen base ligera — Python 3.11 slim (~150MB vs ~900MB full)
+# Imagen base ligera â€” python:3.11-slim (~150MB vs ~900MB de la full)
 FROM python:3.11-slim
 
 # Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar requirements primero (optimización de capas Docker:
-# si el código cambia pero requirements no, Docker reutiliza
-# esta capa cacheada y no reinstala todo desde cero)
+# Primero copiamos solo requirements para aprovechar el cache de Docker
+# Si el cÃ³digo cambia pero requirements no, Docker no reinstala todo
 COPY requirements.txt .
 
-# Instalar dependencias
+# Instalamos dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el resto del código
+# Ahora copiamos el resto del cÃ³digo
 COPY . .
 
-# Puerto que usa Streamlit
+# Exponemos el puerto de Streamlit
 EXPOSE 8080
 
-# Variables de entorno para Streamlit
+# Variable de entorno para que Streamlit no abra el browser
 ENV STREAMLIT_SERVER_PORT=8080
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
-ENV STREAMLIT_SERVER_HEADLESS=true
 
-# Comando para arrancar la app
-CMD ["streamlit", "run", "app.py"]
+# Comando de inicio
+CMD ["streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]
