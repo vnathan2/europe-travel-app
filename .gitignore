@@ -17,6 +17,10 @@ venv/
 # VS Code
 .vscode/
 
+# Claude Code (settings y memorias locales)
+.claude/
+memory/
+
 # Datos locales
 data/*.xlsx
 data/*.csv

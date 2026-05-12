@@ -1,0 +1,48 @@
+# .gcloudignore
+# Archivos excluidos del upload a Cloud Build.
+# Mantenemos la imagen Docker liviana y los builds rápidos.
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Python local
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Tests y herramientas de dev (no necesarios en runtime)
+tests/
+docs/
+pyproject.toml
+requirements-dev.txt
+scripts/smoke_rag.py
+scripts/setup_auth.sh
+scripts/setup_secrets.sh
+
+# Editor / IDE
+.vscode/
+.claude/
+*.swp
+
+# Secretos y credenciales locales
+.env
+.env.*
+*.json
+service-account*.json
+credentials*.json
+
+# Memorias del usuario (uso local)
+memory/
+
+# Documentación de proceso (no runtime)
+CLAUDE.md
+
+# Datos locales
+data/*.xlsx
+data/*.csv
