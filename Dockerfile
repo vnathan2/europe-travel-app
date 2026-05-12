@@ -1,25 +1,35 @@
-# Imagen base ligera — python:3.11-slim (~150MB vs ~900MB de la full)
+# 1. Imagen base eficiente
 FROM python:3.11-slim
 
-# Directorio de trabajo dentro del contenedor
+# 2. Variables de entorno para optimizar Python
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    STREAMLIT_SERVER_PORT=8080 \
+    STREAMLIT_SERVER_ADDRESS=0.0.0.0
+
 WORKDIR /app
 
-# Primero copiamos solo requirements para aprovechar el cache de Docker
-# Si el código cambia pero requirements no, Docker no reinstala todo
-COPY requirements.txt .
+# 3. Instalación de dependencias del sistema (solo si son necesarias)
+# Agregamos limpieza de caché de apt para reducir tamaño
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Instalamos dependencias
+# 4. Aprovechar cache de capas para requirements
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Ahora copiamos el resto del código
-COPY . .
+# 5. Crear un usuario de sistema para no correr como ROOT (Seguridad)
+RUN useradd -m myuser
+USER myuser
 
-# Exponemos el puerto de Streamlit
+# 6. Copiar el código con los permisos del nuevo usuario
+COPY --chown=myuser:myuser . .
+
 EXPOSE 8080
 
-# Variable de entorno para que Streamlit no abra el browser
-ENV STREAMLIT_SERVER_PORT=8080
-ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
+# 7. Healthcheck (Opcional pero recomendado para monitoreo)
+HEALTHCHECK CMD curl --fail http://localhost:8080/_stcore/health || exit 1
 
-# Comando de inicio
-CMD ["streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "app.py"]
