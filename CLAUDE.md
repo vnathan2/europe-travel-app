@@ -58,7 +58,7 @@ gcloud run services update-traffic europe-travel-app --to-tags=test=100 --region
 Aprendizaje del postmortem 2026-05-11: el modo DEVELOPMENT no cubre el flujo OAuth real ni el comportamiento de Streamlit en Cloud Run. Seguir estos pasos antes de cada deploy.
 
 **1. Validación local**
-- [ ] `pytest` pasa los 17 tests
+- [ ] `pytest` pasa los 23 tests
 - [ ] `streamlit run app.py` arranca sin errores en consola
 - [ ] Navegar al menos 3 módulos distintos en local
 
@@ -68,12 +68,22 @@ Aprendizaje del postmortem 2026-05-11: el modo DEVELOPMENT no cubre el flujo OAu
 - [ ] `utils/logger.py` no tiene `propagate=False` en ningún logger.
 - [ ] No hay secrets ni valores reales en ningún archivo commiteado.
 
-**3. Deploy y validación en prod**
+**3. Deploy y validación pre-promoción**
 - [ ] Siempre usar `--no-traffic --tag=test` en el primer deploy.
-- [ ] Con la URL del tag: hacer login completo con Google (no dev mode).
-- [ ] Navegar al menos 4 módulos distintos y verificar que cargan.
+- [ ] Healthcheck `/_stcore/health` en la URL del tag → 200 ok.
 - [ ] Revisar Cloud Logging por errores en los primeros 2 minutos.
-- [ ] Solo entonces promover con `update-traffic --to-tags=test=100`.
+- [ ] **Caveat OAuth**: el login con Google redirige siempre a la URL canónica (no a la del tag), por la config de `OAUTH_REDIRECT_URI` apuntando al dominio canónico. Por tanto el flow OAuth real solo se puede validar post-promoción. Pre-promoción cubre healthcheck + logs + smoke tests locales. Esto se descubrió en el postmortem 2026-05-12.
+
+**4. Promoción y validación post-promoción**
+- [ ] Promover con `update-traffic --to-tags=<TAG>=100`.
+- [ ] Login real en la URL canónica y navegar al menos 4 módulos distintos.
+- [ ] Si algo falla, rollback con `update-traffic --to-revisions=<REVISION_PREVIA>=100` (30s).
+
+**5. Rotación de secrets (si aplica)**
+- [ ] En Windows/PowerShell, **nunca pipe a `--data-file=-`** (agrega CRLF y corrompe el secret). Usar archivo temporal con `[System.IO.File]::WriteAllText`. Receta completa en `docs/POSTMORTEM_2026-05-12.md`.
+- [ ] Validar `$key.Length` y `(Get-Item file).Length` antes de subir. Para Gemini debe ser 39.
+- [ ] Después de subir, los pods en ejecución NO toman el secret nuevo. Necesita redeploy fresco con tag para que los pods nuevos lo lean.
+- [ ] Validar la key directamente contra el servicio (curl a Gemini, sin pasar por Cloud Run) antes de promover. Esto descarta problemas de la key vs problemas de cache de pods.
 
 ## Convenciones de código
 
