@@ -1,10 +1,19 @@
 # modules/packing_checker.py
 # Módulo 5: Packing Checker
 # Lista de equipaje con clima real vía Open-Meteo (gratuita, sin API key)
+# Persistencia compartida en Firestore: Giovanna, Camila y Jonathan ven la misma lista.
 
 import streamlit as st
 import requests
 from datetime import date
+
+from utils.gcp_client import get_firestore_client
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
+
+COLECCION_PACKING = "packing"
+DOC_ID_FAMILIA    = "familia"
 
 # ── Coordenadas de las ciudades del viaje ──────────────────────────────────
 CIUDADES_COORDS = {
@@ -125,6 +134,43 @@ EQUIPAJE = {
     },
 }
 
+# ── Persistencia de packing compartida (Firestore) ─────────────────────────
+@st.cache_data(ttl=600)
+def cargar_packing() -> dict:
+    """
+    Lee el estado de items_marcados desde Firestore.
+    Documento único `packing/familia` compartido entre Jonathan, Giovanna y Camila.
+    Cache de 10 min para no consumir reads del free tier en cada rerun.
+    """
+    try:
+        db = get_firestore_client()
+        doc = db.collection(COLECCION_PACKING).document(DOC_ID_FAMILIA).get()
+        if doc.exists:
+            return doc.to_dict().get("items_marcados", {}) or {}
+    except Exception:
+        logger.exception("No se pudo cargar packing desde Firestore")
+    return {}
+
+
+def guardar_packing(items_marcados: dict) -> bool:
+    """
+    Persiste items_marcados en Firestore. Last-write-wins entre miembros
+    de la familia (aceptable para este flujo de uso).
+    """
+    try:
+        db = get_firestore_client()
+        usuario = st.session_state.get("auth_user", {}).get("email", "anonimo")
+        db.collection(COLECCION_PACKING).document(DOC_ID_FAMILIA).set({
+            "items_marcados":   items_marcados,
+            "actualizado_por":  usuario,
+        })
+        cargar_packing.clear()
+        return True
+    except Exception:
+        logger.exception("No se pudo guardar packing en Firestore")
+        return False
+
+
 # ── Obtener clima real de Open-Meteo ───────────────────────────────────────
 def get_clima(ciudad: str) -> dict:
     """
@@ -230,13 +276,14 @@ def mostrar():
                         for rec in recs:
                             st.warning(rec)
 
+    # Inicializar items_marcados desde Firestore (compartido familia)
+    if "items_marcados" not in st.session_state:
+        st.session_state.items_marcados   = cargar_packing()
+        st.session_state._packing_snapshot = dict(st.session_state.items_marcados)
+
     # ── TAB 2: Lista completa ──────────────────────────────────────────────
     with tab_lista:
         st.subheader("✅ Lista completa de equipaje")
-
-        # Inicializar estado de checkboxes
-        if "items_marcados" not in st.session_state:
-            st.session_state.items_marcados = {}
 
         total_items = sum(len(cat["items"]) for cat in EQUIPAJE.values())
         marcados = sum(1 for v in st.session_state.items_marcados.values() if v)
@@ -272,6 +319,8 @@ def mostrar():
         # Botón reset
         if st.button("🔄 Reiniciar lista", type="secondary"):
             st.session_state.items_marcados = {}
+            guardar_packing({})
+            st.session_state._packing_snapshot = {}
             st.rerun()
 
     # ── TAB 3: Solo críticos ───────────────────────────────────────────────
@@ -284,15 +333,25 @@ def mostrar():
             if criticos:
                 st.write(f"**{categoria}**")
                 for item in criticos:
+                    # misma key que tab "Lista completa" → checkboxes sincronizados
                     key = f"crit_{categoria}_{item['nombre']}"
+                    estado_key = f"{categoria}_{item['nombre']}"
                     col1, col2 = st.columns([4, 1])
                     with col1:
                         checked = st.checkbox(
                             item["nombre"],
                             key=key,
-                            value=st.session_state.items_marcados.get(key, False)
+                            value=st.session_state.items_marcados.get(estado_key, False)
                         )
-                        st.session_state.items_marcados[key] = checked
+                        st.session_state.items_marcados[estado_key] = checked
                     with col2:
                         st.caption(item["cantidad"])
                 st.divider()
+
+    # ── Persistencia: si hubo cambios en este render, escribir a Firestore ─
+    # Last-write-wins entre miembros de la familia. Solo escribe si difiere
+    # del snapshot cargado al entrar, para no quemar writes en cada rerun.
+    snapshot = st.session_state.get("_packing_snapshot", {})
+    if snapshot != st.session_state.items_marcados:
+        if guardar_packing(st.session_state.items_marcados):
+            st.session_state._packing_snapshot = dict(st.session_state.items_marcados)

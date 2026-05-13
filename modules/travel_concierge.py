@@ -194,7 +194,20 @@ Sé amigable y práctico para la familia.
         respuesta_final = chat.send_message(prompt2).text
         return respuesta_final, resultados
     except Exception as e:
-        return f"❌ Error: {str(e)}", []
+        # Fallback offline: si Gemini falla, intentar matchear contra FAQ
+        # pre-canned. Caso típico durante el viaje: API caída o sin red.
+        from utils.offline_faqs import buscar_faq_offline, respuesta_fallback_generica
+        from utils.logger import get_logger
+        get_logger(__name__).warning(
+            "Gemini falló en obtener_respuesta, usando fallback offline. Error: %s", e
+        )
+        faq = buscar_faq_offline(pregunta)
+        if faq:
+            return (
+                f"🐾 *Lady está sin red, pero tengo esto guardado para ti:*\n\n"
+                f"**{faq['pregunta']}**\n\n{faq['respuesta']}"
+            ), []
+        return respuesta_fallback_generica(), []
 
 
 # ── Constantes para alertas ────────────────────────────────────────────────

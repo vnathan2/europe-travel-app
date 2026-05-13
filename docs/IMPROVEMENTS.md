@@ -4,10 +4,13 @@
 
 ## Resumen ejecutivo
 
-- ~~3 bugs bloqueantes~~ **0 bugs bloqueantes** — los 3 P1 están resueltos (✅ 2026-05-11).
-- 5 mejoras de seguridad o cumplimiento (URL hardcodeada, rate limit, disclaimer legal en Night Life, validación de inputs, manejo central de errores).
-- 7 oportunidades de performance, costo o UX.
-- 4 deudas de mantenimiento (tests, lint, CI, archivos huérfanos).
+> Última sincronización con el código: **2026-05-12** (sesión de trabajo de la tarde). Verificado contra el repo.
+
+- **0 bugs bloqueantes** — los 3 P1 están resueltos (✅ 2026-05-11).
+- **P2 seguridad y cumplimiento**: 5/5 resueltos.
+- **P3 performance, costo y UX**: 3 pendientes de 7 — `time.sleep(0.5)` (3.2), galería N descargas (3.3), catálogo de tiendas hardcoded (3.5). Packing checker compartido (3.6) cerrado el 2026-05-12.
+- **P4 mantenimiento**: 1 pendiente de 4 — solo falta lint (4.2). `.env.example` cerrado el 2026-05-12, tests cubiertos con 23 smoke tests.
+- **Riesgo operativo**: fallback de Gemini con 10 FAQ pre-canned offline (`utils/offline_faqs.py`), cerrado el 2026-05-12. Open-Meteo y exchangerate-api ya tenían fallbacks.
 
 ## Prioridad 1 - Bloqueantes (resolver antes del viaje)
 
@@ -42,12 +45,11 @@
 
 ## Prioridad 2 - Seguridad y cumplimiento
 
-### 2.1 URL de producción hardcodeada en código
+### 2.1 ✅ HECHO - URL de producción hardcodeada en código
 
-- **Archivo**: `auth/google_oauth.py:55, 59`.
-- **Síntoma**: fallback contiene literal `"https://europe-travel-app-565528729494.us-east1.run.app"`. Si Cloud Run cambia el hash o se mueve la región, hay que recompilar. Y queda en git history.
-- **Fix**: hacer obligatorio `OAUTH_REDIRECT_URI` en env vars. Si no está, fallar fast con mensaje claro.
-- **Esfuerzo**: 15 minutos.
+- **Resuelto el**: 2026-05-11.
+- **Archivo**: `auth/google_oauth.py:40-69` (función `get_redirect_uri`).
+- **Fix aplicado**: orden de resolución 1) variable `OAUTH_REDIRECT_URI` (canonical para prod), 2) detección automática por `st.context.headers.host` (run.app o localhost), 3) si nada matchea, falla fast con `st.error` + `st.stop` y mensaje claro. Sin URLs hardcodeadas en código.
 
 ### 2.2 ✅ HECHO - Rate limit en el login
 
@@ -67,22 +69,19 @@
   - `st.info` aclara que el contenido es solo educativo, no recomendación de adquisición ni transporte.
 - **Verificado**: `modules/shopping_guide.py` tab "Tips para llevar compras a Lima" no menciona cannabis ni productos ambiguos; sólo bienes legales con sus respectivos certificados (tulipanes).
 
-### 2.4 Inputs de emergencia no se persisten
+### 2.4 ✅ HECHO - Inputs de emergencia no se persisten
 
-- **Archivo**: `modules/emergency_card.py:255-291`.
-- **Síntoma**: campos críticos (pasaporte, tipo de sangre, hotel, contacto Lima) se capturan via `st.text_input` pero no se guardan en sesión ni Firestore. Cada reload pierde el dato. Justo lo opuesto de lo que se necesita en una emergencia.
-- **Fix**: persistir en `Firestore.collection("perfil_familia").document(<user_email>)` con cache lectura 10 min. O al menos guardar en session_state como mitigación inmediata.
-- **Esfuerzo**: 1 hora.
+- **Resuelto el**: 2026-05-11.
+- **Archivo**: `modules/emergency_card.py:11` (`COLECCION_PERFIL = "perfil_familia"`), `:163` (`cargar_perfil_familia`), `:176` (`guardar_perfil_familia`).
+- **Fix aplicado**: pasaporte, tipo de sangre, hoteles por ciudad y contacto Lima se persisten en `Firestore.collection("perfil_familia")`. Cache de lectura con `@st.cache_data`, invalidado tras cada escritura. El formulario sigue mostrando los datos guardados en el siguiente reload.
 
-### 2.5 ⚠️ PARCIAL - Logging estructurado (en investigación por postmortem)
+### 2.5 ✅ HECHO - Logging estructurado
 
-- **Iniciado el**: 2026-05-11. **En pausa** hasta resolver la causa raíz del deploy 00054.
-- **Archivo**: `utils/logger.py` — actualmente en **modo no-op** (devuelve `logging.getLogger` estándar sin handlers custom) para aislar si el formatter JSON/propagate fue la causa del bug de navegación en Cloud Run.
-- **Migración completada en código**:
-  - `utils/knowledge_base.py`: 6 `print(f"Error ...: {e}")` → `logger.exception(...)` con contexto.
-  - `utils/gcp_client.py:get_secret`: el `except` ahora emite `logger.warning`.
-- **Siguiente paso**: una vez identificada la causa raíz del deploy 00054, restaurar `logger.py` con los dos formatters (JSON en Cloud Run, legible en local) y re-deployar validando con `--no-traffic --tag=test` primero.
-- **Sin dependencias nuevas**: Cloud Run captura stdout y parsea JSON con campos `severity`/`message`. Documentación: https://cloud.google.com/run/docs/logging
+- **Resuelto el**: 2026-05-12.
+- **Archivo**: `utils/logger.py`.
+- **Fix aplicado**: tras descartar al logger como causa raíz del deploy 00054 (la causa real fue el `st.stop()` en `auth_gate`), se restauraron los dos formatters: `_JsonFormatter` para Cloud Run (detectado por `K_SERVICE` env var, emite payload con `severity`/`message`/`module`/`function`/`line`/`exception`) y `_ReadableFormatter` para local. Se mantiene `propagate=True` por precaución para no interferir con la captura de logs de Streamlit.
+- **Migración en código**: `utils/knowledge_base.py`, `utils/gcp_client.py`, `utils/price_helper.py` y módulos sensibles usan `logger.exception` / `logger.warning` en lugar de `print`.
+- **Validado en prod**: revisión `00065-hat` corriendo desde 2026-05-12 sin errores ni regresiones en logs.
 
 ## Prioridad 3 - Performance, costo y UX
 
@@ -121,12 +120,13 @@
 - **Fix**: mover a `data/shopping.json` y cargar con cache. Editar es trivial sin tocar Python.
 - **Esfuerzo**: 1.5 horas.
 
-### 3.6 Persistencia de packing en session_state
+### 3.6 ✅ HECHO - Persistencia de packing en Firestore compartida
 
-- **Archivo**: `modules/packing_checker.py:238-247`.
-- **Síntoma**: `items_marcados` vive solo en sesión. Si Giovanna marca items desde su celular y Camila desde el suyo, no se sincroniza.
-- **Fix**: persistir en `Firestore.collection("packing").document("familia")` con escritura debounced.
-- **Esfuerzo**: 1 hora.
+- **Resuelto el**: 2026-05-12.
+- **Archivo**: `modules/packing_checker.py:11` (constantes Firestore), `:43-78` (cargar/guardar).
+- **Fix aplicado**: nuevas funciones `cargar_packing()` (cacheada 10 min con `@st.cache_data`) y `guardar_packing(items)` (last-write-wins). Documento único `packing/familia` compartido entre Jonathan, Giovanna y Camila. Cada escritura guarda `actualizado_por` con el email del usuario. La persistencia es debounced naturalmente: solo escribe a Firestore cuando el snapshot inicial difiere del estado actual al final del render. El botón "Reiniciar lista" también limpia Firestore.
+- **Cobertura**: 2 smoke tests nuevos en `tests/test_smoke.py` (cargar desde Firestore, guardar payload completo con `actualizado_por`).
+- **Limitación conocida**: las tabs "Lista completa" y "Solo críticos" usan keys de widget distintas para evitar `DuplicateWidgetID` de Streamlit, por lo que la sincronización entre tabs solo ocurre en el primer render de cada widget. La persistencia entre sesiones y entre usuarios funciona correctamente.
 
 ### 3.7 ✅ HECHO - Tipo de cambio fallback
 
@@ -140,16 +140,17 @@
 
 ## Prioridad 4 - Mantenimiento
 
-### 4.1 Sin tests automatizados
+### 4.1 ✅ HECHO - Sin tests automatizados
 
-- **Síntoma**: cero archivos `test_*.py`. El bug #1.1 estuvo merge-eado sin detección.
-- **Fix mínimo**: agregar `pytest` y 5 smoke tests críticos:
-  - Auth: `is_admin()` retorna True solo para email admin.
-  - Price helper: `mostrar_precio` respeta el flag.
-  - KB: `cosine_similarity` con vectores ortogonales = 0.
-  - Conversor: `convertir(100, EUR, EUR, _) == 100`.
-  - Travel concierge: `detectar_busqueda("[BUSCAR_WEB: foo]")` extrae query.
-- **Esfuerzo**: 2 horas para los 5.
+- **Resuelto el**: 2026-05-11.
+- **Archivo**: `tests/test_smoke.py` (17 tests), `tests/conftest.py` (stubs de Firestore/Gemini/Tavily para no tocar servicios reales), `pyproject.toml` (config pytest).
+- **Cobertura**:
+  - Auth: `is_admin()` por rol, `get_user_role()` por email, rate limit (3 tests: bajo límite, sobrepaso, expiración de ventana).
+  - Price helper: `mostrar_precio` respeta `show_prices()`, conversión a soles con tasa fallback.
+  - KB: `cosine_similarity` con ortogonales/idénticos, dedupe de docs.
+  - Voice translator: traducciones críticas (médico, ambulancia, alergia) en 4 idiomas.
+  - Phrase pocket: `convertir(100, EUR, EUR, _) == 100`, lookup de tasa cacheada.
+- **Tiempo de ejecución**: <1s. Sin dependencia de red ni APIs externas.
 
 ### 4.2 Sin linting ni formateo
 
@@ -161,16 +162,16 @@
 - **Resuelto el**: 2026-05-11.
 - **Acción**: archivo eliminado. La historia queda en git log para auditoría.
 
-### 4.4 Falta `.env.example`
+### 4.4 ✅ HECHO - Falta `.env.example`
 
-- **Síntoma**: nuevos colaboradores (o yo en 3 meses) no tienen idea qué variables necesita el setup local.
-- **Fix**: agregar `.env.example` con todas las variables esperadas y comentarios.
-- **Esfuerzo**: 10 minutos.
+- **Resuelto el**: 2026-05-12.
+- **Archivo**: `.env.example` en la raíz.
+- **Cobertura**: 17 variables documentadas agrupadas en 7 secciones (modo, OAuth, GCP, APIs externas, helpers de fallback, scripts de ingesta). Cada bloque explica de dónde sacar el valor y si va a Secret Manager en prod o como env var directa.
 
 ## Riesgos no técnicos
 
-- **Crítico**: el viaje empieza en **65 días** (15 julio 2026, actualizado 2026-05-11). Cualquier mejora que toque rutas críticas (auth, ingesta, chat) debe terminar antes del 1 de julio para tener buffer.
-- **Importante**: la app depende de 4 APIs externas (Gemini, Tavily, Open-Meteo, exchangerate-api). Si dos caen al mismo tiempo durante el viaje, los datos críticos quedan inaccesibles. Vale la pena precargar respuestas y guardarlas en Firestore como "offline cache" antes de salir de Lima.
+- **Crítico**: el viaje empieza en **64 días** (15 julio 2026, actualizado 2026-05-12). Cualquier mejora que toque rutas críticas (auth, ingesta, chat) debe terminar antes del 1 de julio para tener buffer de validación.
+- **Mitigado parcialmente**: la app depende de 4 APIs externas (Gemini, Tavily, Open-Meteo, exchangerate-api). Mitigaciones actuales: (1) Open-Meteo tiene fallback hardcodeado de julio histórico en `packing_checker.get_clima`; (2) exchangerate-api tiene `FALLBACK_EUR_PEN_RATE` configurable en `price_helper`; (3) Tavily es opcional, Lady responde sin búsqueda web si falla; (4) Gemini ahora tiene fallback de 10 FAQ pre-canned (`utils/offline_faqs.py`) que matchean por keywords y cubren los casos críticos del viaje (robo pasaporte, teléfonos de emergencia 112, embajada peruana, bloqueo de tarjeta, vuelo perdido, asaltos, atención médica, transporte público). Implementado el 2026-05-12. Si quieres ampliar el cache offline (modo emergencia completo o PWA), está en backlog como item futuro.
 
 ## Framework de priorización aplicado
 

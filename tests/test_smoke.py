@@ -159,3 +159,76 @@ def test_login_se_libera_al_expirar_ventana():
         bloqueado, restante = _login_bloqueado()
         assert bloqueado is False
         assert restante == 0
+
+
+# ── 7. Packing checker: persistencia compartida ────────────────────────────
+
+def test_cargar_packing_devuelve_items_marcados_de_firestore():
+    from modules import packing_checker
+    fake_doc = type("Doc", (), {
+        "exists":   True,
+        "to_dict":  lambda self: {"items_marcados": {"Documentos_Pasaporte": True}},
+    })()
+    mock_db = type("DB", (), {})()
+    mock_db.collection = lambda *a, **kw: type("C", (), {
+        "document": lambda self, *a, **kw: type("D", (), {
+            "get": lambda self: fake_doc,
+        })(),
+    })()
+    with patch("modules.packing_checker.get_firestore_client", return_value=mock_db):
+        packing_checker.cargar_packing.clear()
+        resultado = packing_checker.cargar_packing()
+    assert resultado == {"Documentos_Pasaporte": True}
+
+
+# ── 8. Offline FAQs: fallback cuando Gemini falla ──────────────────────────
+
+def test_buscar_faq_offline_matchea_robo_pasaporte():
+    from utils.offline_faqs import buscar_faq_offline
+    faq = buscar_faq_offline("Me robaron el pasaporte ayer en el metro")
+    assert faq is not None
+    assert faq["id"] == "robo_pasaporte"
+    assert "consulado" in faq["respuesta"].lower()
+
+
+def test_buscar_faq_offline_matchea_telefonos_emergencia():
+    from utils.offline_faqs import buscar_faq_offline
+    faq = buscar_faq_offline("¿Cuál es el número de emergencia en Europa?")
+    assert faq is not None
+    assert faq["id"] == "telefonos_emergencia"
+    assert "112" in faq["respuesta"]
+
+
+def test_buscar_faq_offline_sin_match_retorna_none():
+    from utils.offline_faqs import buscar_faq_offline
+    faq = buscar_faq_offline("¿Cuál es la mejor pizza de Madrid?")
+    assert faq is None
+
+
+def test_respuesta_fallback_generica_lista_modulos_offline():
+    from utils.offline_faqs import respuesta_fallback_generica
+    msg = respuesta_fallback_generica()
+    assert "Emergency Card" in msg
+    assert "Phrase Pocket" in msg
+    assert "Voice Translator" in msg
+
+
+def test_guardar_packing_escribe_dict_completo():
+    from modules import packing_checker
+    escrito = {}
+    class _Doc:
+        def set(self, payload):
+            escrito.update(payload)
+    class _Col:
+        def document(self, *a, **kw):
+            return _Doc()
+    class _DB:
+        def collection(self, *a, **kw):
+            return _Col()
+    with patch("modules.packing_checker.get_firestore_client", return_value=_DB()), \
+         patch("modules.packing_checker.st") as mock_st:
+        mock_st.session_state.get.return_value = {"email": "victor.ramirez@entel.pe"}
+        ok = packing_checker.guardar_packing({"Salud_Ibuprofeno": True})
+    assert ok is True
+    assert escrito["items_marcados"] == {"Salud_Ibuprofeno": True}
+    assert escrito["actualizado_por"] == "victor.ramirez@entel.pe"
