@@ -1,8 +1,6 @@
 # utils/ui_theme.py
 # Sistema de temas por ciudad, animaciones, menú sofisticado y modo offline
 
-import time
-
 import streamlit as st
 
 CITY_THEMES = {
@@ -299,7 +297,10 @@ def get_loading_message(modulo_id: str) -> str:
     return random.choice(msgs)
 
 
-def show_loading_animation(modulo_id: str, duration: float = 0.8):
+def show_loading_animation(modulo_id: str):
+    # Muestra el spinner temático y DEVUELVE el placeholder. El caller lo limpia
+    # cuando termina la carga real del módulo. Sin time.sleep: el spinner es
+    # visible solo durante el import real, no un delay artificial de servidor.
     theme = get_theme(modulo_id)
     msg   = get_loading_message(modulo_id)
 
@@ -338,8 +339,7 @@ def show_loading_animation(modulo_id: str, duration: float = 0.8):
     </style>
     """, unsafe_allow_html=True)
 
-    time.sleep(duration)
-    placeholder.empty()
+    return placeholder
 
 
 # ══════════════════════════════════════════════════════════════════════════════

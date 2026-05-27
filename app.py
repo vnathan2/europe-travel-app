@@ -72,10 +72,11 @@ with col_badge:
     </div>
     """, unsafe_allow_html=True)
 
-# Animación de transición
+# Spinner temático visible solo mientras se importa el módulo (sin sleep artificial)
+_loading_ph = None
 if st.session_state.get("_ultimo_modulo") != modulo_id:
     st.session_state["_ultimo_modulo"] = modulo_id
-    show_loading_animation(modulo_id, duration=0.5)
+    _loading_ph = show_loading_animation(modulo_id)
 
 # ── 4. ENRUTAMIENTO DINÁMICO (DICCIONARIO) ────────────────────────────────
 MODULOS = {
@@ -98,10 +99,16 @@ RESTRICCIONES = ["night_life", "admin_panel"]
 
 if modulo_id in MODULOS:
     if modulo_id in RESTRICCIONES and not is_admin():
+        if _loading_ph:
+            _loading_ph.empty()
         st.error("⛔ No tienes acceso a este módulo.")
     else:
-        # Importación dinámica (Lazy Loading)
+        # Importación dinámica (Lazy Loading) — el spinner se ve durante esto
         target_module = importlib.import_module(MODULOS[modulo_id])
+        if _loading_ph:
+            _loading_ph.empty()
         target_module.mostrar()
 else:
+    if _loading_ph:
+        _loading_ph.empty()
     st.info("Selecciona un módulo en el menú para comenzar.")

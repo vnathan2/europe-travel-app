@@ -8,7 +8,7 @@
 
 - **0 bugs bloqueantes** — los 3 P1 están resueltos (✅ 2026-05-11).
 - **P2 seguridad y cumplimiento**: 5/5 resueltos.
-- **P3 performance, costo y UX**: 3 pendientes de 7 — `time.sleep(0.5)` (3.2), galería N descargas (3.3), catálogo de tiendas hardcoded (3.5). Packing checker compartido (3.6) cerrado el 2026-05-12.
+- **P3 performance, costo y UX**: 2 pendientes de 7 — galería N descargas (3.3), catálogo de tiendas hardcoded (3.5). `time.sleep(0.5)` (3.2) cerrado el 2026-05-27; packing checker compartido (3.6) el 2026-05-12.
 - **P4 mantenimiento**: 4/4 resueltos. Lint con ruff cerrado el 2026-05-27, `.env.example` el 2026-05-12, tests cubiertos con 23 smoke tests.
 - **Riesgo operativo**: fallback de Gemini con 10 FAQ pre-canned offline (`utils/offline_faqs.py`), cerrado el 2026-05-12. Open-Meteo y exchangerate-api ya tenían fallbacks.
 
@@ -93,12 +93,12 @@
 - **Validado**: 17 smoke tests pasan, los 12 módulos importan correctamente.
 - **Beneficio**: imagen Docker más liviana (sklearn solo ya pesa >100 MB) y build de Cloud Run más rápido.
 
-### 3.2 `time.sleep(0.5)` en cada cambio de módulo
+### 3.2 ✅ HECHO - `time.sleep(0.5)` en cada cambio de módulo
 
-- **Archivo**: `app.py:74-76` (vía `show_loading_animation`).
-- **Síntoma**: cada navegación entre módulos bloquea 0.5s artificiales. En móvil con red lenta el efecto es agravado.
-- **Fix**: hacer la animación verdaderamente asíncrona (CSS only) o reducir a 0.2s. El loading visual no necesita sleep server-side.
-- **Esfuerzo**: 30 minutos.
+- **Resuelto el**: 2026-05-27.
+- **Archivo**: `utils/ui_theme.py` (`show_loading_animation`), `app.py` (enrutamiento).
+- **Fix aplicado**: se eliminó el `time.sleep(duration)` que bloqueaba el thread del servidor 0.5s en cada navegación. Ahora `show_loading_animation` solo renderiza el spinner temático y devuelve el placeholder; el caller (app.py) lo limpia **después** del `importlib.import_module`, así el spinner es visible exactamente durante la carga real del módulo (feedback honesto) en vez de un delay artificial. Se quitó también `import time` (ya sin uso) y el parámetro `duration`.
+- **Validado**: ruff limpio, 23 tests, ui_theme importa.
 
 ### 3.3 Galería del Trip Journal hace N descargas a GCS
 
