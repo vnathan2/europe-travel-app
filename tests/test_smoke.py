@@ -11,7 +11,6 @@ from unittest.mock import patch
 
 import pytest
 
-
 # ── 1. RAG cosine_similarity ──────────────────────────────────────────────
 
 def test_cosine_similarity_identical_vectors():
@@ -140,7 +139,7 @@ def test_login_bloqueado_al_superar_limite():
             "count": 5,
             "ts": time_mod.time(),
         }
-        from auth.google_oauth import _login_bloqueado, MAX_LOGIN_ATTEMPTS
+        from auth.google_oauth import MAX_LOGIN_ATTEMPTS, _login_bloqueado
         bloqueado, restante = _login_bloqueado()
         assert bloqueado is True
         assert restante > 0

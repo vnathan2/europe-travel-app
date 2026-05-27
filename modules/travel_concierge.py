@@ -1,16 +1,15 @@
 # modules/travel_concierge.py
-import streamlit as st
-import google.generativeai as genai
-import requests
 import os
 import re
-from dotenv import load_dotenv
-from utils.gcp_client import get_secret
 from datetime import datetime
 
-from utils.knowledge_base import (
-    buscar_conocimiento, formatear_conocimiento, init_embeddings
-)
+import google.generativeai as genai
+import requests
+import streamlit as st
+from dotenv import load_dotenv
+
+from utils.gcp_client import get_secret
+from utils.knowledge_base import buscar_conocimiento, formatear_conocimiento, init_embeddings
 
 load_dotenv()
 
@@ -223,8 +222,8 @@ Sé amigable y práctico para la familia.
     except Exception as e:
         # Fallback offline: si Gemini falla, intentar matchear contra FAQ
         # pre-canned. Caso típico durante el viaje: API caída o sin red.
-        from utils.offline_faqs import buscar_faq_offline, respuesta_fallback_generica
         from utils.logger import get_logger
+        from utils.offline_faqs import buscar_faq_offline, respuesta_fallback_generica
         get_logger(__name__).warning(
             "Gemini falló en obtener_respuesta, usando fallback offline. Error: %s", e
         )
@@ -1328,17 +1327,6 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                         st.session_state.get("mapa_zoom_actividad")
                         == act["id"]
                     )
-
-                    # Estilo según estado
-                    if es_zoom:
-                        border = "border: 2px solid #1A73E8;"
-                        bg = "background: #E8F0FE;"
-                    elif completada:
-                        border = "border: 1px solid #ccc;"
-                        bg = "background: #f5f5f5; opacity: 0.6;"
-                    else:
-                        border = "border: 1px solid #ddd;"
-                        bg = "background: white;"
 
                     # Botón de actividad
                     btn_label = (

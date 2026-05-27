@@ -16,7 +16,6 @@ Para agregar/editar: solo editar este archivo y redeployar.
 """
 from __future__ import annotations
 
-
 OFFLINE_FAQS: list[dict] = [
     {
         "id":       "robo_pasaporte",

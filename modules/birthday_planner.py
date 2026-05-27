@@ -2,13 +2,15 @@
 # Módulo 4: Birthday Planner
 # Planificador especial para los cumpleaños del 17 y 21 de julio
 
-import streamlit as st
-import google.generativeai as genai
+import os
 from datetime import date
+
+import google.generativeai as genai
+import streamlit as st
+from dotenv import load_dotenv
+
 from utils.gcp_client import get_secret
 from utils.price_helper import mostrar_precio
-import os
-from dotenv import load_dotenv
 
 load_dotenv()
 

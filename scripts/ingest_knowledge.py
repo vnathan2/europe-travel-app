@@ -12,13 +12,17 @@
 #     $env:INGEST_SKIP_TAVILY = "1"
 #     python scripts/ingest_knowledge.py
 
-import sys
 import os
+import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.knowledge_base import (
-    fetch_wikipedia, fetch_opentripmap,
-    fetch_tavily, guardar_documento, init_embeddings
+    fetch_opentripmap,
+    fetch_tavily,
+    fetch_wikipedia,
+    guardar_documento,
+    init_embeddings,
 )
 
 # ── Temas a buscar por ciudad ──────────────────────────────────────────────
@@ -114,24 +118,24 @@ def main():
         docs_ciudad = []
 
         # 1. Wikipedia
-        print(f"  📚 Wikipedia...")
+        print("  📚 Wikipedia...")
         for tema in TEMAS_WIKIPEDIA.get(ciudad, []):
             docs = fetch_wikipedia(ciudad, tema)
             docs_ciudad.extend(docs)
             print(f"    ✓ {tema}: {len(docs)} docs")
 
         # 2. OpenTripMap
-        print(f"  🗺️ OpenTripMap...")
+        print("  🗺️ OpenTripMap...")
         docs_otm = fetch_opentripmap(ciudad)
         docs_ciudad.extend(docs_otm)
         print(f"    ✓ {len(docs_otm)} atracciones")
 
         # 3. Tavily (opcional)
         if skip_tavily:
-            print(f"  🌐 Tavily: omitido por INGEST_SKIP_TAVILY")
+            print("  🌐 Tavily: omitido por INGEST_SKIP_TAVILY")
             docs_tavily = []
         else:
-            print(f"  🌐 Tavily web search...")
+            print("  🌐 Tavily web search...")
             docs_tavily = fetch_tavily(
                 ciudad, TEMAS_POR_CIUDAD.get(ciudad, [])
             )
@@ -155,7 +159,7 @@ def main():
               f"{total_guardados} guardados, {total_skip} ya existían")
 
     print("\n" + "=" * 60)
-    print(f"✅ Ingesta completada:")
+    print("✅ Ingesta completada:")
     print(f"   Total procesados: {total_docs}")
     print(f"   Guardados nuevos: {total_guardados}")
     print(f"   Ya existían (skip): {total_skip}")

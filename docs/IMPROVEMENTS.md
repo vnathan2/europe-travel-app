@@ -9,7 +9,7 @@
 - **0 bugs bloqueantes** — los 3 P1 están resueltos (✅ 2026-05-11).
 - **P2 seguridad y cumplimiento**: 5/5 resueltos.
 - **P3 performance, costo y UX**: 3 pendientes de 7 — `time.sleep(0.5)` (3.2), galería N descargas (3.3), catálogo de tiendas hardcoded (3.5). Packing checker compartido (3.6) cerrado el 2026-05-12.
-- **P4 mantenimiento**: 1 pendiente de 4 — solo falta lint (4.2). `.env.example` cerrado el 2026-05-12, tests cubiertos con 23 smoke tests.
+- **P4 mantenimiento**: 4/4 resueltos. Lint con ruff cerrado el 2026-05-27, `.env.example` el 2026-05-12, tests cubiertos con 23 smoke tests.
 - **Riesgo operativo**: fallback de Gemini con 10 FAQ pre-canned offline (`utils/offline_faqs.py`), cerrado el 2026-05-12. Open-Meteo y exchangerate-api ya tenían fallbacks.
 
 ## Prioridad 1 - Bloqueantes (resolver antes del viaje)
@@ -152,10 +152,14 @@
   - Phrase pocket: `convertir(100, EUR, EUR, _) == 100`, lookup de tasa cacheada.
 - **Tiempo de ejecución**: <1s. Sin dependencia de red ni APIs externas.
 
-### 4.2 Sin linting ni formateo
+### 4.2 ✅ HECHO - Linting con ruff
 
-- **Fix**: `ruff` (lint + format en un solo binario, rápido). Config mínima en `pyproject.toml`. Pre-commit hook opcional.
-- **Esfuerzo**: 30 minutos.
+- **Resuelto el**: 2026-05-27.
+- **Archivo**: `pyproject.toml` (`[tool.ruff]`), `requirements-dev.txt` (`ruff==0.15.14`).
+- **Config**: `select = ["E","F","I","W","UP"]`, `line-length=100`, `ignore=["E501"]` (comentarios en español y datos hardcoded). Per-file ignore de `E402` en `app.py` (imports después de `st.set_page_config`/auth gate, patrón Streamlit intencional).
+- **Limpieza aplicada**: 86 hallazgos → 0. Se quitaron imports sin usar (F401), se ordenaron imports (I001, preservando los perezosos dentro de funciones), newlines finales, f-strings sin placeholders y código muerto (`border`/`bg` en el mapa de `travel_concierge`, `is_admin` no usado en `shopping_guide`, `if not gastos: return` en una línea en `euro_budgeter`).
+- **Decisión sobre format**: `ruff format` NO se aplica en masa (cambiaría ~5.600 líneas y destruiría la alineación intencional de los dicts de datos). Queda disponible on-demand por archivo.
+- **Validado**: `ruff check .` pasa limpio, 23 tests pasan, los 12 módulos importan.
 
 ### 4.3 ✅ HECHO - Eliminar `patch_travel_concierge.py`
 

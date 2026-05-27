@@ -1,9 +1,9 @@
 # utils/ui_theme.py
 # Sistema de temas por ciudad, animaciones, menú sofisticado y modo offline
 
-import streamlit as st
-import json
 import time
+
+import streamlit as st
 
 CITY_THEMES = {
     "madrid": {

@@ -2,9 +2,9 @@
 # Panel de administración — solo visible para ADMIN
 # Permite ejecutar ingesta de conocimiento sin usar PowerShell
 
-import streamlit as st
-import time
 from datetime import datetime
+
+import streamlit as st
 
 # Límite conservador: dejamos 200 créditos libres para el chat concierge
 TAVILY_BUDGET_INGESTA = 80
@@ -15,8 +15,11 @@ def run_ingesta_ciudad(ciudad: str, fuentes: list) -> dict:
     Retorna dict con resultados por fuente.
     """
     from utils.knowledge_base import (
-        init_embeddings, fetch_wikipedia, fetch_opentripmap,
-        fetch_tavily, guardar_documento, CIUDADES
+        fetch_opentripmap,
+        fetch_tavily,
+        fetch_wikipedia,
+        guardar_documento,
+        init_embeddings,
     )
 
     # ── Queries por ciudad y categoría ────────────────────────────────────

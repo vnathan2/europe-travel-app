@@ -6,6 +6,7 @@
 # sigan disponibles tras un reload del navegador.
 
 import streamlit as st
+
 from utils.gcp_client import get_firestore_client
 
 COLECCION_PERFIL = "perfil_familia"

@@ -1,7 +1,8 @@
-import streamlit as st
-import sys
-import os
 import importlib
+import os
+import sys
+
+import streamlit as st
 
 # Asegurar que el directorio raíz esté en el path
 sys.path.insert(0, os.path.dirname(__file__))
@@ -16,7 +17,7 @@ st.set_page_config(
 
 # ── 2. GESTIÓN DE ENTORNO Y SEGURIDAD ─────────────────────────────────────
 # Usamos una variable explícita para desarrollo
-APP_MODE = os.getenv("APP_MODE", "PRODUCTION") 
+APP_MODE = os.getenv("APP_MODE", "PRODUCTION")
 IS_LOCAL = APP_MODE == "DEVELOPMENT"
 
 if IS_LOCAL:
@@ -28,9 +29,7 @@ if IS_LOCAL:
             "role":  "ADMIN",
         }
 
-from auth.google_oauth import (
-    auth_gate, is_admin, show_prices, get_current_user, logout
-)
+from auth.google_oauth import auth_gate, get_current_user, is_admin, show_prices
 
 # Ejecutar el portal de autenticación
 auth_gate()
@@ -43,8 +42,11 @@ if not user:
 
 # ── 3. UI Y TEMAS ──────────────────────────────────────────────────────────
 from utils.ui_theme import (
-    get_theme, apply_theme, render_sidebar_menu,
-    render_menu_fab, show_loading_animation, CITY_THEMES
+    apply_theme,
+    get_theme,
+    render_menu_fab,
+    render_sidebar_menu,
+    show_loading_animation,
 )
 
 # Sincronizar estado ANTES de renderizar la UI

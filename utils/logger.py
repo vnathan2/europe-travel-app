@@ -22,7 +22,6 @@ import logging
 import os
 import traceback
 
-
 _IN_CLOUD_RUN = bool(os.getenv("K_SERVICE"))
 
 # Nombre del logger raíz de la app. Todos los get_logger(__name__) con

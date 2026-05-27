@@ -1,3 +1,22 @@
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+# Conjunto conservador: errores reales (E/F), imports ordenados (I),
+# warnings (W) y modernización de sintaxis (UP). No activamos reglas que
+# choquen con las convenciones del proyecto (imports perezosos dentro de
+# funciones para acelerar el arranque por módulo).
+select = ["E", "F", "I", "W", "UP"]
+ignore = [
+    "E501",  # línea muy larga: comentarios en español y datos hardcoded; no forzar
+]
+
+[tool.ruff.lint.per-file-ignores]
+# app.py importa después de st.set_page_config() y del auth gate, que deben ir
+# primero (patrón Streamlit). No es un error, es intencional.
+"app.py" = ["E402"]

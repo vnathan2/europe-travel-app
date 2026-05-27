@@ -2,14 +2,14 @@
 # Módulo 9: Conversor de Moneda Avanzado
 # Conversión en tiempo real PEN↔EUR↔USD + historial + gráficos
 
-import streamlit as st
-import requests
+from datetime import date, datetime, timedelta
+
 import pandas as pd
 import plotly.graph_objects as go
-import plotly.express as px
-from datetime import datetime, date, timedelta
+import requests
+import streamlit as st
+
 from utils.gcp_client import get_firestore_client
-import os
 
 # ── Monedas disponibles ────────────────────────────────────────────────────
 MONEDAS = {

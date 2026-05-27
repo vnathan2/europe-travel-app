@@ -3,9 +3,9 @@
 # Lista de equipaje con clima real vía Open-Meteo (gratuita, sin API key)
 # Persistencia compartida en Firestore: Giovanna, Camila y Jonathan ven la misma lista.
 
-import streamlit as st
+
 import requests
-from datetime import date
+import streamlit as st
 
 from utils.gcp_client import get_firestore_client
 from utils.logger import get_logger

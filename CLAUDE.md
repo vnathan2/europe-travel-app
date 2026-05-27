@@ -42,6 +42,12 @@ pip install -r requirements-dev.txt
 pytest                          # 23 tests, corre en <1s
 # Los tests no tocan Firestore/Gemini/Tavily; usan stubs en tests/conftest.py.
 
+# Lint (ruff, configurado en pyproject.toml)
+ruff check .                    # debe pasar limpio
+ruff check . --fix              # aplica fixes seguros
+# OJO: ruff format NO se aplica en masa (cambiaría ~5600 líneas y rompería la
+# alineación de los dicts de datos). Usar solo on-demand por archivo si hace falta.
+
 # Build y deploy (requiere gcloud)
 # IMPORTANTE: leer el checklist pre-deploy más abajo antes de ejecutar.
 gcloud builds submit --tag us-east1-docker.pkg.dev/europe-travel-app/europe-travel-app/app:latest --quiet .

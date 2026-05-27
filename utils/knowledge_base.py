@@ -4,14 +4,15 @@
 # Vector store: Firestore + Gemini Embeddings
 
 import os
-import json
 import time
-import requests
-import numpy as np
-import streamlit as st
 from datetime import datetime
-from dotenv import load_dotenv
+
 import google.generativeai as genai
+import numpy as np
+import requests
+import streamlit as st
+from dotenv import load_dotenv
+
 from utils.gcp_client import get_firestore_client, get_secret
 from utils.logger import get_logger
 

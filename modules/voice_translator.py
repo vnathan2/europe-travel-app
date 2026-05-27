@@ -1,7 +1,7 @@
 # modules/voice_translator.py
 # Módulo: Traductor de Voz Optimizado
-import streamlit as st
 import requests
+import streamlit as st
 
 FRASES_UTILES = {
     "🇪🇸 Español → Inglés": {

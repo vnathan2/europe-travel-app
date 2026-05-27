@@ -3,9 +3,11 @@
 # Categorías: Ropa, Zapatos/Carteras, Souvenirs, Tecnología/Comics/Anime,
 #             Gastronomía para llevar, Perfumes/Cosméticos, Joyería, Outlets
 
-import streamlit as st
-import requests
 import os
+
+import requests
+import streamlit as st
+
 from utils.price_helper import mostrar_precio
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -20,6 +22,7 @@ def _buscar_con_lady(busqueda: str, ciudad: str, para: str) -> str:
     try:
         # 1. Buscar con Tavily
         from tavily import TavilyClient
+
         from utils.gcp_client import get_secret
 
         api_key = os.getenv("TAVILY_API_KEY")
@@ -50,6 +53,7 @@ def _buscar_con_lady(busqueda: str, ciudad: str, para: str) -> str:
     try:
         # 2. Lady procesa y formatea con Gemini
         import google.generativeai as genai
+
         from utils.gcp_client import get_secret as gs
 
         gemini_key = os.getenv("GEMINI_API_KEY")
@@ -921,8 +925,6 @@ def mostrar():
     st.title("🛒 Shopping Guide")
     st.caption("Tiendas, ofertas y souvenirs curados para la familia — por ciudad y categoría")
 
-    is_admin = st.session_state.get("_is_admin", False)
-
     # ── Filtros en la parte superior ──────────────────────────────────────
     col1, col2, col3 = st.columns(3)
 
@@ -1064,7 +1066,7 @@ Como turistas fuera de la UE, pueden recuperar el IVA de sus compras al salir de
 
 **Cuánto recuperas:**
 - España: ~13% del precio de compra
-- Francia: ~12% del precio de compra  
+- Francia: ~12% del precio de compra
 - Bélgica: ~13% del precio de compra
 - Países Bajos: ~15% del precio de compra
 

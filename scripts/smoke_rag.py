@@ -5,6 +5,7 @@ No usa Streamlit ni Gemini chat; sólo busca y muestra los matches.
 """
 import os
 import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.knowledge_base import buscar_conocimiento, init_embeddings

@@ -1,11 +1,12 @@
 # auth/google_oauth.py
 # Autenticación OAuth2 con Google + control de roles
 
-import streamlit as st
 import os
 import time
 import urllib.parse
+
 import requests
+import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()

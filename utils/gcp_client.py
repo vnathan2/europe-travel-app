@@ -1,7 +1,9 @@
 import os
+
 import streamlit as st
-from google.cloud import firestore, storage, secretmanager
 from dotenv import load_dotenv
+from google.cloud import firestore, secretmanager, storage
+
 from utils.logger import get_logger
 
 load_dotenv()
@@ -11,7 +13,7 @@ logger = get_logger(__name__)
 @st.cache_resource
 def get_firestore_client():
     """
-    Mantiene una única conexión abierta. 
+    Mantiene una única conexión abierta.
     Ahorra latencia y evita múltiples Handshakes de red.
     """
     project_id = os.getenv("GCP_PROJECT_ID")
