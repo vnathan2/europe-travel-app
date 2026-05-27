@@ -36,6 +36,38 @@ def upload_to_bucket(local_file_path: str, destination_blob_name: str) -> str:
     blob.upload_from_filename(local_file_path)
     return f"gs://{bucket_name}/{destination_blob_name}"
 
+@st.cache_data(ttl=3000)  # < 1h de expiración del URL, para no firmar en cada render
+def get_signed_url(blob_path: str, expiration_minutes: int = 60):
+    """URL firmada GET para un blob privado, sin hacerlo público.
+
+    En Cloud Run las credenciales por defecto no tienen private key, así que se
+    firma vía la API IAM signBlob (requiere roles/iam.serviceAccountTokenCreator
+    en la SA del servicio). Devuelve None si no se puede firmar; el caller cae a
+    descargar los bytes por Cloud Run como respaldo.
+    """
+    from datetime import timedelta
+
+    import google.auth
+    from google.auth.transport import requests as grequests
+
+    try:
+        bucket = get_storage_client().bucket(os.getenv("GCS_BUCKET_NAME"))
+        blob = bucket.blob(blob_path)
+
+        credentials, _ = google.auth.default()
+        credentials.refresh(grequests.Request())
+
+        return blob.generate_signed_url(
+            version="v4",
+            expiration=timedelta(minutes=expiration_minutes),
+            method="GET",
+            service_account_email=getattr(credentials, "service_account_email", None),
+            access_token=getattr(credentials, "token", None),
+        )
+    except Exception as e:
+        logger.warning("No se pudo firmar signed URL para %s: %s", blob_path, e)
+        return None
+
 # ── Secret Manager ─────────────────────────────────────────────────────────
 # Valores NO sensibles — se leen directo de env vars (no consumen cuota de Secret Manager)
 _ENV_VARS_ONLY = {"OAUTH_REDIRECT_URI", "ADMIN_EMAIL", "FAMILIAR_EMAIL_1", "FAMILIAR_EMAIL_2"}

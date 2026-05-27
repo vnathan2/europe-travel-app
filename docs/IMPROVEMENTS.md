@@ -8,7 +8,7 @@
 
 - **0 bugs bloqueantes** — los 3 P1 están resueltos (✅ 2026-05-11).
 - **P2 seguridad y cumplimiento**: 5/5 resueltos.
-- **P3 performance, costo y UX**: 2 pendientes de 7 — galería N descargas (3.3), catálogo de tiendas hardcoded (3.5). `time.sleep(0.5)` (3.2) cerrado el 2026-05-27; packing checker compartido (3.6) el 2026-05-12.
+- **P3 performance, costo y UX**: 1 pendiente de 7 — catálogo de tiendas hardcoded (3.5). `time.sleep(0.5)` (3.2), galería con signed URLs (3.3) y packing compartido (3.6) cerrados.
 - **P4 mantenimiento**: 4/4 resueltos. Lint con ruff cerrado el 2026-05-27, `.env.example` el 2026-05-12, tests cubiertos con 23 smoke tests.
 - **Riesgo operativo**: fallback de Gemini con 10 FAQ pre-canned offline (`utils/offline_faqs.py`), cerrado el 2026-05-12. Open-Meteo y exchangerate-api ya tenían fallbacks.
 
@@ -100,12 +100,13 @@
 - **Fix aplicado**: se eliminó el `time.sleep(duration)` que bloqueaba el thread del servidor 0.5s en cada navegación. Ahora `show_loading_animation` solo renderiza el spinner temático y devuelve el placeholder; el caller (app.py) lo limpia **después** del `importlib.import_module`, así el spinner es visible exactamente durante la carga real del módulo (feedback honesto) en vez de un delay artificial. Se quitó también `import time` (ya sin uso) y el parámetro `duration`.
 - **Validado**: ruff limpio, 23 tests, ui_theme importa.
 
-### 3.3 Galería del Trip Journal hace N descargas a GCS
+### 3.3 ✅ HECHO - Galería del Trip Journal hace N descargas a GCS
 
-- **Archivo**: `modules/trip_journal.py:160-173`.
-- **Síntoma**: cada foto se descarga byte-a-byte desde GCS (cacheado 1h por foto). Con 50+ fotos el primer load es lento.
-- **Fix**: usar signed URLs con expiración (`blob.generate_signed_url(expiration=timedelta(hours=1))`) y dejar que el browser pida directamente desde GCS. Reduce ancho de banda del Cloud Run y latencia.
-- **Esfuerzo**: 1 hora.
+- **Resuelto el**: 2026-05-27.
+- **Archivo**: `utils/gcp_client.py` (`get_signed_url`), `modules/trip_journal.py` (`foto_src` + render de galería y entradas).
+- **Fix aplicado**: `get_signed_url` genera signed URLs v4 (expiración 1h, cacheadas 50 min) para que el navegador baje las fotos directo de GCS, sin pasar los bytes por Cloud Run. Las fotos siguen **privadas** (acceso temporal, sin `make_public`). `foto_src` usa la URL firmada y, si la firma falla, cae a `descargar_foto` (bytes) — sin riesgo de regresión.
+- **Infra (gotcha de Cloud Run)**: las credenciales por defecto no tienen private key, así que se firma vía IAM `signBlob`. Requirió grant de `roles/iam.serviceAccountTokenCreator` a la SA `565528729494-compute@developer.gserviceaccount.com` sobre sí misma (la API `iamcredentials` ya estaba habilitada). signBlob es gratis (free tier OK).
+- **Validado**: ruff limpio, 23 tests, fallback verificado. Validación end-to-end de la firma real: post-deploy en prod.
 
 ### 3.4 ✅ HECHO - `MODULO_CIUDAD` completo
 

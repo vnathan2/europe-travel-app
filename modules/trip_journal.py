@@ -6,7 +6,7 @@ from io import BytesIO
 import streamlit as st
 from PIL import Image
 
-from utils.gcp_client import get_firestore_client, get_storage_client
+from utils.gcp_client import get_firestore_client, get_signed_url, get_storage_client
 
 # ── 1. CONFIGURACIÓN Y CONSTANTES ──────────────────────────────────────────
 CIUDADES = ["Madrid", "Bayona", "París", "Bruselas", "Ámsterdam"]
@@ -63,6 +63,13 @@ def descargar_foto(blob_path: str) -> bytes:
     bucket = client.bucket(BUCKET_NAME)
     blob = bucket.blob(_blob_path_desde_valor(blob_path))
     return blob.download_as_bytes()
+
+def foto_src(blob_path: str):
+    """Fuente para st.image: URL firmada (el navegador baja directo de GCS, sin
+    pasar bytes por Cloud Run) o, si la firma falla, los bytes descargados."""
+    path = _blob_path_desde_valor(blob_path)
+    url = get_signed_url(path)
+    return url if url else descargar_foto(blob_path)
 
 # ── 3. LÓGICA DE DATOS (FIRESTORE CON CACHÉ) ───────────────────────────────
 @st.cache_data(ttl=600)
@@ -154,8 +161,7 @@ def mostrar():
                     cols = st.columns(len(e['fotos']))
                     for idx, blob_path in enumerate(e['fotos']):
                         try:
-                            foto_bytes = descargar_foto(blob_path)
-                            cols[idx].image(foto_bytes, use_column_width=True)
+                            cols[idx].image(foto_src(blob_path), use_column_width=True)
                         except Exception:
                             cols[idx].caption("⚠️ Foto no disponible")
 
@@ -168,8 +174,7 @@ def mostrar():
             for i, f in enumerate(fotos_galeria):
                 with cols[i % 3]:
                     try:
-                        foto_bytes = descargar_foto(f['path'])
-                        st.image(foto_bytes, caption=f["ciudad"], use_column_width=True)
+                        st.image(foto_src(f['path']), caption=f["ciudad"], use_column_width=True)
                     except Exception:
                         st.caption("⚠️ Foto no disponible")
         else:
