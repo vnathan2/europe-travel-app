@@ -117,7 +117,12 @@ def buscar_en_web(query: str) -> list:
             })
         return resultados
     except Exception as e:
-        return [{"titulo": "Error búsqueda", "snippet": str(e), "url": ""}]
+        # Tavily es opcional: si falla (key inválida, red, cuota) Lady responde
+        # igual sin web. No inyectamos el error al prompt para no confundir al
+        # modelo ni filtrar ruido a la UI.
+        from utils.logger import get_logger
+        get_logger(__name__).warning("Búsqueda Tavily falló, sigo sin web: %s", e)
+        return []
 
 
 def formatear_resultados(resultados: list) -> str:
@@ -140,10 +145,12 @@ def detectar_busqueda(respuesta: str) -> tuple:
 # 8 pares = 16 mensajes — suficiente contexto sin crecer indefinidamente
 MAX_HISTORY_PAIRS = 8
 
-# Timeout por llamada a Gemini. Sin esto el SDK reintenta hasta ~60s antes de
-# levantar la excepción, dejando la UI colgada (incidente 2026-05-12). Con un
-# timeout corto, si Gemini cuelga falla rápido y cae al fallback offline.
-GEMINI_TIMEOUT_SEC = 15
+# Timeout por llamada a Gemini (segundos). Acota el caso patológico de la API
+# colgada (incidente 2026-05-12) sin abortar consultas legítimas lentas del
+# camino RAG + web. 15s resultó muy agresivo y disparaba 504 Deadline Exceeded
+# en el flujo de búsqueda web; 30s da holgura. Ajustable sin redeploy con la env
+# GEMINI_TIMEOUT_SEC.
+GEMINI_TIMEOUT_SEC = int(os.getenv("GEMINI_TIMEOUT_SEC", "30"))
 
 @st.cache_resource
 def init_gemini():
@@ -158,6 +165,12 @@ def init_gemini():
         model_name="gemini-2.5-flash",
         system_instruction=SYSTEM_PROMPT
     )
+
+
+def _sin_marcador(texto: str) -> str:
+    # Defensa: nunca mostrar el marcador interno [BUSCAR_WEB: ...] al usuario,
+    # aunque el modelo lo re-emita (p.ej. si la búsqueda web no encontró nada).
+    return re.sub(r'\s*\[BUSCAR_WEB:.*?\]\s*', ' ', texto).strip()
 
 
 def obtener_respuesta(model, historial: list, pregunta: str) -> tuple:
@@ -192,7 +205,7 @@ def obtener_respuesta(model, historial: list, pregunta: str) -> tuple:
         necesita, query = detectar_busqueda(primera)
 
         if not necesita:
-            return primera, []
+            return _sin_marcador(primera), []
 
         resultados = buscar_en_web(query)
         texto_resultados = formatear_resultados(resultados)
@@ -206,7 +219,7 @@ Sé amigable y práctico para la familia.
         contenidos.append({"role": "model", "parts": [primera]})
         contenidos.append({"role": "user", "parts": [prompt2]})
         respuesta_final = model.generate_content(contenidos, **opciones).text
-        return respuesta_final, resultados
+        return _sin_marcador(respuesta_final), resultados
     except Exception as e:
         # Fallback offline: si Gemini falla, intentar matchear contra FAQ
         # pre-canned. Caso típico durante el viaje: API caída o sin red.
