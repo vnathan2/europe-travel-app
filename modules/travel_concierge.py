@@ -140,6 +140,11 @@ def detectar_busqueda(respuesta: str) -> tuple:
 # 8 pares = 16 mensajes — suficiente contexto sin crecer indefinidamente
 MAX_HISTORY_PAIRS = 8
 
+# Timeout por llamada a Gemini. Sin esto el SDK reintenta hasta ~60s antes de
+# levantar la excepción, dejando la UI colgada (incidente 2026-05-12). Con un
+# timeout corto, si Gemini cuelga falla rápido y cae al fallback offline.
+GEMINI_TIMEOUT_SEC = 15
+
 @st.cache_resource
 def init_gemini():
     api_key = os.getenv("GEMINI_API_KEY")
@@ -175,8 +180,15 @@ def obtener_respuesta(model, historial: list, pregunta: str) -> tuple:
         # para evitar que el costo en tokens crezca sin límite
         historial_reciente = historial[-(MAX_HISTORY_PAIRS * 2):]
 
-        chat = model.start_chat(history=historial_reciente)
-        primera = chat.send_message(pregunta_enriquecida).text
+        # Conversación stateless con generate_content (no start_chat) para poder
+        # pasar request_options con timeout: ChatSession.send_message no acepta
+        # request_options en google-generativeai 0.5.2. Copiamos la lista para no
+        # mutar el historial de session_state que maneja el caller.
+        opciones = {"request_options": {"timeout": GEMINI_TIMEOUT_SEC}}
+        contenidos = list(historial_reciente)
+        contenidos.append({"role": "user", "parts": [pregunta_enriquecida]})
+
+        primera = model.generate_content(contenidos, **opciones).text
         necesita, query = detectar_busqueda(primera)
 
         if not necesita:
@@ -191,7 +203,9 @@ Pregunta original: {pregunta}
 Responde en español integrando toda la información disponible.
 Sé amigable y práctico para la familia.
 """
-        respuesta_final = chat.send_message(prompt2).text
+        contenidos.append({"role": "model", "parts": [primera]})
+        contenidos.append({"role": "user", "parts": [prompt2]})
+        respuesta_final = model.generate_content(contenidos, **opciones).text
         return respuesta_final, resultados
     except Exception as e:
         # Fallback offline: si Gemini falla, intentar matchear contra FAQ

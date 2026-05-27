@@ -39,7 +39,7 @@ python scripts/ingest_knowledge.py
 
 # Tests (suite mínima de smoke tests sobre lógica pura)
 pip install -r requirements-dev.txt
-pytest                          # 17 tests, corre en <1s
+pytest                          # 23 tests, corre en <1s
 # Los tests no tocan Firestore/Gemini/Tavily; usan stubs en tests/conftest.py.
 
 # Build y deploy (requiere gcloud)
@@ -130,7 +130,7 @@ europe-travel-app/
 │   └── setup_secrets.sh        # Deploy + secrets management
 ├── tests/
 │   ├── conftest.py             # sys.path + stubs de deps externas
-│   └── test_smoke.py           # 14 smoke tests sobre lógica pura
+│   └── test_smoke.py           # 23 smoke tests sobre lógica pura
 ├── docs/
 │   ├── ARCHITECTURE.md         # Doc técnica detallada por módulo
 │   └── IMPROVEMENTS.md         # Backlog priorizado
