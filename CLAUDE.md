@@ -149,13 +149,11 @@ europe-travel-app/
 
 ## Bugs conocidos (priorizar antes de features nuevos)
 
-Los 3 bugs P1 originales están resueltos (2026-05-11). Pendientes:
+Los 3 bugs P1 originales están resueltos (2026-05-11). Estado al 2026-05-27:
 
-1. **Deploy roto en prod** — revisión `00054-569` rompía la navegación. **Causa raíz identificada y fix listo**: `st.stop()` en la rama `elif code and oauth_code_processed` de `auth_gate()`. Archivos corregidos: `auth/google_oauth.py` y `utils/logger.py`. Pendiente: hacer el re-deploy siguiendo el checklist pre-deploy. Ver `docs/POSTMORTEM_2026-05-11.md`.
-2. `modules/emergency_card.py:255-291` — campos críticos (pasaporte, tipo de sangre, hotel, contacto Lima) se capturan via `st.text_input` pero no se persisten. Se pierden al recargar. Fix: guardar en Firestore `perfil_familia/<user_email>`.
-3. `utils/knowledge_base.py` — `FutureWarning` de Firestore por `query.where(field, op, val)` deprecado. Conviene migrar a `filter=...` cuando se toque el archivo.
-
-Detalle completo en [docs/IMPROVEMENTS.md](docs/IMPROVEMENTS.md).
+1. ✅ **Deploy roto en prod** (resuelto) — la revisión `00054-569` rompía la navegación por un `st.stop()` post-login en `auth_gate()`. Corregido en `auth/google_oauth.py` y `utils/logger.py`, redeployado y validado. Prod actual: revisión `00077-xow`. Ver `docs/POSTMORTEM_2026-05-11.md`.
+2. ✅ **Persistencia de emergency_card** (resuelto) — pasaporte, tipo de sangre, hoteles y contacto Lima ahora se guardan en Firestore `perfil_familia/<user_email>`. Detalle en IMPROVEMENTS 2.4.
+3. ⏳ `utils/knowledge_base.py` — `FutureWarning` de Firestore por `query.where(field, op, val)` deprecado. Conviene migrar a `filter=...` cuando se toque el archivo. No rompe nada hoy.
 
 Detalle completo y prioridades en [docs/IMPROVEMENTS.md](docs/IMPROVEMENTS.md).
 
