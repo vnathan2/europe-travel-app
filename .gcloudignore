@@ -36,6 +36,8 @@ scripts/setup_secrets.sh
 *.json
 service-account*.json
 credentials*.json
+# Excepción: el catálogo de tiendas debe viajar en la imagen (no es secreto)
+!data/shopping.json
 
 # Memorias del usuario (uso local)
 memory/

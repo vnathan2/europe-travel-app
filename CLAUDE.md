@@ -98,6 +98,7 @@ Aprendizaje del postmortem 2026-05-11: el modo DEVELOPMENT no cubre el flujo OAu
 - **Caching**: usa `@st.cache_resource` para singletons (clientes GCP, modelos) y `@st.cache_data` con TTL para lecturas.
 - **Logging**: importa `from utils.logger import get_logger` y usa `logger.exception(...)` o `logger.warning(...)`. Nunca uses `print()` en código de producción ni `except Exception: pass` sin loguear.
 - **Persistencia**: Firestore para datos estructurados, Cloud Storage para binarios. Nunca subas archivos sin comprimir; usa la misma pipeline que `trip_journal.comprimir_imagen`.
+- **Datos estáticos en `data/`**: catálogos editables como JSON (ej. `data/shopping.json`). OJO: `.gitignore` y `.gcloudignore` excluyen `*.json` (para no filtrar credenciales). Si agregas un archivo de datos JSON, añade su excepción `!data/tu_archivo.json` en **ambos** archivos, o no se commitea ni viaja en la imagen.
 - **Roles**: cualquier funcionalidad nueva con datos sensibles (precios, módulos restringidos) debe pasar por `is_admin()` y `mostrar_precio()`.
 - **Lazy load**: módulos nuevos se agregan al dict `MODULOS` de `app.py:79` y se cargan con `importlib.import_module`. No importar al tope del archivo.
 
@@ -130,6 +131,8 @@ europe-travel-app/
 │   ├── price_helper.py         # mostrar_precio + get_exchange_rate
 │   ├── logger.py               # Logger central (JSON en Cloud Run, legible en local)
 │   └── family_profiles.py      # Perfiles para personalización IA
+├── data/
+│   └── shopping.json           # Catálogo de tiendas (editable sin tocar Python; viaja en la imagen)
 ├── scripts/
 │   ├── ingest_knowledge.py     # Ingesta KB desde CLI
 │   ├── setup_auth.sh           # Bootstrap inicial (deprecado tras primera vez)

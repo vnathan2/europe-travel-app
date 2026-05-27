@@ -8,7 +8,7 @@
 
 - **0 bugs bloqueantes** — los 3 P1 están resueltos (✅ 2026-05-11).
 - **P2 seguridad y cumplimiento**: 5/5 resueltos.
-- **P3 performance, costo y UX**: 1 pendiente de 7 — catálogo de tiendas hardcoded (3.5). `time.sleep(0.5)` (3.2), galería con signed URLs (3.3) y packing compartido (3.6) cerrados.
+- **P3 performance, costo y UX**: 7/7 resueltos. Catálogo a JSON (3.5), galería con signed URLs (3.3) y `time.sleep(0.5)` (3.2) cerrados el 2026-05-27.
 - **P4 mantenimiento**: 4/4 resueltos. Lint con ruff cerrado el 2026-05-27, `.env.example` el 2026-05-12, tests cubiertos con 23 smoke tests.
 - **Riesgo operativo**: fallback de Gemini con 10 FAQ pre-canned offline (`utils/offline_faqs.py`), cerrado el 2026-05-12. Open-Meteo y exchangerate-api ya tenían fallbacks.
 
@@ -114,12 +114,14 @@
 - **Archivo**: `utils/ui_theme.py`.
 - **Cambio**: agregadas las entradas `shopping_guide` y `admin_panel` al dict para que los 12 módulos tengan tema explícito.
 
-### 3.5 Catálogo de tiendas en código Python
+### 3.5 ✅ HECHO - Catálogo de tiendas en código Python
 
-- **Archivo**: `modules/shopping_guide.py:127-859`.
-- **Síntoma**: 700+ líneas de datos hardcoded. Cada ajuste de horario o tienda requiere redeploy.
-- **Fix**: mover a `data/shopping.json` y cargar con cache. Editar es trivial sin tocar Python.
-- **Esfuerzo**: 1.5 horas.
+- **Resuelto el**: 2026-05-27.
+- **Archivo**: `data/shopping.json` (54 tiendas en 5 ciudades), `modules/shopping_guide.py` (`_cargar_tiendas` lee el JSON al importar; `TIENDAS = _cargar_tiendas()`).
+- **Fix aplicado**: las ~730 líneas del dict `TIENDAS` salieron del .py a `data/shopping.json`. El JSON se generó desde el dict original (round-trip verificado `==`), así que la data es idéntica. Ahora editar tiendas/horarios es JSON plano, sin tocar Python ni arriesgar sintaxis.
+- **Gotcha resuelto**: tanto `.gitignore` como `.gcloudignore` tenían `*.json` (para no filtrar credenciales), lo que excluía el catálogo. Se agregó la excepción `!data/shopping.json` en ambos. Verificado: git lo trackea y Cloud Build lo sube.
+- **Matiz honesto**: el JSON viaja **dentro de la imagen Docker**, así que publicar un cambio del catálogo **sigue requiriendo build + deploy**. Lo que se ganó es separar data de código (edición trivial, sin riesgo de Python). Para edición sin redeploy habría que mover el catálogo a Firestore/GCS (no se hizo: agrega latencia/lecturas; queda como posible paso futuro).
+- **Validado**: ruff limpio, 23 tests, TIENDAS carga idéntico (54 tiendas), import OK.
 
 ### 3.6 ✅ HECHO - Persistencia de packing en Firestore compartida
 

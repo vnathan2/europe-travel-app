@@ -3,6 +3,8 @@
 *.json
 service-account*.json
 credentials*.json
+# Excepción: el catálogo de tiendas es data de la app, no un secreto
+!data/shopping.json
 
 # Python
 __pycache__/
