@@ -12,7 +12,9 @@ st.set_page_config(
     page_title="Europe Travel 2026 ✈️",
     page_icon="✈️",
     layout="wide",
-    initial_sidebar_state="expanded",
+    # "auto" = colapsado en móvil, expandido en escritorio. La navegación
+    # principal en móvil es el selector al tope de la página, no el sidebar.
+    initial_sidebar_state="auto",
 )
 
 # ── 2. GESTIÓN DE ENTORNO Y SEGURIDAD ─────────────────────────────────────
@@ -44,6 +46,7 @@ if not user:
 from utils.ui_theme import (
     apply_theme,
     get_theme,
+    menu_items_planos,
     render_menu_fab,
     render_sidebar_menu,
     show_loading_animation,
@@ -61,9 +64,28 @@ theme = get_theme(modulo_id)
 apply_theme(theme)
 render_menu_fab()
 
-# Badge de ciudad
-_, col_badge = st.columns([5, 1])
-with col_badge:
+# ── Nav rápida al tope: selector de módulo + badge de ciudad ──────────────
+# En móvil esto reemplaza la necesidad de abrir el sidebar. 1 tap y eliges.
+# El sidebar queda como contexto (perfil, hoy, navegación alternativa).
+_nav = menu_items_planos(is_admin())
+_nav_ids = [i for i, _ in _nav]
+_nav_labels = dict(_nav)
+
+# Sincronizar el selector al estado actual ANTES de renderizar el widget
+# (así si el cambio vino del sidebar, el selector refleja el módulo correcto).
+if st.session_state.get("nav_selector") != modulo_id:
+    st.session_state["nav_selector"] = modulo_id
+
+_nav_col, _badge_col = st.columns([3, 1])
+with _nav_col:
+    st.selectbox(
+        "Ir a módulo:",
+        _nav_ids,
+        format_func=lambda k: _nav_labels.get(k, k),
+        label_visibility="collapsed",
+        key="nav_selector",
+    )
+with _badge_col:
     st.markdown(f"""
     <div style="text-align:right; padding-top:8px;">
         <span class="city-badge">
@@ -71,6 +93,11 @@ with col_badge:
         </span>
     </div>
     """, unsafe_allow_html=True)
+
+# Si el usuario eligió otro módulo en el selector, actualizar y rerun
+if st.session_state["nav_selector"] != modulo_id:
+    st.session_state.modulo_activo = st.session_state["nav_selector"]
+    st.rerun()
 
 # Spinner temático visible solo mientras se importa el módulo (sin sleep artificial)
 _loading_ph = None
