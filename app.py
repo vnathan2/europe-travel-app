@@ -46,7 +46,6 @@ if not user:
 from utils.ui_theme import (
     apply_theme,
     get_theme,
-    menu_items_planos,
     render_menu_fab,
     render_sidebar_menu,
     show_loading_animation,
@@ -64,31 +63,9 @@ theme = get_theme(modulo_id)
 apply_theme(theme)
 render_menu_fab()
 
-# ── Nav rápida al tope: selector de módulo + badge de ciudad ──────────────
-# En móvil esto reemplaza la necesidad de abrir el sidebar. 1 tap y eliges.
-# El sidebar queda como contexto (perfil, hoy, navegación alternativa).
-_nav = menu_items_planos(is_admin())
-_nav_ids = [i for i, _ in _nav]
-_nav_labels = dict(_nav)
-
-# Sincronizar el selector al estado actual ANTES de renderizar el widget
-# (así si el cambio vino del sidebar, el selector refleja el módulo correcto).
-# Defensivo: si por alguna razón modulo_id no está en las opciones del nav,
-# caemos al primero para no romper el selectbox.
-_modulo_seguro = modulo_id if modulo_id in _nav_ids else _nav_ids[0]
-if st.session_state.get("nav_selector") != _modulo_seguro:
-    st.session_state["nav_selector"] = _modulo_seguro
-
-_nav_col, _badge_col = st.columns([3, 1])
-with _nav_col:
-    st.selectbox(
-        "Ir a módulo:",
-        _nav_ids,
-        format_func=lambda k: _nav_labels.get(k, k),
-        label_visibility="collapsed",
-        key="nav_selector",
-    )
-with _badge_col:
+# Badge de ciudad
+_, col_badge = st.columns([5, 1])
+with col_badge:
     st.markdown(f"""
     <div style="text-align:right; padding-top:8px;">
         <span class="city-badge">
@@ -97,16 +74,43 @@ with _badge_col:
     </div>
     """, unsafe_allow_html=True)
 
-# Si el usuario eligió otro módulo en el selector, actualizar y rerun
-if st.session_state["nav_selector"] != modulo_id:
-    st.session_state.modulo_activo = st.session_state["nav_selector"]
-    st.rerun()
+# Detectar si hubo cambio de módulo en este rerun (para spinner y auto-cierre del sidebar)
+_prev_modulo = st.session_state.get("_ultimo_modulo")
+_modulo_cambio = _prev_modulo is not None and _prev_modulo != modulo_id
 
 # Spinner temático visible solo mientras se importa el módulo (sin sleep artificial)
 _loading_ph = None
-if st.session_state.get("_ultimo_modulo") != modulo_id:
+if _prev_modulo != modulo_id:
     st.session_state["_ultimo_modulo"] = modulo_id
     _loading_ph = show_loading_animation(modulo_id)
+
+# Auto-cerrar el sidebar SOLO en móvil tras cambiar de módulo (no en primer load).
+# Streamlit no expone control programático del sidebar, así que clickeamos el
+# botón de cerrar vía JS desde un iframe transparente. En desktop no se cierra.
+if _modulo_cambio:
+    st.components.v1.html(
+        """
+        <script>
+        (function() {
+          if (window.parent.innerWidth > 768) return;  // solo móvil
+          const doc = window.parent.document;
+          const selectores = [
+            '[data-testid="stSidebarCollapseButton"]',
+            '[data-testid="stSidebarCollapsedControl"]',
+            '[data-testid="collapsedControl"]',
+            'section[data-testid="stSidebar"] button[kind="header"]',
+            'section[data-testid="stSidebar"] button[aria-label*="Close"]',
+            'section[data-testid="stSidebar"] button[aria-label*="Cerrar"]'
+          ];
+          for (const s of selectores) {
+            const btn = doc.querySelector(s);
+            if (btn) { btn.click(); return; }
+          }
+        })();
+        </script>
+        """,
+        height=0,
+    )
 
 # ── 4. ENRUTAMIENTO DINÁMICO (DICCIONARIO) ────────────────────────────────
 MODULOS = {

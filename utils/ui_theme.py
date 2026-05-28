@@ -535,19 +535,6 @@ MENU_ADMIN = {
 }
 
 
-def menu_items_planos(is_admin_user: bool):
-    """Aplana MENU_SECTIONS (+ admin) en una lista [(id, label), ...]
-    para usar en el selector de navegación al tope (no requiere abrir sidebar)."""
-    items = []
-    for sec in MENU_SECTIONS:
-        for it in sec["items"]:
-            items.append((it["id"], it["key"]))
-    if is_admin_user:
-        for it in MENU_ADMIN["items"]:
-            items.append((it["id"], it["key"]))
-    return items
-
-
 def render_sidebar_menu(is_admin_user: bool, user: dict) -> str:
     """Renderiza el menú en el sidebar. Retorna el módulo_id seleccionado."""
     theme = CITY_THEMES["default"]
