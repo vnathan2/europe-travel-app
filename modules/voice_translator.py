@@ -73,11 +73,12 @@ def traducir_texto(texto: str, idioma_destino: str) -> str:
     except Exception as e:
         return f"Error: {e}"
 
-def componente_voz_completo(idioma_destino: str, tts_lang: str, idioma_nombre: str):
+def componente_voz_completo(idioma_destino: str, tts_lang: str, idioma_nombre: str,
+                            bg_color: str = "#0e1117"):
     html_code = f"""
     <style>
         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        html, body {{ background: transparent !important; }}
+        html, body {{ background: {bg_color} !important; }}
         .voz-wrapper {{
             font-family: 'Inter', -apple-system, sans-serif;
             max-width: 640px; margin: 0 auto; padding: 8px 0 16px 0;
@@ -244,7 +245,8 @@ def mostrar():
         idioma_sel = st.selectbox("Traducir a:", list(FRASES_UTILES.keys()), key="v_auto")
         grupo = FRASES_UTILES[idioma_sel]
         st.info("💡 Toca el botón, habla y espera la magia.")
-        componente_voz_completo(grupo["idioma_destino"], grupo["tts_lang"], grupo["flag"])
+        bg = "#0e1117" if st.session_state.get("modo_oscuro", True) else "#f4f4f0"
+        componente_voz_completo(grupo["idioma_destino"], grupo["tts_lang"], grupo["flag"], bg)
 
     with tab_texto:
         mapa = {"Inglés 🇬🇧": ("en", "en-GB"), "Francés 🇫🇷": ("fr", "fr-FR"), "Neerlandés 🇳🇱": ("nl", "nl-NL")}

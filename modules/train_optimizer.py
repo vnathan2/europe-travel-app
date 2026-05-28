@@ -217,9 +217,9 @@ def mostrar():
                 else:
                     st.success(f"✅ {ruta['cambio']}")
 
-                with st.expander("💡 Consejos para este trayecto"):
-                    for consejo in ruta["consejos"]:
-                        st.write(f"• {consejo}")
+                st.markdown("**💡 Consejos para este trayecto:**")
+                for consejo in ruta["consejos"]:
+                    st.write(f"• {consejo}")
 
                 col1, col2 = st.columns(2)
                 with col1:
