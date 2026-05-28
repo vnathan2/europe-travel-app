@@ -77,6 +77,7 @@ def componente_voz_completo(idioma_destino: str, tts_lang: str, idioma_nombre: s
     html_code = f"""
     <style>
         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        html, body {{ background: transparent !important; }}
         .voz-wrapper {{
             font-family: 'Inter', -apple-system, sans-serif;
             max-width: 640px; margin: 0 auto; padding: 8px 0 16px 0;

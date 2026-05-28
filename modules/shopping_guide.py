@@ -244,6 +244,10 @@ def mostrar():
     )
 
     total_tiendas = 0
+    CIUDAD_EMOJIS = {
+        "Madrid": "🇪🇸", "Bayona": "🇫🇷", "París": "🇫🇷",
+        "Bruselas": "🇧🇪", "Ámsterdam": "🇳🇱"
+    }
 
     for ciudad in ciudades_mostrar:
         tiendas_ciudad = TIENDAS.get(ciudad, [])
@@ -272,31 +276,19 @@ def mostrar():
 
         total_tiendas += len(tiendas_ciudad)
 
-        # Header de ciudad
-        CIUDAD_EMOJIS = {
-            "Madrid": "🇪🇸", "Bayona": "🇫🇷", "París": "🇫🇷",
-            "Bruselas": "🇧🇪", "Ámsterdam": "🇳🇱"
-        }
+        # Cada ciudad es un desplegable contraído; dentro se elige la tienda
         emoji = CIUDAD_EMOJIS.get(ciudad, "📍")
-
-        st.markdown(f"## {emoji} {ciudad}")
-        st.caption(f"{len(tiendas_ciudad)} tienda(s) encontrada(s)")
-
-        # Agrupar por categoría dentro de la ciudad
-        categorias_ciudad = dict()
-        for t in tiendas_ciudad:
-            cat = t["categoria"]
-            if cat not in categorias_ciudad:
-                categorias_ciudad[cat] = []
-            categorias_ciudad[cat].append(t)
-
-        for cat, tiendas_cat in categorias_ciudad.items():
-            cat_emoji = CATEGORIA_EMOJI.get(cat, "🛍️")
-            with st.expander(f"{cat_emoji} {cat} — {len(tiendas_cat)} tienda(s)", expanded=True):
-                for tienda in tiendas_cat:
-                    render_tienda_card(tienda, ciudad)
-
-        st.divider()
+        with st.expander(f"{emoji} {ciudad} — {len(tiendas_ciudad)} tienda(s)", expanded=False):
+            opciones = {
+                f"{CATEGORIA_EMOJI.get(t['categoria'], '🛍️')} {t['nombre']}  ·  {t['categoria']}": t
+                for t in tiendas_ciudad
+            }
+            sel = st.selectbox(
+                "Selecciona una tienda para ver su información:",
+                list(opciones.keys()),
+                key=f"shop_sel_{ciudad}",
+            )
+            render_tienda_card(opciones[sel], ciudad)
 
     if total_tiendas == 0:
         if busqueda:

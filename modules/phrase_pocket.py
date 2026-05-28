@@ -155,6 +155,17 @@ def mostrar():
     col3.metric("1 EUR → GBP", f"£ {tasa_gbp:.3f}")
     col4.metric("1 EUR → CHF", f"₣ {tasa_chf:.3f}")
 
+    # Referencias desde USD y PEN (no solo desde el Euro)
+    usd_pen = convertir(1, "USD", "PEN", rates_eur)
+    usd_eur = convertir(1, "USD", "EUR", rates_eur)
+    pen_usd = convertir(1, "PEN", "USD", rates_eur)
+    pen_eur = convertir(1, "PEN", "EUR", rates_eur)
+    c5, c6, c7, c8 = st.columns(4)
+    c5.metric("1 USD → PEN", f"S/. {usd_pen:.3f}")
+    c6.metric("1 USD → EUR", f"€ {usd_eur:.4f}")
+    c7.metric("1 PEN → USD", f"$ {pen_usd:.4f}")
+    c8.metric("1 PEN → EUR", f"€ {pen_eur:.4f}")
+
     st.caption(
         f"🕐 Actualizado: {rates_eur['fecha']} · "
         f"Fuente: {rates_eur['fuente']}"
@@ -209,8 +220,10 @@ def mostrar():
                 f"### {monto:,.2f} {cod_origen} = "
                 f"**{resultado:,.2f} {cod_destino}**"
             )
+            tasa_inversa = convertir(1, cod_destino, cod_origen, rates_eur)
             st.caption(
-                f"Tasa: 1 {cod_origen} = {tasa_directa:.4f} {cod_destino}"
+                f"Tasa: 1 {cod_origen} = {tasa_directa:.4f} {cod_destino}  ·  "
+                f"1 {cod_destino} = {tasa_inversa:.4f} {cod_origen}"
             )
 
             # Conversiones rápidas

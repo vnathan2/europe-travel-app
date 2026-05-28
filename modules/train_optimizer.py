@@ -189,7 +189,11 @@ def mostrar():
     # ── TAB 1: Rutas ───────────────────────────────────────────────────────
     with tab_rutas:
         for ruta in RUTAS:
-            with st.container(border=True):
+            label = (
+                f"{ruta['emoji_origen']} {ruta['origen']} → "
+                f"{ruta['emoji_destino']} {ruta['destino']}  ·  📅 {ruta['fecha']}"
+            )
+            with st.expander(label, expanded=False):
                 col1, col2, col3 = st.columns([3, 2, 1])
                 with col1:
                     st.subheader(

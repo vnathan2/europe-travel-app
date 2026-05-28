@@ -299,7 +299,7 @@ def mostrar():
 
         # Lista por categoría
         for categoria, contenido in EQUIPAJE.items():
-            with st.expander(categoria, expanded=contenido["critico"]):
+            with st.expander(categoria, expanded=False):
                 for item in contenido["items"]:
                     key = f"{categoria}_{item['nombre']}"
                     col1, col2, col3 = st.columns([3, 1, 1])

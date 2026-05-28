@@ -933,7 +933,11 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
             )
             total_dia = len(dia["actividades"])
 
-            with st.container(border=True):
+            label_dia = (
+                f"{dia['emoji']} {dia['fecha']}  ·  📍 {dia['ciudad']}  ·  "
+                f"{acts_ok}/{total_dia} ✓"
+            )
+            with st.expander(label_dia, expanded=False):
                 col1, col2, col3 = st.columns([3, 2, 1])
                 with col1:
                     st.markdown(f"### {dia['emoji']} {dia['fecha']}")
