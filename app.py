@@ -73,8 +73,11 @@ _nav_labels = dict(_nav)
 
 # Sincronizar el selector al estado actual ANTES de renderizar el widget
 # (así si el cambio vino del sidebar, el selector refleja el módulo correcto).
-if st.session_state.get("nav_selector") != modulo_id:
-    st.session_state["nav_selector"] = modulo_id
+# Defensivo: si por alguna razón modulo_id no está en las opciones del nav,
+# caemos al primero para no romper el selectbox.
+_modulo_seguro = modulo_id if modulo_id in _nav_ids else _nav_ids[0]
+if st.session_state.get("nav_selector") != _modulo_seguro:
+    st.session_state["nav_selector"] = _modulo_seguro
 
 _nav_col, _badge_col = st.columns([3, 1])
 with _nav_col:

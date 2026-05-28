@@ -606,7 +606,9 @@ def render_sidebar_menu(is_admin_user: bool, user: dict) -> str:
     # ── Menú por secciones ─────────────────────────────────────────────────
     # ── Menú por secciones ─────────────────────────────────────────────────
     if "modulo_activo" not in st.session_state:
-        st.session_state.modulo_activo = "travel_concierge"
+        # OJO: usar el ID del menú (itinerary_tracker), no el nombre del archivo
+        # (travel_concierge). El router en app.py mapea itinerary_tracker → modules.travel_concierge.
+        st.session_state.modulo_activo = "itinerary_tracker"
 
     secciones = MENU_SECTIONS.copy()
     if is_admin_user:
