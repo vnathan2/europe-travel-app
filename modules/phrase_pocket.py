@@ -183,27 +183,20 @@ def mostrar():
     with tab_conv:
         st.subheader("💱 Conversor Rápido")
 
-        col1, col2, col3 = st.columns([2, 1, 2])
-
+        col1, col2 = st.columns(2)
         with col1:
             moneda_origen = st.selectbox(
                 "De:", list(MONEDAS.keys()), index=1
             )
-            monto = st.number_input(
-                "Monto:", min_value=0.0,
-                value=100.0, step=10.0, format="%.2f"
-            )
-
         with col2:
-            st.write("")
-            st.write("")
-            st.write("")
-            st.markdown("### ⇄")
-
-        with col3:
             moneda_destino = st.selectbox(
                 "A:", list(MONEDAS.keys()), index=0
             )
+
+        monto = st.number_input(
+            "Monto:", min_value=0.0,
+            value=100.0, step=10.0, format="%.2f"
+        )
 
         cod_origen = MONEDAS[moneda_origen]
         cod_destino = MONEDAS[moneda_destino]
