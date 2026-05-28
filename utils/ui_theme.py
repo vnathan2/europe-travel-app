@@ -245,6 +245,52 @@ def apply_theme(theme: dict):
         color: white;
         letter-spacing: 0.5px;
     }}
+
+    /* ── Móvil (≤640px) — apilar columnas, métricas y headers compactos ── */
+    @media (max-width: 640px) {{
+        /* Apilar TODAS las columnas verticalmente en pantallas chicas */
+        [data-testid="stHorizontalBlock"] {{
+            flex-direction: column !important;
+            gap: 8px !important;
+        }}
+        [data-testid="stHorizontalBlock"] > [data-testid="column"],
+        [data-testid="column"] {{
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+        }}
+
+        /* Métricas más compactas */
+        [data-testid="stMetric"] {{
+            padding: 8px 10px !important;
+        }}
+        [data-testid="stMetricValue"] {{
+            font-size: 1.35rem !important;
+        }}
+        [data-testid="stMetricLabel"] {{
+            font-size: 0.78rem !important;
+        }}
+
+        /* Headers más chicos en móvil */
+        h1 {{ font-size: 1.6rem !important; line-height: 1.2 !important; }}
+        h2 {{ font-size: 1.3rem !important; }}
+        h3 {{ font-size: 1.1rem !important; }}
+
+        /* Menos aire lateral en el contenedor principal */
+        .main .block-container,
+        [data-testid="stMainBlockContainer"] {{
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+            padding-left: 0.6rem !important;
+            padding-right: 0.6rem !important;
+        }}
+
+        /* Tabs más compactos */
+        [data-testid="stTabs"] [data-baseweb="tab"] {{
+            padding: 6px 12px !important;
+            font-size: 0.85rem !important;
+        }}
+    }}
     </style>
     """, unsafe_allow_html=True)
 
