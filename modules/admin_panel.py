@@ -5,6 +5,7 @@
 from datetime import datetime
 
 import streamlit as st
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 # Límite conservador: dejamos 200 créditos libres para el chat concierge
 TAVILY_BUDGET_INGESTA = 80
@@ -281,7 +282,7 @@ def limpiar_ciudad(ciudad: str) -> int:
         from utils.gcp_client import get_firestore_client
         db = get_firestore_client()
         docs = (db.collection("knowledge_base")
-                  .where("ciudad", "==", ciudad)
+                  .where(filter=FieldFilter("ciudad", "==", ciudad))
                   .stream())
         count = 0
         for doc in docs:

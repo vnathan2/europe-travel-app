@@ -12,6 +12,7 @@ import numpy as np
 import requests
 import streamlit as st
 from dotenv import load_dotenv
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 from utils.gcp_client import get_firestore_client, get_secret
 from utils.logger import get_logger
@@ -438,7 +439,7 @@ def _cargar_docs_kb(ciudad: str | None) -> list:
     db = get_firestore_client()
     if ciudad:
         stream = (db.collection(COLECCION_KB)
-                    .where("ciudad", "==", ciudad)
+                    .where(filter=FieldFilter("ciudad", "==", ciudad))
                     .stream())
     else:
         stream = db.collection(COLECCION_KB).stream()

@@ -19,6 +19,8 @@ if str(ROOT) not in sys.path:
 _STUB_MODULES = [
     "google.cloud",
     "google.cloud.firestore",
+    "google.cloud.firestore_v1",
+    "google.cloud.firestore_v1.base_query",
     "google.cloud.storage",
     "google.cloud.secretmanager",
     "google.generativeai",

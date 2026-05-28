@@ -162,7 +162,7 @@ Los 3 bugs P1 originales están resueltos (2026-05-11). Estado al 2026-05-27:
 
 1. ✅ **Deploy roto en prod** (resuelto) — la revisión `00054-569` rompía la navegación por un `st.stop()` post-login en `auth_gate()`. Corregido en `auth/google_oauth.py` y `utils/logger.py`, redeployado y validado. Prod actual: revisión `00077-xow`. Ver `docs/POSTMORTEM_2026-05-11.md`.
 2. ✅ **Persistencia de emergency_card** (resuelto) — pasaporte, tipo de sangre, hoteles y contacto Lima ahora se guardan en Firestore `perfil_familia/<user_email>`. Detalle en IMPROVEMENTS 2.4.
-3. ⏳ `utils/knowledge_base.py` — `FutureWarning` de Firestore por `query.where(field, op, val)` deprecado. Conviene migrar a `filter=...` cuando se toque el archivo. No rompe nada hoy.
+3. ✅ **FutureWarning de Firestore** (resuelto 2026-05-27) — migrado de `query.where(field, op, val)` a `query.where(filter=FieldFilter(...))` en `utils/knowledge_base.py`, `modules/admin_panel.py` y `modules/trip_journal.py` (los 3 usos del repo). Stub de `firestore_v1.base_query` agregado en `tests/conftest.py`.
 
 Detalle completo y prioridades en [docs/IMPROVEMENTS.md](docs/IMPROVEMENTS.md).
 

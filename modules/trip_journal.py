@@ -4,6 +4,7 @@ from datetime import date, datetime
 from io import BytesIO
 
 import streamlit as st
+from google.cloud.firestore_v1.base_query import FieldFilter
 from PIL import Image
 
 from utils.gcp_client import get_firestore_client, get_signed_url, get_storage_client
@@ -77,7 +78,7 @@ def obtener_entradas(ciudad_filtro: str = "Todas"):
     """Lee de Firestore usando caché para evitar exceder cuotas gratuitas."""
     db = get_firestore_client()
     if ciudad_filtro != "Todas":
-        query = db.collection(COLECCION).where("ciudad", "==", ciudad_filtro)
+        query = db.collection(COLECCION).where(filter=FieldFilter("ciudad", "==", ciudad_filtro))
     else:
         query = db.collection(COLECCION)
 

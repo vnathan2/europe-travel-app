@@ -22,7 +22,7 @@
 - **Observaciones menores**:
   - El script de ingesta reporta totales por ciudad acumulados (cosmetic bug, no afecta lo guardado).
   - OpenTripMap devuelve 0 atracciones porque no hay API key; sin embargo el fallback Overpass sí guarda docs (visible en queries RAG).
-  - Firestore lanza `FutureWarning` por `query.where(field, op, val)` deprecado; conviene migrar a `filter=...` cuando se toque `utils/knowledge_base.py`.
+  - ✅ Resuelto 2026-05-27: el `FutureWarning` de Firestore (`query.where(field, op, val)` deprecado) se migró a `query.where(filter=FieldFilter(...))` en los 3 usos del repo (`knowledge_base.py`, `admin_panel.py`, `trip_journal.py`).
 
 ### 1.1 ✅ HECHO - Ingesta de KB desde Admin Panel
 
