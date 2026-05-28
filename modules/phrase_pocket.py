@@ -417,7 +417,7 @@ def mostrar():
                 title="Tipo de cambio EUR → PEN",
                 xaxis_title="Fecha",
                 yaxis_title="Soles por Euro",
-                height=400,
+                height=320,
                 showlegend=False,
                 plot_bgcolor="white",
                 yaxis=dict(
