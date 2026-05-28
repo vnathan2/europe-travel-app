@@ -239,16 +239,25 @@ def mostrar():
     st.title("🎙️ Traductor de Voz")
     st.caption("Habla en español → traducción automática → audio")
 
-    tab_voz, tab_texto, tab_frases = st.tabs(["🎙️ Voz", "⌨️ Texto", "📖 Frases"])
+    # st.radio en vez de st.tabs: persiste la selección via session_state, así
+    # al traducir (que dispara rerun) NO se vuelve a la primera pestaña.
+    modo = st.radio(
+        "Modo:",
+        ["🎙️ Voz", "⌨️ Texto", "📖 Frases"],
+        horizontal=True,
+        label_visibility="collapsed",
+        key="trad_modo",
+    )
+    st.divider()
 
-    with tab_voz:
+    if modo == "🎙️ Voz":
         idioma_sel = st.selectbox("Traducir a:", list(FRASES_UTILES.keys()), key="v_auto")
         grupo = FRASES_UTILES[idioma_sel]
         st.info("💡 Toca el botón, habla y espera la magia.")
         bg = "#0e1117" if st.session_state.get("modo_oscuro", True) else "#f4f4f0"
         componente_voz_completo(grupo["idioma_destino"], grupo["tts_lang"], grupo["flag"], bg)
 
-    with tab_texto:
+    elif modo == "⌨️ Texto":
         mapa = {"Inglés 🇬🇧": ("en", "en-GB"), "Francés 🇫🇷": ("fr", "fr-FR"), "Neerlandés 🇳🇱": ("nl", "nl-NL")}
         idioma_t = st.selectbox("Traducir a:", list(mapa.keys()))
         cod, tts = mapa[idioma_t]
@@ -259,7 +268,7 @@ def mostrar():
                 st.markdown(f"### {res}")
                 st.components.v1.html(f"<button onclick='h()' style='padding:10px; background:#16a34a; color:white; border:none; border-radius:8px; cursor:pointer;'>🔊 Escuchar</button><script>function h(){{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`{res}`);u.lang='{tts}';window.speechSynthesis.speak(u);}}</script>", height=60)
 
-    with tab_frases:
+    else:  # 📖 Frases
         g_sel = st.selectbox("Idioma:", list(FRASES_UTILES.keys()), key="v_frases")
         grupo = FRASES_UTILES[g_sel]
         for i, (esp, trad) in enumerate(grupo["frases"]):

@@ -272,7 +272,7 @@ def mostrar():
             if clima:
                 recs = get_recomendaciones_clima(clima)
                 if recs:
-                    with st.expander(f"📍 {ciudad} — {clima['fechas']}", expanded=True):
+                    with st.expander(f"📍 {ciudad} — {clima['fechas']}", expanded=False):
                         for rec in recs:
                             st.warning(rec)
 
