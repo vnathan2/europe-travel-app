@@ -942,20 +942,25 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                 f"{acts_ok}/{total_dia} ✓"
             )
             with st.expander(label_dia, expanded=False):
-                col1, col2, col3 = st.columns([3, 2, 1])
-                with col1:
-                    st.markdown(f"### {dia['emoji']} {dia['fecha']}")
-                    st.caption(f"📍 {dia['ciudad']}")
-                with col2:
-                    if dia.get("especial"):
-                        st.success(dia["especial"])
-                with col3:
-                    st.metric("Progreso día", f"{acts_ok}/{total_dia}")
-
+                _esp = dia.get("especial")
+                _esp_html = (
+                    f'<span style="background:#ffffff2e; color:#fff; font:600 11px Barlow;'
+                    f' padding:5px 11px; border-radius:20px; white-space:nowrap;">{_esp}</span>'
+                    if _esp else ""
+                )
+                st.markdown(f"""
+<div class="et-citybar" style="margin-bottom:10px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:10px;">
+    <div>
+      <div class="et-citybar-title">{dia['emoji']} {dia['fecha']}</div>
+      <div class="meta">📍 {dia['ciudad']} · {acts_ok}/{total_dia} actividades</div>
+    </div>
+    {_esp_html}
+  </div>
+</div>
+""", unsafe_allow_html=True)
                 if acts_ok == total_dia:
                     st.success("🎉 ¡Día completado!")
-
-                st.divider()
 
                 for act in dia["actividades"]:
                     act_id = act["id"]
@@ -963,33 +968,44 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                     completado = check_data.get("completado", False)
                     fuera = check_data.get("fuera_orden", False)
 
-                    col1, col2, col3, col4 = st.columns([0.4, 3.5, 1.5, 0.6])
-                    with col1:
-                        st.write(act["icono"])
-                    with col2:
-                        if completado:
-                            st.markdown(
-                                f"~~**{act['hora']}** — {act['nombre']}~~"
-                            )
-                            if fuera:
-                                st.caption("🔀 Visitado fuera de orden")
-                        else:
-                            st.markdown(
-                                f"**{act['hora']}** — {act['nombre']}"
-                            )
-                            st.caption(act["detalle"])
-                    with col3:
-                        if st.session_state.get("_show_prices", False):
-                            st.caption(
-                                f"€{act['costo']} · S/.{act['costo']*4}"
-                                if act["costo"] > 0 else "Gratis"
-                            )
-                        else:
-                            st.caption("🔒" if act["costo"] > 0 else "Gratis")
-                    with col4:
-                        nuevo_check = st.checkbox(
-                            "✓", value=completado, key=f"tc_{act_id}"
+                    _bcls = {
+                        "transporte": "et-b-trans", "restaurante": "et-b-food",
+                        "atraccion": "et-b-see", "compras": "et-b-see",
+                    }.get(act.get("tipo", ""), "et-b-see")
+                    if st.session_state.get("_show_prices", False):
+                        _cost = (
+                            f'<span class="et-t et-t-rate">€{act["costo"]} · S/.{act["costo"]*4}</span>'
+                            if act["costo"] > 0
+                            else '<span class="et-t et-t-free">Gratis</span>'
                         )
+                    else:
+                        _cost = (
+                            '<span class="et-t et-t-info">🔒</span>'
+                            if act["costo"] > 0
+                            else '<span class="et-t et-t-free">Gratis</span>'
+                        )
+                    _fuera = '<span class="et-t et-t-info">🔀 fuera de orden</span>' if fuera else ""
+                    _dim = "opacity:.5;" if completado else ""
+                    _strike = "text-decoration:line-through;" if completado else ""
+                    col_chk, col_card = st.columns([0.55, 6])
+                    with col_chk:
+                        nuevo_check = st.checkbox(
+                            "✓", value=completado, key=f"tc_{act_id}",
+                            label_visibility="collapsed",
+                        )
+                    with col_card:
+                        st.markdown(f"""
+<div class="et-ec" style="{_dim}">
+  <div class="row">
+    <span class="et-badge {_bcls}">{act['icono']}</span>
+    <div>
+      <div class="title" style="{_strike}">{act['hora']} · {act['nombre']}</div>
+      <div class="addr">{act['detalle']}</div>
+    </div>
+  </div>
+  <div class="et-tags">{_cost}{_fuera}</div>
+</div>
+""", unsafe_allow_html=True)
 
                     if nuevo_check != completado:
                         fuera_nueva = False

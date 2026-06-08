@@ -100,199 +100,190 @@ def get_theme(modulo_id: str) -> dict:
     return CITY_THEMES.get(ciudad_key, CITY_THEMES["default"])
 
 
-def apply_theme(theme: dict):
-    """Inyecta CSS global con el tema de ciudad activo."""
-    modo_oscuro = st.session_state.get("modo_oscuro", True)
+_BASE_CSS = r"""
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=Barlow+Semi+Condensed:wght@500;600&display=swap');
 
+:root{
+  --et-bg:__BGMAIN__; --et-card:__CARD__; --et-ink:__TEXT__; --et-muted:__MUTED__;
+  --et-line:__BORDER__; --et-primary:__PRIMARY__; --et-grad:__GRADIENT__;
+  --et-terra:#DB5E39; --et-terra-d:__TERRAD__;
+  --et-teal:#15917F;  --et-teal-d:__TEALD__;
+  --et-gold:#DA9B33;  --et-gold-d:__GOLDD__;
+}
+
+html, body, [class*="css"], .stApp, button, input, textarea, select{
+  font-family:'Barlow', system-ui, sans-serif;
+}
+.stApp{
+  background-color:var(--et-bg) !important;
+  background-image:radial-gradient(circle at 16% -4%, __GRADA__ 0%, transparent 42%),
+                   radial-gradient(circle at 96% 6%, __GRADB__ 0%, transparent 38%);
+}
+.stApp p, .stApp li, .stApp span, .stApp label, .stApp div{ color:var(--et-ink); }
+.stApp h1, .stApp h2, .stApp h3{
+  font-family:'Barlow Condensed', sans-serif !important; font-weight:700 !important;
+  letter-spacing:.01em; color:var(--et-ink) !important;
+}
+.stApp h1{ font-size:2.1rem; line-height:1.02; }
+.stCaption, small{ color:var(--et-muted) !important; }
+
+.stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"]>div{
+  background-color:var(--et-card) !important; color:var(--et-ink) !important;
+  border-color:var(--et-line) !important; border-radius:12px !important;
+}
+[data-testid="stExpander"]{ background:var(--et-card) !important; border:1px solid var(--et-line) !important; border-radius:14px !important; }
+[data-testid="stExpander"] summary{ border-left:3px solid var(--et-primary) !important; padding-left:10px !important; }
+[data-testid="stChatMessage"]{ background:var(--et-card) !important; border:1px solid var(--et-line) !important; border-radius:14px !important; }
+[data-testid="stAlert"]{ border-left:4px solid var(--et-terra) !important; border-radius:0 12px 12px 0 !important; }
+
+section[data-testid="stSidebar"]{ background:__SIDEBAR__ !important; border-right:1px solid #ffffff1f; }
+section[data-testid="stSidebar"] > div:first-child, [data-testid="stSidebarContent"], [data-testid="stSidebarUserContent"]{ background:transparent !important; }
+section[data-testid="stSidebar"] *{ color:#ffffff !important; }
+section[data-testid="stSidebar"] [data-testid="stButton"]>button{ background:#ffffff17 !important; border:1px solid #ffffff2b !important; color:#fff !important; border-radius:12px !important; }
+section[data-testid="stSidebar"] [data-testid="stButton"]>button:hover{ background:#ffffff2e !important; transform:none !important; filter:none !important; }
+section[data-testid="stSidebar"] [data-testid="stExpander"]{ background:#ffffff12 !important; border:1px solid #ffffff24 !important; }
+
+[data-testid="stTabs"] [data-baseweb="tab-list"]{ gap:8px; background:transparent; border-bottom:none; }
+[data-testid="stTabs"] [data-baseweb="tab"]{
+  border:1px solid var(--et-line) !important; border-radius:30px !important; padding:7px 15px !important;
+  background:var(--et-card) !important; font-weight:500 !important; color:var(--et-muted) !important; transition:.18s ease !important;
+}
+[data-testid="stTabs"] [aria-selected="true"]{ background:var(--et-terra) !important; color:#fff !important; border-color:var(--et-terra) !important; }
+
+[data-testid="stButton"]>button[kind="primary"]{
+  background:var(--et-terra) !important; border:none !important; border-radius:12px !important;
+  font-weight:600 !important; color:#fff !important; transition:.18s ease !important;
+}
+[data-testid="stButton"]>button[kind="primary"]:hover{ transform:translateY(-1px) !important; filter:brightness(1.05); }
+[data-testid="stButton"]>button[kind="secondary"]{ border-radius:12px !important; border:1px solid var(--et-line) !important; }
+
+[data-testid="stVerticalBlockBorderWrapper"]{ border-color:var(--et-line) !important; border-radius:16px !important; background:var(--et-card) !important; }
+
+[data-testid="stMetric"]{ background:var(--et-card) !important; border:1px solid var(--et-line) !important; border-radius:14px !important; padding:12px 14px !important; }
+[data-testid="stMetricValue"]{ color:var(--et-teal-d) !important; font-family:'Barlow Condensed' !important; font-weight:700 !important; font-size:1.5rem !important; }
+[data-testid="stMetricLabel"]{ color:var(--et-muted) !important; }
+
+[data-testid="stProgressBar"]>div{ background:var(--et-line) !important; border-radius:6px !important; }
+[data-testid="stProgressBar"]>div>div{ background:var(--et-grad) !important; border-radius:6px !important; }
+hr{ border:none !important; border-top:1px solid var(--et-line) !important; background:transparent !important; }
+[data-testid="stTabs"] [data-baseweb="tab"] p{ color:inherit !important; margin:0; }
+[data-testid="stTabs"] [aria-selected="true"] p{ color:#fff !important; }
+
+::-webkit-scrollbar{ width:7px; } ::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{ background:var(--et-line); border-radius:4px; }
+
+.main .block-container{ animation:fadeInUp .4s ease forwards; }
+@keyframes fadeInUp{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+
+.city-badge{ display:inline-flex; align-items:center; gap:7px; padding:7px 14px; background:rgba(219,94,57,.13); border:1px solid rgba(219,94,57,.42); border-radius:30px; font:600 12.5px 'Barlow'; color:var(--et-terra-d); letter-spacing:.02em; }
+
+.et-hero{ position:relative; overflow:hidden; border-radius:22px; padding:22px 20px 18px; color:#fff; background:var(--et-grad); }
+.et-hero::after{ content:""; position:absolute; top:-60px; right:-50px; width:190px; height:190px; border-radius:50%; background:radial-gradient(circle, #ffffff38, transparent 70%); }
+.et-eyebrow{ font:600 12px/1 'Barlow Semi Condensed'; letter-spacing:.16em; text-transform:uppercase; color:#ffffffcc; }
+.et-hero h1, .et-hero-title{ font:700 33px/.98 'Barlow Condensed' !important; margin:6px 0 2px; color:#fff !important; }
+.et-hero .sub{ font-size:13.5px; color:#ffffffd9; }
+.et-route{ display:flex; align-items:center; gap:4px; margin:16px 0; }
+.et-stop{ display:flex; flex-direction:column; align-items:center; gap:3px; }
+.et-dot{ width:9px; height:9px; border-radius:50%; background:#fff; box-shadow:0 0 0 3px #ffffff3b; }
+.et-stop small{ font:500 10.5px/1 'Barlow Semi Condensed' !important; color:#ffffffd9 !important; white-space:nowrap; }
+.et-seg{ flex:1; height:2px; border-top:2px dotted #ffffff59; }
+.et-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.et-stat{ background:#ffffff1a; border:1px solid #ffffff29; border-radius:13px; padding:9px 6px; text-align:center; }
+.et-stat b{ display:block; font:700 17px/1 'Barlow Condensed'; color:#fff; }
+.et-stat span{ font:500 9.5px/1.1 'Barlow Semi Condensed'; color:#ffffffcc; text-transform:uppercase; letter-spacing:.04em; }
+
+.et-card{ background:var(--et-card); border:1px solid var(--et-line); border-radius:18px; }
+.et-label{ font:600 11px/1 'Barlow Semi Condensed'; letter-spacing:.14em; text-transform:uppercase; color:var(--et-muted); }
+.et-budget-hero{ display:flex; align-items:flex-end; justify-content:space-between; padding:16px 18px 12px; }
+.et-big{ font:700 30px/1 'Barlow Condensed'; color:var(--et-teal-d); }
+.et-big small{ font:600 14px 'Barlow'; color:var(--et-teal); }
+.et-chip{ font:600 11px/1 'Barlow'; color:var(--et-teal-d); background:rgba(21,145,127,.14); padding:6px 10px; border-radius:20px; }
+.et-bgrid{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--et-line); border-top:1px solid var(--et-line); }
+.et-bcell{ background:var(--et-card); padding:11px 18px; }
+.et-bcell .n{ font:600 16px 'Barlow'; color:var(--et-ink); }
+.et-bcell .k{ font-size:11.5px; color:var(--et-muted); }
+.et-note{ display:flex; gap:9px; background:rgba(218,155,51,.16); border-radius:0 0 18px 18px; padding:12px 18px; font-size:12.5px; color:var(--et-gold-d); }
+
+.et-citybar{ position:relative; overflow:hidden; border-radius:18px; padding:16px 18px; background:var(--et-grad); color:#fff; }
+.et-citybar::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:6px; background:var(--et-gold); }
+.et-citybar h2, .et-citybar-title{ font:700 26px/1 'Barlow Condensed' !important; color:#fff !important; margin:0 !important; }
+.et-citybar .meta{ font:500 13px 'Barlow Semi Condensed'; color:#ffffffe0; margin-top:3px; }
+
+.et-callout{ display:flex; gap:11px; background:var(--et-card); border:1px solid var(--et-line); border-left:4px solid var(--et-terra); border-radius:0 14px 14px 0; padding:13px 16px; }
+.et-callout .ico{ flex:0 0 auto; width:30px; height:30px; border-radius:9px; background:rgba(219,94,57,.14); color:var(--et-terra-d); display:flex; align-items:center; justify-content:center; font-size:16px; }
+.et-callout p{ font-size:13px; color:var(--et-ink); margin:0; }
+.et-callout b{ font-weight:600; color:var(--et-terra-d); }
+
+.et-daybar{ display:flex; align-items:center; gap:10px; margin:18px 0 4px; }
+.et-daypill{ font:600 12px/1 'Barlow Semi Condensed'; letter-spacing:.05em; text-transform:uppercase; background:var(--et-terra); color:#fff; padding:7px 11px; border-radius:9px; }
+.et-daybar h3, .et-daybar .title{ font:600 16px 'Barlow' !important; color:var(--et-ink) !important; margin:0 !important; }
+.et-daybar .line{ flex:1; height:1px; background:var(--et-line); }
+
+.et-tl{ position:relative; margin-top:8px; }
+.et-ev{ position:relative; display:grid; grid-template-columns:54px 1fr; gap:12px; padding-bottom:14px; }
+.et-ev::before{ content:""; position:absolute; left:60px; top:24px; bottom:-2px; width:2px; background:var(--et-line); }
+.et-ev:last-child::before{ display:none; }
+.et-time{ font:600 13px 'Barlow'; color:var(--et-muted); text-align:right; padding-top:13px; }
+.et-ec{ position:relative; background:var(--et-card); border:1px solid var(--et-line); border-radius:14px; padding:12px 14px; transition:.18s; }
+.et-ec:hover{ transform:translateY(-1px); }
+.et-tl .et-ec::before{ content:""; position:absolute; left:-19px; top:16px; width:11px; height:11px; border-radius:50%; background:var(--et-card); border:3px solid var(--et-terra); }
+.et-tl .et-ec.free::before{ border-color:var(--et-teal); }
+.et-ec .row{ display:flex; align-items:center; gap:9px; }
+.et-badge{ flex:0 0 auto; width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:15px; }
+.et-b-trans{ background:#4a6b8a; } .et-b-food{ background:var(--et-terra); } .et-b-see{ background:var(--et-gold); }
+.et-ec h4, .et-ec .title{ font:600 14.5px 'Barlow' !important; color:var(--et-ink) !important; margin:0 !important; }
+.et-ec .addr{ font-size:12px; color:var(--et-muted); }
+.et-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+.et-t{ font:500 11px 'Barlow'; padding:4px 9px; border-radius:7px; }
+.et-t-free{ background:rgba(21,145,127,.14); color:var(--et-teal-d); }
+.et-t-rate{ background:rgba(218,155,51,.16); color:var(--et-gold-d); }
+.et-t-info{ background:rgba(120,120,120,.12); color:var(--et-muted); }
+
+@media (max-width: 640px){
+  [data-testid="stHorizontalBlock"]{ flex-direction:column !important; gap:8px !important; }
+  [data-testid="stHorizontalBlock"]>[data-testid="column"], [data-testid="column"]{ width:100% !important; flex:1 1 100% !important; min-width:100% !important; }
+  [data-testid="stMetric"]{ padding:8px 10px !important; }
+  [data-testid="stMetricValue"]{ font-size:1.5rem !important; }
+  .stApp h1{ font-size:1.8rem !important; } .stApp h2{ font-size:1.4rem !important; } .stApp h3{ font-size:1.15rem !important; }
+  .main .block-container, [data-testid="stMainBlockContainer"]{ padding:1rem .6rem !important; }
+  .et-stat b{ font-size:15px; }
+}
+"""
+
+
+def _editorial_css(theme: dict, modo_oscuro: bool) -> str:
+    """CSS del sistema de diseño 'editorial de viaje' (paleta cálida + Barlow).
+    Usa el acento de la ciudad activa (theme['primary'] / theme['gradient'])."""
     if modo_oscuro:
-        bg_main    = "#0e1117"
-        bg_sidebar = theme['sidebar_bg']
-        text_main  = "#fafafa"
-        text_muted = "#aaa"
-        card_bg    = "#1c1f26"
-        border_col = "#333"
+        bg_main, text_main, text_muted = "#1A1714", "#F3ECE0", "#A99C88"
+        card_bg, border_col            = "#241F1A", "#3A332B"
+        terra_d, teal_d, gold_d        = "#F0997B", "#5DCAA5", "#E6C27A"
+        grad_a, grad_b                 = "#ffffff10", "#ffffff08"
     else:
-        bg_main    = "#f4f4f0"
-        bg_sidebar = "linear-gradient(180deg, #e8e8e2 0%, #ddddd6 100%)"
-        text_main  = "#2c2c2c"
-        text_muted = "#666"
-        card_bg    = "#efefea"
-        border_col = "#c8c8c0"
+        bg_main, text_main, text_muted = "#F4ECDD", "#23262F", "#8A8275"
+        card_bg, border_col            = "#FFFDF9", "#E7DCC8"
+        terra_d, teal_d, gold_d        = "#A8431F", "#0B5E50", "#8F6310"
+        grad_a, grad_b                 = "#fff7ea", "#f3e2cf"
 
-    st.markdown(f"""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    css = _BASE_CSS
+    repl = {
+        "__BGMAIN__": bg_main, "__TEXT__": text_main, "__MUTED__": text_muted,
+        "__CARD__": card_bg, "__BORDER__": border_col,
+        "__PRIMARY__": theme["primary"], "__GRADIENT__": theme["gradient"],
+        "__SIDEBAR__": theme["sidebar_bg"],
+        "__TERRAD__": terra_d, "__TEALD__": teal_d, "__GOLDD__": gold_d,
+        "__GRADA__": grad_a, "__GRADB__": grad_b,
+    }
+    for k, v in repl.items():
+        css = css.replace(k, v)
+    return css
 
-    html, body, [class*="css"] {{
-        font-family: 'Inter', sans-serif;
-    }}
 
-    .stApp {{
-        background-color: {bg_main} !important;
-    }}
-    .stApp > * {{
-        color: {text_main} !important;
-    }}
-    .stTextInput input, .stTextArea textarea, .stSelectbox select {{
-        background-color: {card_bg} !important;
-        color: {text_main} !important;
-        border-color: {border_col} !important;
-    }}
-    [data-testid="stExpander"] {{
-        background-color: {card_bg} !important;
-    }}
-    [data-testid="stChatMessage"] {{
-        background-color: {card_bg} !important;
-        border: 1px solid {border_col} !important;
-    }}
-    .stCaption, small {{
-        color: {text_muted} !important;
-    }}
-    [data-testid="stAlert"] {{
-        border-left: 4px solid {theme['primary']} !important;
-    }}
-
-    [data-testid="stSidebar"] {{
-        background: {bg_sidebar} !important;
-        border-right: 1px solid {theme['primary']}33;
-    }}
-    [data-testid="stSidebar"] * {{
-        color: {'#ffffff' if modo_oscuro else '#1a1a2e'} !important;
-    }}
-
-    [data-testid="stTabs"] [data-baseweb="tab-list"] {{
-        gap: 4px;
-        background: transparent;
-        border-bottom: 2px solid {theme['primary']}33;
-    }}
-    [data-testid="stTabs"] [data-baseweb="tab"] {{
-        border-radius: 8px 8px 0 0 !important;
-        padding: 8px 20px !important;
-        font-weight: 500 !important;
-        transition: all 0.2s ease !important;
-    }}
-    [data-testid="stTabs"] [aria-selected="true"] {{
-        background: {theme['gradient']} !important;
-        color: white !important;
-    }}
-
-    [data-testid="stButton"] > button[kind="primary"] {{
-        background: {theme['gradient']} !important;
-        border: none !important;
-        border-radius: 10px !important;
-        font-weight: 600 !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 4px 15px {theme['primary']}44 !important;
-    }}
-    [data-testid="stButton"] > button[kind="primary"]:hover {{
-        transform: translateY(-1px) !important;
-        box-shadow: 0 6px 20px {theme['primary']}66 !important;
-    }}
-
-    [data-testid="stVerticalBlockBorderWrapper"] {{
-        border-color: {theme['primary']}33 !important;
-        border-radius: 12px !important;
-        background: {card_bg} !important;
-    }}
-    [data-testid="stVerticalBlockBorderWrapper"]:hover {{
-        border-color: {theme['primary']}88 !important;
-    }}
-
-    [data-testid="stMetric"] {{
-        background: {theme['primary']}11 !important;
-        border: 1px solid {theme['primary']}33 !important;
-        border-radius: 10px !important;
-        padding: 12px !important;
-    }}
-    [data-testid="stMetricValue"] {{
-        color: {theme['primary']} !important;
-        font-weight: 700 !important;
-    }}
-
-    [data-testid="stProgressBar"] > div > div {{
-        background: {theme['gradient']} !important;
-    }}
-
-    [data-testid="stExpander"] summary {{
-        border-left: 3px solid {theme['primary']} !important;
-        padding-left: 10px !important;
-    }}
-
-    ::-webkit-scrollbar {{ width: 6px; }}
-    ::-webkit-scrollbar-track {{ background: transparent; }}
-    ::-webkit-scrollbar-thumb {{
-        background: {theme['primary']}66;
-        border-radius: 3px;
-    }}
-
-    .main .block-container {{
-        animation: fadeInUp 0.4s ease forwards;
-    }}
-    @keyframes fadeInUp {{
-        from {{ opacity: 0; transform: translateY(12px); }}
-        to   {{ opacity: 1; transform: translateY(0); }}
-    }}
-
-    .city-badge {{
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 12px;
-        background: {theme['gradient']};
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        color: white;
-        letter-spacing: 0.5px;
-    }}
-
-    /* ── Móvil (≤640px) — apilar columnas, métricas y headers compactos ── */
-    @media (max-width: 640px) {{
-        /* Apilar TODAS las columnas verticalmente en pantallas chicas */
-        [data-testid="stHorizontalBlock"] {{
-            flex-direction: column !important;
-            gap: 8px !important;
-        }}
-        [data-testid="stHorizontalBlock"] > [data-testid="column"],
-        [data-testid="column"] {{
-            width: 100% !important;
-            flex: 1 1 100% !important;
-            min-width: 100% !important;
-        }}
-
-        /* Métricas más compactas */
-        [data-testid="stMetric"] {{
-            padding: 8px 10px !important;
-        }}
-        [data-testid="stMetricValue"] {{
-            font-size: 1.35rem !important;
-        }}
-        [data-testid="stMetricLabel"] {{
-            font-size: 0.78rem !important;
-        }}
-
-        /* Headers más chicos en móvil */
-        h1 {{ font-size: 1.6rem !important; line-height: 1.2 !important; }}
-        h2 {{ font-size: 1.3rem !important; }}
-        h3 {{ font-size: 1.1rem !important; }}
-
-        /* Menos aire lateral en el contenedor principal */
-        .main .block-container,
-        [data-testid="stMainBlockContainer"] {{
-            padding-top: 1rem !important;
-            padding-bottom: 1rem !important;
-            padding-left: 0.6rem !important;
-            padding-right: 0.6rem !important;
-        }}
-
-        /* Tabs más compactos */
-        [data-testid="stTabs"] [data-baseweb="tab"] {{
-            padding: 6px 12px !important;
-            font-size: 0.85rem !important;
-        }}
-    }}
-    </style>
-    """, unsafe_allow_html=True)
+def apply_theme(theme: dict):
+    """Inyecta el CSS global del sistema de diseno editorial con el acento de la ciudad activa."""
+    modo_oscuro = st.session_state.get("modo_oscuro", True)
+    st.markdown("<style>" + _editorial_css(theme, modo_oscuro) + "</style>",
+                unsafe_allow_html=True)
 
 
 def render_menu_fab():
@@ -504,25 +495,25 @@ MENU_SECTIONS = [
         "seccion": "🗺️ Planificación",
         "items": [
             #{"key": "🤖 Travel Concierge",    "id": "travel_concierge", "desc": "Lady + itinerario + alertas"},
-            {"key": "📋 Itinerario",          "id": "itinerary_tracker","desc": "Checks del día"},
-            {"key": "🚄 Trenes",              "id": "train_optimizer",  "desc": "Rutas y horarios"},
-            {"key": "🏨 Hoteles",             "id": "hoteles",          "desc": "Reservas por ciudad"},
+            {"key": "📋 Lady Travel itinerary",          "id": "itinerary_tracker","desc": "Checks del día"},
+            {"key": "🚄 Trains",              "id": "train_optimizer",  "desc": "Rutas y horarios"},
+            {"key": "🏨 Hotels",             "id": "hoteles",          "desc": "Reservas por ciudad"},
         ]
     },
     {
         "seccion": "🎉 Especiales",
         "items": [
-            {"key": "🎂 Cumpleaños",          "id": "birthday_planner", "desc": "Camila & Giovanna"},
+            {"key": "🎂 Birthday Planner",          "id": "birthday_planner", "desc": "Camila & Giovanna"},
             {"key": "🛒 Shopping Guide",       "id": "shopping_guide",   "desc": "Tiendas · Ofertas · Souvenirs"},
-            {"key": "🧳 Equipaje",            "id": "packing_checker",  "desc": "Lista de packing"},
-            {"key": "📔 Diario",              "id": "trip_journal",     "desc": "Fotos y memorias"},
+            {"key": "🧳 Packing Checker",            "id": "packing_checker",  "desc": "Lista de packing"},
+            {"key": "📔 Trip Journal",              "id": "trip_journal",     "desc": "Fotos y memorias"},
         ]
     },
     {
         "seccion": "🛟 Utilidades",
         "items": [
-            {"key": "🗣️ Traductor",           "id": "voice_translator", "desc": "Voz + texto"},
-            {"key": "🚨 Emergencias",         "id": "emergency_card",   "desc": "SOS y contactos"},
+            {"key": "🗣️ Translator",           "id": "voice_translator", "desc": "Voz + texto"},
+            {"key": "🚨 Emergencies",         "id": "emergency_card",   "desc": "SOS y contactos"},
         ]
     },
 ]
@@ -631,11 +622,6 @@ def render_sidebar_menu(is_admin_user: bool, user: dict) -> str:
     st.divider()
 
     # ── Toggle tema claro/oscuro ───────────────────────────────────────────
-    modo_oscuro = st.session_state.get("modo_oscuro", True)
-    label_modo  = "☀️ Modo claro" if modo_oscuro else "🌙 Modo oscuro"
-    if st.button(label_modo, use_container_width=True, type="secondary"):
-        st.session_state.modo_oscuro = not modo_oscuro
-        st.rerun()
 
     # ── Logout ─────────────────────────────────────────────────────────────
     st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
