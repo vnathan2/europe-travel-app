@@ -21,7 +21,7 @@ CIUDADES_COORDS = {
     "Bayona":    {"lat": 43.4929, "lon": -1.4748, "fechas": "19-20 julio"},
     "París":     {"lat": 48.8566, "lon": 2.3522,  "fechas": "21-24 julio"},
     "Bruselas":  {"lat": 50.8503, "lon": 4.3517,  "fechas": "25-26 julio"},
-    "Ámsterdam": {"lat": 52.3676, "lon": 4.9041,  "fechas": "26-29 julio"},
+    "Ámsterdam": {"lat": 52.3676, "lon": 4.9041,  "fechas": "27-30 julio"},
 }
 
 # ── Lista maestra de equipaje ──────────────────────────────────────────────

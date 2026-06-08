@@ -41,8 +41,8 @@ def run_ingesta_ciudad(ciudad: str, fuentes: list) -> dict:
             ],
             "Transporte":       [
                 "metro Madrid cómo funciona tarjeta turista precio",
-                "aeropuerto Barajas terminal 4 cómo llegar centro Madrid",
-                "Madrid Atocha trenes AVE cómo reservar",
+                "aeropuerto Barajas terminal 1 Air Europa cómo llegar centro Madrid",
+                "Madrid Estación Sur Méndez Álvaro bus internacional cómo llegar",
             ],
             "Gastronomía":      [
                 "mejores restaurantes Madrid auténticos no turísticos 2025",
@@ -67,7 +67,7 @@ def run_ingesta_ciudad(ciudad: str, fuentes: list) -> dict:
                 "Bayona Francia gastronomía vasca pintxos jambon",
             ],
             "Transporte":       [
-                "tren Madrid Hendaya Bayona cómo viajar precio",
+                "bus nocturno Madrid Bayona Alsa FlixBus precio horario Méndez Álvaro",
                 "Bayona Francia transporte local cómo moverse",
             ],
             "Gastronomía":      [

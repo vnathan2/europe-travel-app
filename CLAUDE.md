@@ -168,10 +168,12 @@ Detalle completo y prioridades en [docs/IMPROVEMENTS.md](docs/IMPROVEMENTS.md).
 
 ## Hoja de ruta del viaje (relevante para fechas)
 
-- 14 jul: LIM -> MAD
-- 15-18 jul: Madrid (cumple Camila el 17, Parque Warner + StreetXO)
-- 19-20 jul: Bayona
-- 21-24 jul: París (cumple Giovanna el 21, Eiffel + Le Train Bleu; Versalles el 23; Disney el 24)
-- 25-26 jul: Bruselas
+Actualizado 2026-06-07 con la planificación vigente.
+
+- 14 jul: LIM -> MAD (sale 10:20, llega 15 jul 05:10)
+- 15-18 jul: Madrid (cumple Camila el 17 -> Parque Warner; Bernabéu el 18, no el día del cumple; StreetXO). Bus nocturno a Bayona el 18 (sale 23:00).
+- 19-20 jul: Bayona (hospedaje familiar, sin costo de hotel; llegada 05:00 el 19)
+- 21-24 jul: París (cumple Giovanna el 21, llegada 14:30 + Le Train Bleu; Disney 2 parques en 1 día; Versalles el 23; Eiffel + Arco + Notre Dame + Sainte Chapelle + crucero Sena)
+- 25-26 jul: Bruselas (Museo de Ciencias Naturales + chocolates/gofres)
 - 27-30 jul: Ámsterdam (casa familiar, sin costo de hotel)
-- 30 jul: AMS -> MAD -> LIM
+- 30 jul: AMS -> MAD -> LIM. TICKETS SEPARADOS: tomar vuelo KLM temprano (~14:00-15:00, llega MAD ~17:30) para 5-6h de margen antes del vuelo a Lima (23:45). Recoger maletas y cambiar de terminal en Barajas (KLM llega T2; Lima sale de T1/T4).

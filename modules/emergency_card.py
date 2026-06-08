@@ -25,12 +25,12 @@ EMERGENCIAS = {
             "🛣️ Guardia Civil": "062",
         },
         "embajada_peru": {
-            "nombre": "Embajada del Perú en Madrid",
-            "direccion": "C/ Príncipe de Vergara 36, 2º dcha, 28001 Madrid",
-            "telefono": "+34 914 314 242",
-            "email": "embajada@embajadaperu.es",
-            "horario": "Lunes a Viernes: 09:00 – 14:00",
-            "emergencias_24h": "+34 914 314 242",
+            "nombre": "Consulado General del Perú en Madrid",
+            "direccion": "Paseo del Pintor Rosales 30, 28008 Madrid",
+            "telefono": "+34 91 562 90 22 / +34 91 562 90 12",
+            "email": "info@consuladoperumadrid.org",
+            "horario": "Lunes a Viernes: 08:30 – 14:00 (con cita)",
+            "emergencias_24h": "+34 669 701 608",
         },
         "hospitales": [
             {"nombre": "Hospital Universitario La Paz", "telefono": "+34 917 277 000", "direccion": "Paseo de la Castellana 261"},
@@ -55,12 +55,12 @@ EMERGENCIAS = {
             "🆘 Emergencias europeas": "112",
         },
         "embajada_peru": {
-            "nombre": "Embajada del Perú en París",
-            "direccion": "50 Avenue Kléber, 75116 París",
-            "telefono": "+33 1 53 70 42 00",
-            "email": "leparis@rree.gob.pe",
+            "nombre": "Consulado General del Perú en París",
+            "direccion": "14 Rue de Siam, 75116 París (nueva sede may-2026)",
+            "telefono": "+33 1 42 65 25 10",
+            "email": "info@conper.fr",
             "horario": "Lunes a Viernes: 09:00 – 13:00",
-            "emergencias_24h": "+33 1 53 70 42 00",
+            "emergencias_24h": "+33 7 86 63 57 30",
         },
         "hospitales": [
             {"nombre": "Hôpital Lariboisière (París)", "telefono": "+33 1 49 95 65 65", "direccion": "2 Rue Ambroise Paré"},
@@ -84,12 +84,12 @@ EMERGENCIAS = {
             "🚑 Ambulancia": "100",
         },
         "embajada_peru": {
-            "nombre": "Embajada del Perú en Bruselas",
-            "direccion": "Av. de Tervueren 179, 1150 Bruselas",
-            "telefono": "+32 2 733 33 19",
-            "email": "embajada@embajadaperu.be",
+            "nombre": "Consulado General del Perú en Bruselas",
+            "direccion": "Avenue des Arts 10-11, Buzón 6, 1210 Bruselas",
+            "telefono": "+32 2 641 87 60 / +32 2 641 87 63",
+            "email": "info@consuladodelperu.be",
             "horario": "Lunes a Viernes: 09:00 – 13:00",
-            "emergencias_24h": "+32 2 733 33 19",
+            "emergencias_24h": "+32 497 571 257",
         },
         "hospitales": [
             {"nombre": "Cliniques Universitaires Saint-Luc", "telefono": "+32 2 764 11 11", "direccion": "Av. Hippocrate 10"},
@@ -112,12 +112,12 @@ EMERGENCIAS = {
             "🚑 Ambulancia": "112",
         },
         "embajada_peru": {
-            "nombre": "Embajada del Perú en La Haya",
-            "direccion": "Nassauplein 4, 2585 EA La Haya",
-            "telefono": "+31 70 365 3500",
-            "email": "embajada@embajadaperu.nl",
+            "nombre": "Consulado General del Perú en Ámsterdam",
+            "direccion": "De Boelelaan 7, piso 3, 1083 HJ Ámsterdam",
+            "telefono": "+31 70 365 3500 (Embajada, La Haya)",
+            "email": "consulado.pe/es/Amsterdam",
             "horario": "Lunes a Viernes: 09:00 – 13:00",
-            "emergencias_24h": "+31 70 365 3500",
+            "emergencias_24h": "+31 6 31945831",
         },
         "hospitales": [
             {"nombre": "Amsterdam UMC", "telefono": "+31 20 566 9111", "direccion": "Meibergdreef 9"},
@@ -134,13 +134,32 @@ EMERGENCIAS = {
 
 # ── Datos del seguro de viaje ──────────────────────────────────────────────
 SEGURO = {
-    "costo": "S/. 558.84",
+    "plan": "GOLD C19 — Interseguro (asistencia ILS)",
+    "poliza": "A66-8JIEDM",
+    "referencia": "101275418",
+    "vigencia": "14/07/2026 – 30/07/2026 · cobertura mundial",
+    "costo": "USD 171.99 (S/. 558.84)",
     "cobertura": "3 personas — toda la familia",
-    "nota": "Guarda el número de póliza y teléfono de asistencia en tu celular",
+    "asistencia": {
+        "🇪🇸 España": "900 838 022 / 900 938 719",
+        "🇫🇷 Francia": "0805 089 450",
+        "📱 WhatsApp": "+1 863 204 2770",
+        "✉️ Email": "assistance@ilsols.com",
+    },
+    "coberturas": [
+        ("Médico por accidente/enfermedad (incl. COVID)", "€30,000"),
+        ("Emergencia dental", "USD 300"),
+        ("Traslado/repatriación médica o funeraria", "€30,000"),
+        ("Pérdida de equipaje", "USD 1,200"),
+        ("Demora de equipaje", "USD 400"),
+        ("Cancelación de viaje", "USD 1,000"),
+        ("Demora de vuelo +60 min", "Sala VIP + USD/EUR 150"),
+    ],
+    "nota": "Lleva el N° de póliza y los teléfonos de asistencia guardados en el celular y offline",
     "consejos": [
         "Guarda una foto de la póliza en Google Photos",
-        "Anota el número de asistencia 24h antes de salir de Lima",
-        "En caso de emergencia médica, llama primero al seguro antes de ir al hospital",
+        "Ante una emergencia médica, llama primero al seguro antes de ir al hospital",
+        "El beneficio SmartDelay da sala VIP si el vuelo se demora 60+ min: regístralo en travelregistration.online",
         "Guarda todos los recibos médicos — son necesarios para el reembolso",
     ]
 }
@@ -222,7 +241,7 @@ def mostrar():
         st.divider()
 
         # Embajada peruana
-        st.subheader("🇵🇪 Embajada del Perú")
+        st.subheader("🇵🇪 Consulado del Perú")
         emb = datos["embajada_peru"]
         col1, col2 = st.columns(2)
         with col1:
@@ -258,11 +277,23 @@ def mostrar():
     with tab_seguro:
         st.subheader("🛡️ Tu Seguro de Viaje")
 
-        col1, col2 = st.columns(2)
-        with col1:
-            st.metric("Costo pagado", SEGURO["costo"])
-        with col2:
-            st.metric("Cobertura", SEGURO["cobertura"])
+        st.markdown(f"**Plan:** {SEGURO['plan']}")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("N° de póliza", SEGURO["poliza"])
+        col2.metric("Costo pagado", SEGURO["costo"])
+        col3.metric("Cobertura", SEGURO["cobertura"])
+        st.caption(f"📅 Vigencia: {SEGURO['vigencia']} · Ref. {SEGURO['referencia']}")
+
+        st.markdown("**📞 Asistencia 24h:**")
+        for lugar, num in SEGURO["asistencia"].items():
+            st.write(f"• {lugar}: `{num}`")
+        st.caption("Bélgica y Países Bajos no tienen número local: usa el WhatsApp o el email de asistencia.")
+
+        with st.expander("📋 Coberturas principales"):
+            for item, monto in SEGURO["coberturas"]:
+                c1, c2 = st.columns([3, 1])
+                c1.write(f"• {item}")
+                c2.write(f"**{monto}**")
 
         st.warning(f"⚠️ {SEGURO['nota']}")
 
@@ -272,7 +303,7 @@ def mostrar():
             "2️⃣ Llama al número de asistencia 24h de tu seguro",
             "3️⃣ Ve al hospital más cercano indicado por el seguro",
             "4️⃣ Guarda TODOS los recibos y documentos médicos",
-            "5️⃣ Notifica a la embajada peruana si es grave",
+            "5️⃣ Notifica al consulado peruano si es grave",
         ]
         for paso in pasos:
             st.write(paso)
@@ -415,7 +446,7 @@ def mostrar():
                 "1️⃣ Ve inmediatamente a la embajada o consulado peruano más cercano",
                 "2️⃣ Lleva la fotocopia del pasaporte y una foto carnet",
                 "3️⃣ Denuncia la pérdida ante la policía local (necesitas el parte policial)",
-                "4️⃣ La embajada te emitirá un pasaporte de emergencia en 24-48h",
+                "4️⃣ El consulado te emitirá un pasaporte o salvoconducto de emergencia en 24-48h",
                 "5️⃣ Notifica a tu seguro de viaje — puede cubrir los gastos",
             ]
             for paso in pasos:

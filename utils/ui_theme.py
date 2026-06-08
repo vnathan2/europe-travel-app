@@ -306,14 +306,14 @@ def render_menu_fab():
 
 LOADING_MESSAGES = {
     "travel_concierge": [
-        "☕ Cleo está preparando su café parisino...",
+        "☕ Lady está preparando su café parisino...",
         "🗺️ Consultando los mejores rincones de Europa...",
         "✈️ Revisando horarios de vuelo...",
         "🎭 Buscando experiencias únicas para la familia...",
     ],
     "train_optimizer": [
         "🚄 Calculando la ruta más rápida...",
-        "🇪🇺 Consultando Renfe, SNCF y Eurostar...",
+        "🇪🇺 Consultando Alsa, SNCF y Eurostar...",
         "⏱️ Comparando tiempos y precios...",
         "🎫 Verificando disponibilidad de asientos...",
     ],
@@ -426,7 +426,7 @@ OFFLINE_DATA = {
         "título": "🏨 Hoteles y Direcciones",
         "datos": {
             "Madrid":    "Confirmar al reservar — cerca Gran Vía recomendado",
-            "Bayona":    "Confirmar al reservar — centro histórico",
+            "Bayona":    "🏠 Casa familiar — dirección guardada en contactos",
             "París":     "Confirmar al reservar — cerca Gare Montparnasse",
             "Bruselas":  "Confirmar al reservar — cerca Grand Place",
             "Ámsterdam": "🏠 Casa familiar — dirección guardada en contactos",
@@ -438,7 +438,7 @@ OFFLINE_DATA = {
             "Ida":      "LIM → MAD | 14 Jul 10:20am → 15 Jul 05:10am",
             "Vuelta 1": "AMS → MAD | 30 Jul ~15:00",
             "Vuelta 2": "MAD → LIM | 30 Jul 23:45",
-            "Terminal": "Barajas T4 para vuelo de regreso",
+            "Terminal": "Barajas T1 (Air Europa, ida y vuelta)",
         }
     },
 }
@@ -503,9 +503,10 @@ MENU_SECTIONS = [
     {
         "seccion": "🗺️ Planificación",
         "items": [
-            #{"key": "🤖 Travel Concierge",    "id": "travel_concierge", "desc": "Cleo + itinerario + alertas"},
+            #{"key": "🤖 Travel Concierge",    "id": "travel_concierge", "desc": "Lady + itinerario + alertas"},
             {"key": "📋 Itinerario",          "id": "itinerary_tracker","desc": "Checks del día"},
             {"key": "🚄 Trenes",              "id": "train_optimizer",  "desc": "Rutas y horarios"},
+            {"key": "🏨 Hoteles",             "id": "hoteles",          "desc": "Reservas por ciudad"},
         ]
     },
     {

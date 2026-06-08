@@ -283,11 +283,11 @@ def mostrar():
         )
 
         presupuesto_eur = {
-            "Madrid (4 días)":    1650,
-            "Bayona (2 días)":     750,
-            "París (4 días)":     2550,
-            "Bruselas (2 días)":   785,
-            "Ámsterdam (4 días)": 1130,
+            "Madrid (15-18 jul)":         1650,
+            "Bayona (19-20, familia)":     350,
+            "París (21-24 jul)":          2550,
+            "Bruselas (25-26 jul)":        785,
+            "Ámsterdam (27-30, familia)":  650,
         }
 
         tasa_actual = tasa_pen

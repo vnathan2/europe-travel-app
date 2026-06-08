@@ -24,9 +24,9 @@ CUMPLEANOS = {
         "emoji": "🎀",
         "plan_confirmado": {
             "actividad_principal": "Parque Warner Madrid",
-            "detalle": "Día completo en el parque (09:30–18:00), €32.90 pp",
-            "traslado": "Taxi desde hotel ~€40, 40 min",
-            "cena": "Cena especial en StreetXO (Serrano 52) — €45 pp, rating 4.6/5",
+            "detalle": "Tarde y noche en el parque (abre 12:00; en julio cierra 00:00)",
+            "traslado": "Taxi o Cercanías desde el hotel, ~40 min",
+            "cena": "Cena especial en StreetXO (Serrano 52) — rating 4.6/5",
         },
         "perfil": "Adolescente de 15 años, le gustan los parques de diversiones, la música, la moda y las experiencias únicas. Está de viaje por primera vez en Europa.",
         "alternativas_actividades": [
@@ -68,9 +68,9 @@ CUMPLEANOS = {
         "emoji": "🌹",
         "plan_confirmado": {
             "actividad_principal": "Llegada a París en TGV desde Bayona",
-            "detalle": "Tren sale ~08:00 de Bayona, llega ~13:00 a Gare Montparnasse",
-            "tarde": "Torre Eiffel (€28pp) → Arco del Triunfo (€13pp) → Crucero Sena (€20pp)",
-            "cena": "Cena especial en Le Train Bleu (Gare de Lyon) — €60 pp, rating 4.7/5",
+            "detalle": "Tren sale 10:00 de Bayona, llega 14:30 a Gare Montparnasse",
+            "tarde": "Torre Eiffel → Arco del Triunfo (Camila gratis, menor de 18) → Crucero por el Sena",
+            "cena": "Cena especial en Le Train Bleu (Gare de Lyon) — rating 4.7/5",
         },
         "perfil": "Mujer de 46 años que cumple años llegando a París por primera vez. Le gustan la gastronomía, la cultura, los lugares románticos y las experiencias únicas. Es un momento muy especial.",
         "alternativas_actividades": [

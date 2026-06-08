@@ -19,30 +19,31 @@ Familia: Jonathan (46), Giovanna (46, cumpleaños 21 julio), Camila (cumple 15 a
 Presupuesto disponible: S/. 31,941 (~€7,985)
 
 === VUELOS ===
-Ida: Lima → Madrid | 14 jul 10:20am → 15 jul 05:10am
-Vuelta: Ámsterdam → Madrid 30 jul ~15:00 → Madrid → Lima 30 jul 23:45
+Ida: Lima → Madrid | Air Europa UX176, 14 jul 10:20 → 15 jul 05:10 (Barajas T1)
+Vuelta: Ámsterdam → Madrid 30 jul 15:00 (Iberia/KLM) → Lima Air Europa UX175, 23:45 (Barajas T1). TICKETS SEPARADOS: tomar el de las 15:00 por 5-6h de margen.
 
-=== MADRID (15-18 julio) ===
-Día 17 CUMPLEAÑOS CAMILA 15 AÑOS: Parque Warner → StreetXO
-Día 18: Tour Bernabéu → El Botín → Gran Vía → Mercado San Miguel
+=== MADRID (15-18 julio, 3 noches de hotel) ===
+Día 17 CUMPLEAÑOS CAMILA 15 AÑOS: Parque Warner (abre 12:00, cierra 00:00 en julio) → StreetXO
+Día 18: Tour Bernabéu → Gran Vía → Mercado San Miguel; en la noche, bus a Bayona (sale 23:00)
 
-=== BAYONA (19-20 julio) ===
-Tren Madrid→Hendaya→Bayona (~5-6h, €70-80pp)
+=== BAYONA (19-20 julio) — casa familiar GRATIS ===
+Bus nocturno Madrid→Bayona (Alsa/FlixBus, sale 23:00 del 18, llega ~05:00; €117.91 los 3)
 
 === PARÍS (21-24 julio) ===
-TGV Bayona→París (~4.5h, €60-70pp)
+TGV INOUI Bayona→París (10:00 → 14:30; €235.19 los 3)
 Día 21 CUMPLEAÑOS GIOVANNA 46 AÑOS: Torre Eiffel → Arco del Triunfo → Crucero Sena → Le Train Bleu
-Día 23: Versalles | Día 24: Disneyland París
+Día 22: Louvre → Notre Dame → Sainte Chapelle
+Día 23: Versalles | Día 24: Disneyland París (2 parques)
 
 === BRUSELAS (25-26 julio) ===
-Eurostar París→Bruselas (~1.5h, €35-50pp)
+Eurostar París→Bruselas (08:50 → 10:20; €177.49 los 3)
 
 === ÁMSTERDAM (27-30 julio) — casa familiar GRATIS ===
-Eurostar Bruselas→Ámsterdam (~2h, €30-50pp)
+Eurostar Bruselas→Ámsterdam (08:20 → 10:20; €186.49 los 3)
 Día 27: Plaza Dam → Ana Frank → De Kas
 Día 28: Van Gogh → Rijksmuseum
 Día 29: Zaanse Schans → Crucero canales
-Día 30 REGRESO: AMS→MAD→LIM
+Día 30 REGRESO: AMS→MAD (15:00) → LIM (23:45)
 
 === PRESUPUESTO ===
 Madrid: ~€1,600-1,700 | Bayona: ~€700-800 | París: ~€2,500-2,600
@@ -334,8 +335,8 @@ COORDS_ACTIVIDAD = {
     "ams_13": (52.3733,  4.8808, "Moeders Amsterdam"),
     "ret_01": (52.3080,  4.7642, "Aeropuerto Schiphol Amsterdam"),
     "ret_02": (52.3080,  4.7642, "Aeropuerto Schiphol Amsterdam"),
-    "ret_03": (40.4936, -3.5773, "Aeropuerto Barajas Madrid T4"),
-    "ret_04": (40.4936, -3.5773, "Aeropuerto Barajas Madrid T4"),
+    "ret_03": (40.4936, -3.5773, "Aeropuerto Barajas Madrid T1"),
+    "ret_04": (40.4936, -3.5773, "Aeropuerto Barajas Madrid T1"),
 }
 
 
@@ -425,7 +426,7 @@ ITINERARIO_CHECKS = [
         "especial": None,
         "actividades": [
             {"id": "mad_01", "hora": "05:10", "tipo": "transporte",
-             "icono": "🛬", "nombre": "Llegada Barajas T4",
+             "icono": "🛬", "nombre": "Llegada Barajas T1",
              "detalle": "Taxi al hotel ~€30, 30-40 min", "costo": 30},
             {"id": "mad_02", "hora": "09:00", "tipo": "restaurante",
              "icono": "🍳", "nombre": "Desayuno Brunchit Chueca",
@@ -466,10 +467,10 @@ ITINERARIO_CHECKS = [
         "fecha": "Vie 17 Jul", "ciudad": "Madrid", "emoji": "🇪🇸",
         "especial": "🎂 CUMPLEAÑOS CAMILA — 15 AÑOS",
         "actividades": [
-            {"id": "mad_11", "hora": "08:00", "tipo": "transporte",
+            {"id": "mad_11", "hora": "11:00", "tipo": "transporte",
              "icono": "🚕", "nombre": "Taxi al Parque Warner",
              "detalle": "~40 min, €40 ida", "costo": 40},
-            {"id": "mad_12", "hora": "09:30", "tipo": "atraccion",
+            {"id": "mad_12", "hora": "12:00", "tipo": "atraccion",
              "icono": "🎢", "nombre": "Parque Warner Madrid",
              "detalle": "San Martín de la Vega — €32.90pp", "costo": 99},
             {"id": "mad_13", "hora": "20:00", "tipo": "restaurante",
@@ -493,15 +494,18 @@ ITINERARIO_CHECKS = [
             {"id": "mad_17", "hora": "19:00", "tipo": "restaurante",
              "icono": "🥘", "nombre": "Cena Mercado San Miguel",
              "detalle": "Plaza de San Miguel — €25pp", "costo": 80},
+            {"id": "mad_18", "hora": "23:00", "tipo": "transporte",
+             "icono": "🚌", "nombre": "Bus nocturno Madrid → Bayona",
+             "detalle": "Alsa/FlixBus desde Méndez Álvaro, llega ~05:00 · €117.91 los 3", "costo": 118},
         ]
     },
     {
         "fecha": "Dom 19 Jul", "ciudad": "Bayona", "emoji": "🇫🇷",
         "especial": None,
         "actividades": [
-            {"id": "bay_01", "hora": "08:00", "tipo": "transporte",
-             "icono": "🚄", "nombre": "Tren Madrid → Bayona",
-             "detalle": "AVE + cambio Hendaya ~5-6h, €75pp", "costo": 225},
+            {"id": "bay_01", "hora": "05:00", "tipo": "transporte",
+             "icono": "🚌", "nombre": "Llegada a Bayona (bus nocturno)",
+             "detalle": "Hospedaje familiar — descansar al llegar · €0", "costo": 0},
             {"id": "bay_02", "hora": "14:00", "tipo": "restaurante",
              "icono": "🍽️", "nombre": "Almuerzo Bakera",
              "detalle": "38 Rue d'Espagne — €25pp", "costo": 75},
@@ -541,9 +545,9 @@ ITINERARIO_CHECKS = [
         "fecha": "Mar 21 Jul", "ciudad": "París", "emoji": "🇫🇷",
         "especial": "🌹 CUMPLEAÑOS GIOVANNA — 46 AÑOS EN PARÍS",
         "actividades": [
-            {"id": "par_01", "hora": "08:00", "tipo": "transporte",
-             "icono": "🚄", "nombre": "TGV Bayona → París",
-             "detalle": "Gare Montparnasse ~4.5h, €65pp", "costo": 195},
+            {"id": "par_01", "hora": "10:00", "tipo": "transporte",
+             "icono": "🚄", "nombre": "TGV INOUI Bayona → París",
+             "detalle": "Gare Montparnasse 10:00→14:30 · €235.19 los 3", "costo": 235},
             {"id": "par_02", "hora": "14:30", "tipo": "restaurante",
              "icono": "🥐", "nombre": "Angelina Paris",
              "detalle": "226 Rue de Rivoli — €30pp", "costo": 90},
@@ -714,14 +718,14 @@ ITINERARIO_CHECKS = [
              "icono": "🚗", "nombre": "Traslado al aeropuerto Schiphol",
              "detalle": "Taxi ~€35 o tren €5", "costo": 35},
             {"id": "ret_02", "hora": "15:00", "tipo": "transporte",
-             "icono": "✈️", "nombre": "Vuelo AMS → Madrid",
-             "detalle": "Schiphol → Barajas ~2.5h", "costo": 300},
+             "icono": "✈️", "nombre": "Vuelo AMS → Madrid (Iberia/KLM)",
+             "detalle": "Schiphol → Barajas 15:00→17:40 · €613.19 los 3 (Iberia)", "costo": 613},
             {"id": "ret_03", "hora": "20:00", "tipo": "restaurante",
              "icono": "🍽️", "nombre": "Cena aeropuerto Barajas",
-             "detalle": "Terminal 4 — €20pp", "costo": 60},
+             "detalle": "Terminal 1 — €20pp", "costo": 60},
             {"id": "ret_04", "hora": "23:45", "tipo": "transporte",
              "icono": "✈️", "nombre": "Vuelo Madrid → Lima",
-             "detalle": "Barajas T4 → LIM — ya reservado", "costo": 0},
+             "detalle": "Air Europa UX175, Barajas T1 → LIM — ya reservado", "costo": 0},
         ]
     },
 ]
@@ -1051,7 +1055,7 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
 
 > 🌧️ **Lluvia prevista** a las 16:30 — Parque del Retiro
 > 🌡️ 18°C · 80% probabilidad de lluvia
-> 💡 Cleo sugiere alternativas bajo techo cercanas
+> 💡 Lady sugiere alternativas bajo techo cercanas
 
 **Ejemplo — próxima actividad:**
 
