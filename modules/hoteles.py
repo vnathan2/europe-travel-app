@@ -24,7 +24,7 @@ CIUDAD_EMOJI = {
 # Fechas planeadas por ciudad: (check-in default, check-out default, # noches)
 # Basado en CLAUDE.md "Hoja de ruta del viaje". Ámsterdam = casa familiar.
 RANGO_POR_CIUDAD = {
-    "Madrid":    (date(2026, 7, 15), date(2026, 7, 19), 4),
+    "Madrid":    (date(2026, 7, 15), date(2026, 7, 18), 3),
     "Bayona":    (date(2026, 7, 19), date(2026, 7, 21), 2),
     "París":     (date(2026, 7, 21), date(2026, 7, 25), 4),
     "Bruselas":  (date(2026, 7, 25), date(2026, 7, 27), 2),
@@ -40,6 +40,15 @@ TECHO_NOCHE_EUR = {
     "París":     175,
     "Bruselas":  130,
     "Ámsterdam":   0,
+}
+
+# ── Nota de logística por ciudad (check-out, consigna, traslado) ───────────
+NOTA_LOGISTICA = {
+    "Madrid": "Check-out el 18 por la mañana. Deja las maletas en la consigna del hotel y recógelas antes del bus nocturno a Bayona (sale ~23:00, normalmente desde Estación Sur Méndez Álvaro). Confirma el horario de la consigna y la terminal del bus.",
+    "Bayona": "Check-out el 21. Ese día toman el TGV a París; si el tren es por la tarde, deja las maletas en la consigna del hotel o en la estación de Bayona. Confirma la hora del tren.",
+    "París": "Check-out el 25 por la mañana. Salen en Eurostar a Bruselas desde Gare du Nord; deja las maletas en consigna y llega con margen por el control de Eurostar.",
+    "Bruselas": "Check-out el 27. Salen en tren a Ámsterdam desde Bruxelles-Midi; si el tren es más tarde, usa la consigna. Confirma la hora.",
+    "Ámsterdam": "Casa familiar, sin check-out de hotel. El 30 conviene salir temprano a Schiphol (vuelo AMS→MAD ~14:00-15:00) para tener margen antes del vuelo a Lima (UX175 23:45, tickets separados).",
 }
 
 
@@ -258,9 +267,18 @@ def mostrar():
         estado_emoji = "✅" if hotel_actual.get("estado") == "reservado" else "⏳"
         nombre_label = hotel_actual.get("nombre") or "Sin reservar"
 
+        ver_precios = st.session_state.get("_show_prices", False)
+        techo_noche = TECHO_NOCHE_EUR.get(ciudad, 0)
+        if es_amsterdam:
+            techo_label = "  ·  🏠 gratis"
+        elif ver_precios:
+            techo_label = f"  ·  🎯 €{techo_noche}/noche"
+        else:
+            techo_label = ""
+
         with st.expander(
             f"{emoji} {ciudad}  ·  {ci_def:%d %b} → {co_def:%d %b} "
-            f"({noches}n)  ·  {estado_emoji} {nombre_label}",
+            f"({noches}n){techo_label}  ·  {estado_emoji} {nombre_label}",
             expanded=False,
         ):
             if es_amsterdam:
@@ -287,6 +305,9 @@ def mostrar():
                             f"✅ Dentro del techo: te quedan "
                             f"€{techo_total - costo_actual:,.0f} de margen."
                         )
+
+            if ciudad in NOTA_LOGISTICA:
+                st.caption(f"🧳 {NOTA_LOGISTICA[ciudad]}")
 
             form_result = _form_hotel(ciudad, hotel_actual, ci_def, co_def, es_amsterdam)
 
