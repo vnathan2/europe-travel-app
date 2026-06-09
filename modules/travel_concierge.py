@@ -427,20 +427,20 @@ ITINERARIO_CHECKS = [
         "actividades": [
             {"id": "mad_01", "hora": "05:10", "tipo": "transporte",
              "icono": "🛬", "nombre": "Llegada Barajas T1",
-             "detalle": "Taxi al hotel ~€30, 30-40 min", "costo": 30},
-            {"id": "mad_02", "hora": "09:00", "tipo": "restaurante",
-             "icono": "🍳", "nombre": "Desayuno Brunchit Chueca",
+             "detalle": "Taxi oficial parada T1 planta 0 · Tarifa 4 fija €33 · ~30-40 min a Malasaña", "costo": 33},
+            {"id": "mad_02", "hora": "06:00", "tipo": "atraccion",
+             "icono": "🏨", "nombre": "Check-in y descanso",
+             "detalle": "Gran Central Suites · C/ de las Minas 12 · descansar hasta mediodía", "costo": 0},
+            {"id": "mad_03", "hora": "12:30", "tipo": "restaurante",
+             "icono": "🍳", "nombre": "Brunch Brunchit Chueca",
              "detalle": "C/ Pelayo 18 — €15pp", "costo": 45},
-            {"id": "mad_03", "hora": "11:30", "tipo": "atraccion",
-             "icono": "🎨", "nombre": "Museo del Prado",
-             "detalle": "Paseo del Prado s/n — €15pp", "costo": 45},
-            {"id": "mad_04", "hora": "14:30", "tipo": "restaurante",
-             "icono": "🍽️", "nombre": "Almuerzo Los Montes de Galicia",
-             "detalle": "C/ Echegaray 17 — €25pp", "costo": 75},
-            {"id": "mad_05", "hora": "16:30", "tipo": "atraccion",
-             "icono": "🌳", "nombre": "Parque del Retiro",
-             "detalle": "Plaza de la Independencia — Gratis", "costo": 0},
-            {"id": "mad_06", "hora": "20:00", "tipo": "restaurante",
+            {"id": "mad_04", "hora": "14:30", "tipo": "atraccion",
+             "icono": "🎨", "nombre": "Museo Thyssen-Bornemisza",
+             "detalle": "Paseo del Prado 8 · Abono Paseo del Arte incluido · Camila gratis · ~1.5h", "costo": 0, "pagado": True},
+            {"id": "mad_05", "hora": "17:00", "tipo": "compras",
+             "icono": "🛍️", "nombre": "Paseo Gran Vía",
+             "detalle": "Zara, Sephora, El Corte Inglés Serrano 47 · ambiente nocturno", "costo": 0},
+            {"id": "mad_06", "hora": "20:30", "tipo": "restaurante",
              "icono": "🍷", "nombre": "Cena Taberna El Sur",
              "detalle": "C/ Torrecilla del Leal 12 — €20pp", "costo": 60},
         ]
@@ -449,16 +449,19 @@ ITINERARIO_CHECKS = [
         "fecha": "Jue 16 Jul", "ciudad": "Madrid", "emoji": "🇪🇸",
         "especial": None,
         "actividades": [
-            {"id": "mad_07", "hora": "09:00", "tipo": "atraccion",
-             "icono": "👑", "nombre": "Palacio Real",
-             "detalle": "C/ Bailén s/n — €12pp", "costo": 36},
-            {"id": "mad_08", "hora": "12:00", "tipo": "restaurante",
-             "icono": "🍽️", "nombre": "Almuerzo Rosi La Loca",
-             "detalle": "C/ Cuchilleros 3 — €25pp", "costo": 75},
-            {"id": "mad_09", "hora": "15:00", "tipo": "atraccion",
+            {"id": "mad_07", "hora": "09:30", "tipo": "restaurante",
+             "icono": "🍳", "nombre": "Desayuno en Malasaña",
+             "detalle": "Zona C/ de las Minas · €10pp", "costo": 30},
+            {"id": "mad_08", "hora": "11:00", "tipo": "atraccion",
+             "icono": "⚽", "nombre": "Tour Santiago Bernabéu",
+             "detalle": "Av. Concha Espina 1 · entradas compradas · ~1.5h · Metro L10 desde Tribunal", "costo": 0, "pagado": True},
+            {"id": "mad_09", "hora": "13:00", "tipo": "restaurante",
+             "icono": "🍽️", "nombre": "Almuerzo zona Castellana",
+             "detalle": "Cerca del Bernabéu — €25pp", "costo": 75},
+            {"id": "mad_10", "hora": "16:00", "tipo": "atraccion",
              "icono": "🎨", "nombre": "Museo Reina Sofía",
-             "detalle": "C/ Santa Isabel 52 — €12pp", "costo": 36},
-            {"id": "mad_10", "hora": "19:00", "tipo": "restaurante",
+             "detalle": "C/ Santa Isabel 52 · Abono incluido · Guernica · Camila gratis · ~2h", "costo": 0, "pagado": True},
+            {"id": "mad_11", "hora": "20:00", "tipo": "restaurante",
              "icono": "🍷", "nombre": "Cena La Bola Taberna",
              "detalle": "C/ Bola 5 — €30pp", "costo": 90},
         ]
@@ -467,36 +470,45 @@ ITINERARIO_CHECKS = [
         "fecha": "Vie 17 Jul", "ciudad": "Madrid", "emoji": "🇪🇸",
         "especial": "🎂 CUMPLEAÑOS CAMILA — 15 AÑOS",
         "actividades": [
-            {"id": "mad_11", "hora": "11:00", "tipo": "transporte",
+            {"id": "mad_12", "hora": "10:30", "tipo": "transporte",
              "icono": "🚕", "nombre": "Taxi al Parque Warner",
-             "detalle": "~40 min, €40 ida", "costo": 40},
-            {"id": "mad_12", "hora": "12:00", "tipo": "atraccion",
+             "detalle": "~40 min · €40 ida · Uber o taxi convencional", "costo": 40},
+            {"id": "mad_13", "hora": "12:00", "tipo": "atraccion",
              "icono": "🎢", "nombre": "Parque Warner Madrid",
-             "detalle": "San Martín de la Vega — €32.90pp", "costo": 99},
-            {"id": "mad_13", "hora": "20:00", "tipo": "restaurante",
+             "detalle": "San Martín de la Vega · entradas compradas incl. Expediente Warren · abre 12:00", "costo": 0, "pagado": True},
+            {"id": "mad_14", "hora": "21:00", "tipo": "restaurante",
              "icono": "🎂", "nombre": "Cena especial StreetXO",
-             "detalle": "C/ Serrano 52 — €45pp", "costo": 135},
+             "detalle": "El Corte Inglés · Serrano 47 (3ª planta) · Sol Repsol · €45pp · reserva imprescindible", "costo": 135},
         ]
     },
     {
         "fecha": "Sáb 18 Jul", "ciudad": "Madrid", "emoji": "🇪🇸",
         "especial": None,
         "actividades": [
-            {"id": "mad_14", "hora": "09:00", "tipo": "atraccion",
-             "icono": "⚽", "nombre": "Tour Santiago Bernabéu",
-             "detalle": "Av. Concha Espina 1 — €28pp", "costo": 84},
-            {"id": "mad_15", "hora": "12:30", "tipo": "restaurante",
-             "icono": "🍽️", "nombre": "Almuerzo El Botín",
-             "detalle": "C/ Cuchilleros 17 — €35pp", "costo": 105},
-            {"id": "mad_16", "hora": "15:00", "tipo": "compras",
-             "icono": "🛍️", "nombre": "Compras Gran Vía",
-             "detalle": "Zara, H&M, El Corte Inglés", "costo": 0},
-            {"id": "mad_17", "hora": "19:00", "tipo": "restaurante",
-             "icono": "🥘", "nombre": "Cena Mercado San Miguel",
-             "detalle": "Plaza de San Miguel — €25pp", "costo": 80},
-            {"id": "mad_18", "hora": "23:00", "tipo": "transporte",
-             "icono": "🚌", "nombre": "Bus nocturno Madrid → Bayona",
-             "detalle": "Alsa/FlixBus desde Méndez Álvaro, llega ~05:00 · €117.91 los 3", "costo": 118},
+            {"id": "mad_15", "hora": "09:00", "tipo": "atraccion",
+             "icono": "🧳", "nombre": "Dejar maletas en custodia del hotel",
+             "detalle": "Gran Central Suites · custodia confirmada hasta 22:00 · gratis", "costo": 0},
+            {"id": "mad_16", "hora": "10:00", "tipo": "atraccion",
+             "icono": "🎨", "nombre": "Museo del Prado",
+             "detalle": "Paseo del Prado s/n · Abono incluido · Camila gratis · ~2.5h", "costo": 0, "pagado": True},
+            {"id": "mad_17", "hora": "13:00", "tipo": "restaurante",
+             "icono": "🍽️", "nombre": "Almuerzo zona Retiro",
+             "detalle": "Cerca del Prado — €25pp", "costo": 75},
+            {"id": "mad_18", "hora": "15:00", "tipo": "atraccion",
+             "icono": "👑", "nombre": "Palacio Real",
+             "detalle": "C/ Bailén s/n · €14pp adultos · ~1.5h", "costo": 42},
+            {"id": "mad_19", "hora": "17:30", "tipo": "compras",
+             "icono": "🛍️", "nombre": "Gran Vía + Mercado San Miguel",
+             "detalle": "Compras y tapeo · Plaza de San Miguel s/n", "costo": 50},
+            {"id": "mad_20", "hora": "20:00", "tipo": "atraccion",
+             "icono": "🧳", "nombre": "Recoger maletas del hotel",
+             "detalle": "Gran Central Suites · C/ de las Minas 12", "costo": 0},
+            {"id": "mad_21", "hora": "20:30", "tipo": "transporte",
+             "icono": "🚕", "nombre": "Taxi hotel → T4 Aeropuerto (bus ALSA)",
+             "detalle": "T4 Aeropuerto Barajas · ~25 km desde Malasaña · €35-40 en taxi · salir ~20:30", "costo": 38},
+            {"id": "mad_22", "hora": "23:00", "tipo": "transporte",
+             "icono": "🚌", "nombre": "Bus ALSA Madrid → Bayona",
+             "detalle": "Sale T4 Aeropuerto Madrid 23:00 · llega Bayonne Quai de Lesseps 04:50 · tickets comprados", "costo": 0, "pagado": True},
         ]
     },
     {
@@ -942,25 +954,20 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                 f"{acts_ok}/{total_dia} ✓"
             )
             with st.expander(label_dia, expanded=False):
-                _esp = dia.get("especial")
-                _esp_html = (
-                    f'<span style="background:#ffffff2e; color:#fff; font:600 11px Barlow;'
-                    f' padding:5px 11px; border-radius:20px; white-space:nowrap;">{_esp}</span>'
-                    if _esp else ""
-                )
-                st.markdown(f"""
-<div class="et-citybar" style="margin-bottom:10px;">
-  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:10px;">
-    <div>
-      <div class="et-citybar-title">{dia['emoji']} {dia['fecha']}</div>
-      <div class="meta">📍 {dia['ciudad']} · {acts_ok}/{total_dia} actividades</div>
-    </div>
-    {_esp_html}
-  </div>
-</div>
-""", unsafe_allow_html=True)
+                col1, col2, col3 = st.columns([3, 2, 1])
+                with col1:
+                    st.markdown(f"### {dia['emoji']} {dia['fecha']}")
+                    st.caption(f"📍 {dia['ciudad']}")
+                with col2:
+                    if dia.get("especial"):
+                        st.success(dia["especial"])
+                with col3:
+                    st.metric("Progreso día", f"{acts_ok}/{total_dia}")
+
                 if acts_ok == total_dia:
                     st.success("🎉 ¡Día completado!")
+
+                st.divider()
 
                 for act in dia["actividades"]:
                     act_id = act["id"]
@@ -968,44 +975,36 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                     completado = check_data.get("completado", False)
                     fuera = check_data.get("fuera_orden", False)
 
-                    _bcls = {
-                        "transporte": "et-b-trans", "restaurante": "et-b-food",
-                        "atraccion": "et-b-see", "compras": "et-b-see",
-                    }.get(act.get("tipo", ""), "et-b-see")
-                    if st.session_state.get("_show_prices", False):
-                        _cost = (
-                            f'<span class="et-t et-t-rate">€{act["costo"]} · S/.{act["costo"]*4}</span>'
-                            if act["costo"] > 0
-                            else '<span class="et-t et-t-free">Gratis</span>'
-                        )
-                    else:
-                        _cost = (
-                            '<span class="et-t et-t-info">🔒</span>'
-                            if act["costo"] > 0
-                            else '<span class="et-t et-t-free">Gratis</span>'
-                        )
-                    _fuera = '<span class="et-t et-t-info">🔀 fuera de orden</span>' if fuera else ""
-                    _dim = "opacity:.5;" if completado else ""
-                    _strike = "text-decoration:line-through;" if completado else ""
-                    col_chk, col_card = st.columns([0.55, 6])
-                    with col_chk:
+                    col1, col2, col3, col4 = st.columns([0.4, 3.5, 1.5, 0.6])
+                    with col1:
+                        st.write(act["icono"])
+                    with col2:
+                        if completado:
+                            st.markdown(
+                                f"~~**{act['hora']}** — {act['nombre']}~~"
+                            )
+                            if fuera:
+                                st.caption("🔀 Visitado fuera de orden")
+                        else:
+                            st.markdown(
+                                f"**{act['hora']}** — {act['nombre']}"
+                            )
+                            st.caption(act["detalle"])
+                    with col3:
+                        _pagado = act.get("pagado", False)
+                        if _pagado:
+                            st.caption("✅ Pagado")
+                        elif st.session_state.get("_show_prices", False):
+                            st.caption(
+                                f"€{act['costo']} · S/.{act['costo']*4}"
+                                if act["costo"] > 0 else "Gratis"
+                            )
+                        else:
+                            st.caption("🔒" if act["costo"] > 0 else "Gratis")
+                    with col4:
                         nuevo_check = st.checkbox(
-                            "✓", value=completado, key=f"tc_{act_id}",
-                            label_visibility="collapsed",
+                            "✓", value=completado, key=f"tc_{act_id}"
                         )
-                    with col_card:
-                        st.markdown(f"""
-<div class="et-ec" style="{_dim}">
-  <div class="row">
-    <span class="et-badge {_bcls}">{act['icono']}</span>
-    <div>
-      <div class="title" style="{_strike}">{act['hora']} · {act['nombre']}</div>
-      <div class="addr">{act['detalle']}</div>
-    </div>
-  </div>
-  <div class="et-tags">{_cost}{_fuera}</div>
-</div>
-""", unsafe_allow_html=True)
 
                     if nuevo_check != completado:
                         fuera_nueva = False
