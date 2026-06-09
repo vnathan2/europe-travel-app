@@ -16,22 +16,30 @@ COLECCION = "hoteles"
 
 CIUDADES_VIAJE = ["Madrid", "Bayona", "París", "Bruselas", "Ámsterdam"]
 
-# Ciudades con hospedaje familiar: sin reserva, sin costo, sin búsqueda de Lady
-CIUDADES_FAMILIARES = {"Bayona", "Ámsterdam"}
-
 CIUDAD_EMOJI = {
     "Madrid": "🇪🇸", "Bayona": "🇫🇷", "París": "🇫🇷",
     "Bruselas": "🇧🇪", "Ámsterdam": "🇳🇱",
 }
 
 # Fechas planeadas por ciudad: (check-in default, check-out default, # noches)
-# Basado en CLAUDE.md "Hoja de ruta del viaje". Bayona y Ámsterdam = casa familiar.
+# Basado en CLAUDE.md "Hoja de ruta del viaje". Ámsterdam = casa familiar.
 RANGO_POR_CIUDAD = {
-    "Madrid":    (date(2026, 7, 15), date(2026, 7, 18), 3),
+    "Madrid":    (date(2026, 7, 15), date(2026, 7, 19), 4),
     "Bayona":    (date(2026, 7, 19), date(2026, 7, 21), 2),
     "París":     (date(2026, 7, 21), date(2026, 7, 25), 4),
     "Bruselas":  (date(2026, 7, 25), date(2026, 7, 27), 2),
     "Ámsterdam": (date(2026, 7, 27), date(2026, 7, 30), 3),
+}
+
+# ── Techo de hospedaje por noche (EUR) ────────────────────
+# Referencia para no pasarse del presupuesto al reservar.
+# Madrid/París/Bruselas set "Medio"; Bayona segun el plan; Ámsterdam es casa familiar.
+TECHO_NOCHE_EUR = {
+    "Madrid":    140,
+    "Bayona":    350,
+    "París":     175,
+    "Bruselas":  130,
+    "Ámsterdam":   0,
 }
 
 
@@ -137,7 +145,7 @@ buscar directamente en Booking con un link de búsqueda."""
 
 
 # ── 3. UI ─────────────────────────────────────────────────────────────────
-def _form_hotel(ciudad: str, hotel_actual: dict, ci_def, co_def, es_familiar: bool):
+def _form_hotel(ciudad: str, hotel_actual: dict, ci_def, co_def, es_amsterdam: bool):
     """Form de edición para un hotel. Devuelve dict con valores actuales del form."""
     ci_actual = (
         date.fromisoformat(hotel_actual["check_in"])
@@ -151,7 +159,7 @@ def _form_hotel(ciudad: str, hotel_actual: dict, ci_def, co_def, es_familiar: bo
     with st.form(f"form_hotel_{ciudad}", clear_on_submit=False):
         nombre = st.text_input(
             "Nombre del hotel:",
-            value=hotel_actual.get("nombre", "Casa familiar 🏠" if es_familiar else ""),
+            value=hotel_actual.get("nombre", "Casa familiar 🏠" if es_amsterdam else ""),
         )
         direccion = st.text_input("Dirección:", value=hotel_actual.get("direccion", ""))
 
@@ -245,7 +253,7 @@ def mostrar():
         emoji = CIUDAD_EMOJI.get(ciudad, "📍")
         ci_def, co_def, noches = RANGO_POR_CIUDAD[ciudad]
         hotel_actual = hoteles.get(ciudad, {})
-        es_familiar = ciudad in CIUDADES_FAMILIARES
+        es_amsterdam = ciudad == "Ámsterdam"
 
         estado_emoji = "✅" if hotel_actual.get("estado") == "reservado" else "⏳"
         nombre_label = hotel_actual.get("nombre") or "Sin reservar"
@@ -255,13 +263,32 @@ def mostrar():
             f"({noches}n)  ·  {estado_emoji} {nombre_label}",
             expanded=False,
         ):
-            if es_familiar:
+            if es_amsterdam:
                 st.info(
                     "🏠 **Casa familiar** — sin reserva ni costo. "
                     "Solo confirma la dirección y teléfono de contacto."
                 )
+            elif st.session_state.get("_show_prices", False):
+                techo_noche = TECHO_NOCHE_EUR.get(ciudad, 0)
+                techo_total = techo_noche * noches
+                costo_actual = float(hotel_actual.get("costo", 0.0) or 0)
+                st.caption(
+                    f"🎯 Techo de hospedaje: €{techo_noche}/noche · "
+                    f"€{techo_total:,} por {noches} noches"
+                )
+                if costo_actual > 0:
+                    if costo_actual > techo_total:
+                        st.warning(
+                            f"⚠️ La reserva (€{costo_actual:,.0f}) supera el techo "
+                            f"en €{costo_actual - techo_total:,.0f}. Revisa antes de confirmar."
+                        )
+                    else:
+                        st.success(
+                            f"✅ Dentro del techo: te quedan "
+                            f"€{techo_total - costo_actual:,.0f} de margen."
+                        )
 
-            form_result = _form_hotel(ciudad, hotel_actual, ci_def, co_def, es_familiar)
+            form_result = _form_hotel(ciudad, hotel_actual, ci_def, co_def, es_amsterdam)
 
             if form_result["_submit"]:
                 payload = {k: v for k, v in form_result.items() if not k.startswith("_")}
@@ -290,8 +317,8 @@ def mostrar():
                             use_container_width=True,
                         )
 
-            # Lady búsqueda (no aplica para ciudades con casa familiar)
-            if not es_familiar:
+            # Lady búsqueda (no aplica para Ámsterdam)
+            if not es_amsterdam:
                 st.markdown("---")
                 ci_para_lady = (
                     date.fromisoformat(hotel_actual["check_in"])
@@ -329,10 +356,20 @@ def mostrar():
                             )
                         st.rerun()
 
-    # Resumen al final: costo total (solo si ve precios)
+    # Resumen al final: costo total vs techo de hospedaje (admin ve montos)
     st.divider()
     total_eur = sum(float(h.get("costo", 0.0) or 0) for h in hoteles.values())
-    st.metric(
-        "💰 Costo total estimado",
-        mostrar_precio(f"€{total_eur:,.2f}"),
-    )
+    if st.session_state.get("_show_prices", False):
+        presupuesto_hosp = sum(
+            TECHO_NOCHE_EUR.get(c, 0) * RANGO_POR_CIUDAD[c][2] for c in CIUDADES_VIAJE
+        )
+        c1, c2 = st.columns(2)
+        c1.metric("💰 Costo total estimado", f"€{total_eur:,.2f}")
+        c2.metric("🎯 Techo de hospedaje", f"€{presupuesto_hosp:,.0f}")
+        disponible = presupuesto_hosp - total_eur
+        if disponible >= 0:
+            st.success(f"✅ Te quedan €{disponible:,.0f} dentro del techo de hospedaje.")
+        else:
+            st.warning(f"⚠️ Vas €{-disponible:,.0f} por encima del techo de hospedaje.")
+    else:
+        st.metric("💰 Costo total estimado", mostrar_precio(f"€{total_eur:,.2f}"))
