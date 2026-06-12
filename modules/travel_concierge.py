@@ -1,4 +1,3 @@
-# modules/travel_concierge.py
 import os
 import re
 from datetime import datetime
@@ -1315,7 +1314,7 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                                 f"{proxima['nombre']}**"
                             )
                             st.caption(proxima["detalle"])
-                            if proxima["costo"] > 0:
+                            if proxima["costo"] > 0 and st.session_state.get("_show_prices", False):
                                 st.caption(
                                     f"💶 €{proxima['costo']} · "
                                     f"S/.{proxima['costo']*4}"
@@ -1337,9 +1336,6 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                 if st.button("🔄 Refrescar alertas"):
                     st.rerun()
 
-    # ══════════════════════════════════════════════════════════════════════
-    # TAB 4: MAPA
-    # ══════════════════════════════════════════════════════════════════════
     # ══════════════════════════════════════════════════════════════════════
     # TAB 4: MAPA DINÁMICO
     # ══════════════════════════════════════════════════════════════════════
@@ -1430,10 +1426,15 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                             st.session_state.mapa_zoom_actividad = act["id"]
                         st.rerun()
 
-                    # Costo debajo del botón
-                    st.caption(
-                        f"€{act['costo']}" if act["costo"] > 0 else "Gratis"
-                    )
+                    # Costo debajo del botón (oculto para rol FAMILIAR)
+                    if act["costo"] > 0:
+                        st.caption(
+                            f"€{act['costo']}"
+                            if st.session_state.get("_show_prices", False)
+                            else "🔒"
+                        )
+                    else:
+                        st.caption("Gratis")
 
             with col_mapa:
                 zoom_id = st.session_state.get("mapa_zoom_actividad")
@@ -1489,7 +1490,7 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                             f"<b>{i+1}. {act['nombre']}</b><br>"
                             f"🕐 {act['hora']}<br>"
                             f"📍 {act['detalle']}<br>"
-                            f"💶 {'€'+str(act['costo']) if act['costo']>0 else 'Gratis'}"
+                            f"💶 {('€'+str(act['costo']) if st.session_state.get('_show_prices', False) else '🔒') if act['costo']>0 else 'Gratis'}"
                             "<extra></extra>"
                         ),
                         showlegend=False,
@@ -1566,7 +1567,7 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                                     f"{act_zoom['nombre']}**"
                                 )
                                 st.caption(act_zoom["detalle"])
-                                if act_zoom["costo"] > 0:
+                                if act_zoom["costo"] > 0 and st.session_state.get("_show_prices", False):
                                     st.caption(
                                         f"💶 €{act_zoom['costo']} · "
                                         f"S/.{act_zoom['costo']*4}"
@@ -1589,11 +1590,16 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                 if checks_mapa.get(a["id"], {}).get("completado", False)
             )
 
-            col1, col2, col3, col4 = st.columns(4)
-            col1.metric("📍 Paradas", len(actividades_mapa))
-            col2.metric("✅ Completadas", completadas_dia)
-            col3.metric("💶 Costo día", f"€{total_costo_dia}")
-            col4.metric("🪙 En soles", f"S/.{total_costo_dia*4:,}")
+            if st.session_state.get("_show_prices", False):
+                col1, col2, col3, col4 = st.columns(4)
+                col1.metric("📍 Paradas", len(actividades_mapa))
+                col2.metric("✅ Completadas", completadas_dia)
+                col3.metric("💶 Costo día", f"€{total_costo_dia}")
+                col4.metric("🪙 En soles", f"S/.{total_costo_dia*4:,}")
+            else:
+                col1, col2 = st.columns(2)
+                col1.metric("📍 Paradas", len(actividades_mapa))
+                col2.metric("✅ Completadas", completadas_dia)
 
             if dia_actual.get("especial"):
                 st.success(f"🌟 {dia_actual['especial']}")

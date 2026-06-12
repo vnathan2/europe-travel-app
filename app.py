@@ -74,6 +74,20 @@ with col_badge:
     </div>
     """, unsafe_allow_html=True)
 
+# Display automático del hotel actual (sale solo si estás en fechas del viaje)
+# Import perezoso para no cargar modules.hoteles en cada rerun fuera del viaje.
+try:
+    from datetime import date as _date
+
+    from modules.hoteles import hotel_por_fecha
+    _ciudad_h, _hotel_h = hotel_por_fecha(_date.today())
+    if _hotel_h and _hotel_h.get("nombre"):
+        st.caption(
+            f"🏨 Hoy te alojas en: **{_hotel_h['nombre']}** · {_ciudad_h}"
+        )
+except Exception:
+    pass  # no romper la UI si hoteles falla (Firestore down, etc.)
+
 # Detectar si hubo cambio de módulo en este rerun (para spinner y auto-cierre del sidebar)
 _prev_modulo = st.session_state.get("_ultimo_modulo")
 _modulo_cambio = _prev_modulo is not None and _prev_modulo != modulo_id
@@ -124,6 +138,7 @@ MODULOS = {
     "trip_journal": "modules.trip_journal",
     "phrase_pocket": "modules.phrase_pocket",
     "itinerary_tracker": "modules.travel_concierge",
+    "hoteles": "modules.hoteles",
     "night_life": "modules.night_life",
     "admin_panel": "modules.admin_panel"
 }

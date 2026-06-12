@@ -31,9 +31,6 @@ RANGO_POR_CIUDAD = {
     "Ámsterdam": (date(2026, 7, 27), date(2026, 7, 30), 3),
 }
 
-# ── Techo de hospedaje por noche (EUR) ────────────────────
-# Referencia para no pasarse del presupuesto al reservar.
-# Madrid/París/Bruselas set "Medio"; Bayona segun el plan; Ámsterdam es casa familiar.
 TECHO_NOCHE_EUR = {
     "Madrid":    140,
     "Bayona":    350,
@@ -42,9 +39,8 @@ TECHO_NOCHE_EUR = {
     "Ámsterdam":   0,
 }
 
-# ── Nota de logística por ciudad (check-out, consigna, traslado) ───────────
 NOTA_LOGISTICA = {
-    "Madrid": "Check-out el 18 por la mañana. Deja las maletas en la consigna del hotel y recógelas antes del bus nocturno a Bayona (sale ~23:00, normalmente desde Estación Sur Méndez Álvaro). Confirma el horario de la consigna y la terminal del bus.",
+    "Madrid": "Check-out el 18 por la mañana (11:00). Pide guardar las maletas hasta las 21:00: \"Buenos días, nuestro bus sale esta noche a las 23:00. ¿Pueden guardarnos las maletas hasta las 21:00?\". Si el hotel no puede (aparthotel con acceso por código, sin recepción permanente), usa el plan B: Stasher €5-6/maleta · puntos en Malasaña y Gran Vía · stasher.com/luggage-storage/spain/madrid/malasana | Radical Storage €5/maleta · +30 puntos en el centro · radicalstorage.com. Para 3 maletas el custódio cuesta €15-18 vs €131 de 1 noche extra. Estación Sur Méndez Álvaro: taxi ~€10-12 desde Malasaña.",
     "Bayona": "Check-out el 21. Ese día toman el TGV a París; si el tren es por la tarde, deja las maletas en la consigna del hotel o en la estación de Bayona. Confirma la hora del tren.",
     "París": "Check-out el 25 por la mañana. Salen en Eurostar a Bruselas desde Gare du Nord; deja las maletas en consigna y llega con margen por el control de Eurostar.",
     "Bruselas": "Check-out el 27. Salen en tren a Ámsterdam desde Bruxelles-Midi; si el tren es más tarde, usa la consigna. Confirma la hora.",
@@ -377,7 +373,6 @@ def mostrar():
                             )
                         st.rerun()
 
-    # Resumen al final: costo total vs techo de hospedaje (admin ve montos)
     st.divider()
     total_eur = sum(float(h.get("costo", 0.0) or 0) for h in hoteles.values())
     if st.session_state.get("_show_prices", False):
