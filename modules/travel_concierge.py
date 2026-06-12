@@ -19,8 +19,9 @@ Familia: Jonathan (46), Giovanna (46, cumpleaños 21 julio), Camila (cumple 15 a
 Presupuesto disponible: S/. 31,941 (~€7,985)
 
 === VUELOS ===
-Ida: Lima → Madrid | Air Europa UX176, 14 jul 10:20 → 15 jul 05:10 (Barajas T1)
-Vuelta: Ámsterdam → Madrid 30 jul 15:00 (Iberia/KLM) → Lima Air Europa UX175, 23:45 (Barajas T1). TICKETS SEPARADOS: tomar el de las 15:00 por 5-6h de margen.
+Ida: Lima → Madrid | Air Europa UX176 · 14 jul 10:20 → 15 jul 05:10 (T1) · Loc: 8ULKTI · Asientos 20H/20J/20K
+Regreso Madrid→Lima: Air Europa UX175 · 30 jul 23:45 (T1) → 31 jul 04:25 · Loc: 8ULKTI · Asientos 20H/20J/20K
+Conexión AMS→MAD: Iberia IB1346 · 30 jul 15:00 Schiphol → 17:40 T4 · Loc: JMNLJ · 6h margen T4→T1 para UX175 → Lima Air Europa UX175, 23:45 (Barajas T1). TICKETS SEPARADOS: tomar el de las 15:00 por 5-6h de margen.
 
 === MADRID (15-18 julio, 3 noches de hotel) ===
 Día 17 CUMPLEAÑOS CAMILA 15 AÑOS: Parque Warner (abre 12:00, cierra 00:00 en julio) → StreetXO
@@ -426,11 +427,11 @@ ITINERARIO_CHECKS = [
         "especial": None,
         "actividades": [
             {"id": "mad_01", "hora": "05:10", "tipo": "transporte",
-             "icono": "🛬", "nombre": "Llegada Barajas T1",
-             "detalle": "Taxi oficial parada T1 planta 0 · Tarifa 4 fija €33 · ~30-40 min a Malasaña", "costo": 33},
+             "icono": "🛬", "nombre": "Llegada Barajas T1 — Air Europa UX176",
+             "detalle": "Sale Lima 14 jul 10:20 · Loc: 8ULKTI · Victor 20H · Giovanna 20K · Camila 20J · Taxi parada T1 planta 0 · Tarifa fija €33 · ~30-40 min a Malasaña", "costo": 33},
             {"id": "mad_02", "hora": "06:00", "tipo": "atraccion",
-             "icono": "🏨", "nombre": "Check-in y descanso",
-             "detalle": "Gran Central Suites · C/ de las Minas 12 · descansar hasta mediodía", "costo": 0},
+             "icono": "🏨", "nombre": "Check-in Gran Central Suites",
+             "detalle": "C/ Minas 12, Madrid · Check-in 15:00-22:00 · Conf: 5048.939.060 · PIN: 8685 · Tel: +34 629 40 13 98 · Cancelación gratis hasta 11 jul · descansar hasta mediodía", "costo": 0},
             {"id": "mad_03", "hora": "12:30", "tipo": "restaurante",
              "icono": "🍳", "nombre": "Brunch Brunchit Chueca",
              "detalle": "C/ Pelayo 18 — €15pp", "costo": 45},
@@ -475,7 +476,7 @@ ITINERARIO_CHECKS = [
              "detalle": "~40 min · €40 ida · Uber o taxi convencional", "costo": 40},
             {"id": "mad_13", "hora": "12:00", "tipo": "atraccion",
              "icono": "🎢", "nombre": "Parque Warner Madrid",
-             "detalle": "San Martín de la Vega · entradas compradas incl. Expediente Warren · abre 12:00", "costo": 0, "pagado": True},
+             "detalle": "San Martín de la Vega · Localizador: 20769713 · 3 general €42.90 + 3 Expedientes Warren €7 = €149.70 · abre 12:00 · canjear con móvil o impreso", "costo": 0, "pagado": True},
             {"id": "mad_14", "hora": "21:00", "tipo": "restaurante",
              "icono": "🎂", "nombre": "Cena especial StreetXO",
              "detalle": "El Corte Inglés · Serrano 47 (3ª planta) · Sol Repsol · €45pp · reserva imprescindible", "costo": 135},
@@ -513,110 +514,152 @@ ITINERARIO_CHECKS = [
     },
     {
         "fecha": "Dom 19 Jul", "ciudad": "Bayona", "emoji": "🇫🇷",
-        "especial": None,
+        "especial": "🎉 ÚLTIMO DÍA FÊTES DE BAYONNE 2026",
         "actividades": [
-            {"id": "bay_01", "hora": "05:00", "tipo": "transporte",
-             "icono": "🚌", "nombre": "Llegada a Bayona (bus nocturno)",
-             "detalle": "Hospedaje familiar — descansar al llegar · €0", "costo": 0},
-            {"id": "bay_02", "hora": "14:00", "tipo": "restaurante",
-             "icono": "🍽️", "nombre": "Almuerzo Bakera",
-             "detalle": "38 Rue d'Espagne — €25pp", "costo": 75},
-            {"id": "bay_03", "hora": "15:30", "tipo": "atraccion",
-             "icono": "⛪", "nombre": "Cathédrale Sainte-Marie",
-             "detalle": "Place Pasteur — Gratis", "costo": 0},
-            {"id": "bay_04", "hora": "18:00", "tipo": "atraccion",
-             "icono": "🚶", "nombre": "Casco Antiguo + Murallas",
-             "detalle": "Centro histórico — Gratis", "costo": 0},
-            {"id": "bay_05", "hora": "20:30", "tipo": "restaurante",
-             "icono": "🍷", "nombre": "Cena Restaurant Nuance",
-             "detalle": "8 Rue de la Monnaie — €35pp", "costo": 105},
+            {"id": "bay_01", "hora": "04:50", "tipo": "transporte",
+             "icono": "🚌", "nombre": "Llegada Bayonne Quai de Lesseps",
+             "detalle": "Familia los recoge · descansar en casa familiar hasta mediodía", "costo": 0},
+            {"id": "bay_02", "hora": "12:00", "tipo": "restaurante",
+             "icono": "🍳", "nombre": "Almuerzo en casa familiar",
+             "detalle": "Primer almuerzo en familia vasca · sin costo estimado", "costo": 0},
+            {"id": "bay_03", "hora": "14:00", "tipo": "atraccion",
+             "icono": "🏨", "nombre": "Check-in apartamento",
+             "detalle": "Check-in ~14:00 · dejar maletas y refrescarse antes de salir", "costo": 0},
+            {"id": "bay_04", "hora": "15:00", "tipo": "atraccion",
+             "icono": "⛪", "nombre": "Cathédrale Sainte-Marie + Casco Antiguo",
+             "detalle": "Place Pasteur · Catedral gótica del s.XIII · Camino de Santiago · Gratis", "costo": 0},
+            {"id": "bay_05", "hora": "16:00", "tipo": "atraccion",
+             "icono": "🌉", "nombre": "Pont Marengo (Puente Viejo)",
+             "detalle": "Vistas a la catedral y el Château-Vieux sobre el río Adour · Gratis", "costo": 0},
+            {"id": "bay_06", "hora": "16:45", "tipo": "restaurante",
+             "icono": "🍫", "nombre": "Merienda Chocolat Pascal",
+             "detalle": "Petit Bayonne · chocolate caliente o frappé · abre domingo · €8pp", "costo": 24},
+            {"id": "bay_07", "hora": "18:00", "tipo": "restaurante",
+             "icono": "🥂", "nombre": "Pintxos antes de las Fêtes",
+             "detalle": "Bares Petit Bayonne · Rue Pannecau · €10pp", "costo": 30},
+            {"id": "bay_08", "hora": "19:00", "tipo": "atraccion",
+             "icono": "🎉", "nombre": "Fêtes de Bayonne — último día",
+             "detalle": "Pass Fêtes €15pp adultos · Camila gratis (<16) · rojo y blanco · bandas, vaquillas, buvettes · comprar pass online antes del viaje", "costo": 30},
+            {"id": "bay_09", "hora": "22:00", "tipo": "atraccion",
+             "icono": "🎆", "nombre": "Corso lumineux + fuegos artificiales de cierre",
+             "detalle": "Desfile iluminado + despedida del Roi Léon a medianoche · cierre del festival más grande de Francia", "costo": 0},
         ]
     },
     {
         "fecha": "Lun 20 Jul", "ciudad": "Bayona", "emoji": "🇫🇷",
         "especial": None,
         "actividades": [
-            {"id": "bay_06", "hora": "09:00", "tipo": "restaurante",
-             "icono": "☕", "nombre": "Desayuno Le Carré",
-             "detalle": "17 Rue Pontrique — €15pp", "costo": 45},
-            {"id": "bay_07", "hora": "11:30", "tipo": "atraccion",
+            {"id": "bay_10", "hora": "09:00", "tipo": "atraccion",
+             "icono": "🥩", "nombre": "Mercado Halles de Bayonne",
+             "detalle": "Edificio art déco de 1935 · jamón de Bayona, queso, pintxos · mejor llegar temprano", "costo": 20},
+            {"id": "bay_11", "hora": "11:00", "tipo": "atraccion",
              "icono": "🏛️", "nombre": "Musée Basque",
-             "detalle": "37 Quai des Corsaires — €8pp", "costo": 24},
-            {"id": "bay_08", "hora": "14:00", "tipo": "restaurante",
-             "icono": "🍽️", "nombre": "Almuerzo Bar Basque",
-             "detalle": "Place de la Liberté — €20pp", "costo": 60},
-            {"id": "bay_09", "hora": "16:00", "tipo": "atraccion",
-             "icono": "🍫", "nombre": "Musée du Chocolat",
-             "detalle": "Rue Lormand — €10pp", "costo": 30},
-            {"id": "bay_10", "hora": "19:00", "tipo": "restaurante",
-             "icono": "🍷", "nombre": "Cena Woods",
-             "detalle": "26 Rue Lormand — €30pp", "costo": 90},
+             "detalle": "37 Quai des Corsaires · historia y cultura vasca · €8pp adultos · Camila precio reducido", "costo": 24},
+            {"id": "bay_12", "hora": "12:30", "tipo": "atraccion",
+             "icono": "🍫", "nombre": "L'Atelier du Chocolat — Musée du Chocolat",
+             "detalle": "7 Allée de Gibèle · museo interactivo + degustación · capital del chocolate de Francia · ~€7pp · abre lun-sáb", "costo": 21},
+            {"id": "bay_13", "hora": "13:30", "tipo": "restaurante",
+             "icono": "🍽️", "nombre": "Almuerzo pintxos Petit Bayonne",
+             "detalle": "Zona Rue Pannecau · pintxos y txakoli · €20pp", "costo": 60},
+            {"id": "bay_14", "hora": "15:30", "tipo": "atraccion",
+             "icono": "🌊", "nombre": "Excursión Biarritz",
+             "detalle": "8 km en coche · Playa Grande, Grand Phare, Rocher de la Vierge · capital del surf vasco · Gratis", "costo": 0},
+            {"id": "bay_15", "hora": "19:00", "tipo": "restaurante",
+             "icono": "🍷", "nombre": "Cena en Biarritz o Bayona",
+             "detalle": "Mariscos y cocina vasca · €30pp estimado", "costo": 90},
+            {"id": "bay_16", "hora": "21:00", "tipo": "atraccion",
+             "icono": "🧳", "nombre": "Preparar maletas para París",
+             "detalle": "TGV Bayona→París mañana 10:11 · hacer maletas y dejar listo para salir temprano", "costo": 0},
+            {"id": "bay_17", "hora": "22:00", "tipo": "atraccion",
+             "icono": "🏨", "nombre": "Nota check-out mañana (21 Jul)",
+             "detalle": "Check-out antes del TGV · salir a tiempo a la estación de Bayona", "costo": 0},
         ]
     },
     {
         "fecha": "Mar 21 Jul", "ciudad": "París", "emoji": "🇫🇷",
         "especial": "🌹 CUMPLEAÑOS GIOVANNA — 46 AÑOS EN PARÍS",
         "actividades": [
-            {"id": "par_01", "hora": "10:00", "tipo": "transporte",
-             "icono": "🚄", "nombre": "TGV INOUI Bayona → París",
-             "detalle": "Gare Montparnasse 10:00→14:30 · €235.19 los 3", "costo": 235},
-            {"id": "par_02", "hora": "14:30", "tipo": "restaurante",
-             "icono": "🥐", "nombre": "Angelina Paris",
-             "detalle": "226 Rue de Rivoli — €30pp", "costo": 90},
-            {"id": "par_03", "hora": "16:00", "tipo": "atraccion",
-             "icono": "🗼", "nombre": "Torre Eiffel",
-             "detalle": "Champ de Mars — €28pp", "costo": 84},
+            {"id": "par_01", "hora": "10:11", "tipo": "transporte",
+             "icono": "🚄", "nombre": "TGV INOUI 8534 Bayona → París Montparnasse",
+             "detalle": "Sale Bayonne 10:11 · llega Montparnasse 14:22 · Dossier H237J3 · Voiture 16 Bas · Victor Pl.616 · Giovanna Pl.613 (Prioritaire) · Camila Pl.612 · llevar DNI/pasaporte", "costo": 0, "pagado": True},
+            {"id": "par_02", "hora": "15:00", "tipo": "atraccion",
+             "icono": "🏨", "nombre": "Check-in apartamento",
+             "detalle": "Dejar maletas · refrescarse · check-in oficial 15:00 · llevar conf. de Booking", "costo": 0},
+            {"id": "par_03", "hora": "16:30", "tipo": "restaurante",
+             "icono": "🥐", "nombre": "Merienda Angelina Paris — cumpleaños Giovanna",
+             "detalle": "226 Rue de Rivoli (1er) · Salón de té histórico 1903 · chocolate l'Africain y Mont-Blanc · €30pp · llegar temprano, suele haber cola", "costo": 90},
             {"id": "par_04", "hora": "18:30", "tipo": "atraccion",
-             "icono": "🏛️", "nombre": "Arco del Triunfo",
-             "detalle": "Place Charles de Gaulle — €13pp", "costo": 39},
-            {"id": "par_05", "hora": "20:00", "tipo": "atraccion",
-             "icono": "🚢", "nombre": "Crucero por el Sena",
-             "detalle": "Bateaux Mouches — €20pp", "costo": 60},
-            {"id": "par_06", "hora": "21:30", "tipo": "restaurante",
+             "icono": "🗼", "nombre": "Torre Eiffel — 2º piso + copa de champán",
+             "detalle": "Orden 262010348156 · 21 jul 18:30 · 2º piso ascensor · copa Brut Grande Réserve en pilar ESTE · €133.50 total · llevar DNI nominativo · llegar 15-20 min antes · NO reembolsable", "costo": 0, "pagado": True},
+            {"id": "par_05", "hora": "20:30", "tipo": "atraccion",
+             "icono": "🚢", "nombre": "Crucero por el Sena — Bateaux Mouches",
+             "detalle": "Port de la Conférence, 8e · €20pp · ~1h · vistas nocturnas de la ciudad iluminada", "costo": 60},
+            {"id": "par_06", "hora": "22:00", "tipo": "restaurante",
              "icono": "🎂", "nombre": "Cena Le Train Bleu",
-             "detalle": "Gare de Lyon — €60pp", "costo": 180},
+             "detalle": "Gare de Lyon (1er piso) · Monumento histórico Belle Époque 1901 · €60pp · reserva imprescindible · cocina cierra 22:30", "costo": 180},
+            {"id": "par_07", "hora": "22:00", "tipo": "atraccion",
+             "icono": "🏛️", "nombre": "🔹 OPCIONAL: Arco del Triunfo iluminado",
+             "detalle": "Place Charles de Gaulle · de paso o desde los Champs-Élysées · entrada €13pp · abre hasta 23:00 · si quedan energías", "costo": 0},
         ]
     },
     {
         "fecha": "Mié 22 Jul", "ciudad": "París", "emoji": "🇫🇷",
         "especial": None,
         "actividades": [
-            {"id": "par_07", "hora": "09:00", "tipo": "atraccion",
+            {"id": "par_08", "hora": "09:00", "tipo": "atraccion",
              "icono": "🎨", "nombre": "Museo del Louvre",
-             "detalle": "Rue de Rivoli — €17pp", "costo": 51},
-            {"id": "par_08", "hora": "13:00", "tipo": "restaurante",
-             "icono": "🍽️", "nombre": "Bouillon Pigalle",
-             "detalle": "22 Bd de Clichy — €25pp", "costo": 75},
-            {"id": "par_09", "hora": "15:00", "tipo": "atraccion",
+             "detalle": "Rue de Rivoli (1er) · €17pp adultos · Camila gratis · abre 09:00 miércoles hasta 21:00 · ir temprano para evitar colas · ~2.5h", "costo": 51},
+            {"id": "par_09", "hora": "12:00", "tipo": "restaurante",
+             "icono": "🍽️", "nombre": "Almuerzo Le Fumoir",
+             "detalle": "6 Rue de l'Amiral de Coligny (1er) · frente al Louvre · cocina francesa bistró · €25pp", "costo": 75},
+            {"id": "par_10", "hora": "14:00", "tipo": "atraccion",
              "icono": "⛪", "nombre": "Sainte-Chapelle",
-             "detalle": "8 Bd du Palais — €11.50pp", "costo": 35},
-            {"id": "par_10", "hora": "18:00", "tipo": "restaurante",
+             "detalle": "8 Bd du Palais (1er) · vitrales góticos del s.XIII · €11.50pp · comprar online para evitar cola · ~1h", "costo": 35},
+            {"id": "par_11", "hora": "15:30", "tipo": "atraccion",
+             "icono": "🏛️", "nombre": "Notre-Dame exterior + Île de la Cité",
+             "detalle": "Parvis Notre-Dame · reabierta en dic 2024 · entrada al interior gratuita · paseo por la isla histórica · ~1h", "costo": 0},
+            {"id": "par_12", "hora": "17:30", "tipo": "compras",
+             "icono": "🛍️", "nombre": "Paseo Le Marais",
+             "detalle": "Place des Vosges · boutiques vintage y galerías · ambiente bohemio · tiendas hasta las 19:00-20:00", "costo": 0},
+            {"id": "par_13", "hora": "20:00", "tipo": "restaurante",
              "icono": "🍷", "nombre": "Cena Chez Janou",
-             "detalle": "2 Rue Roger Verlomme — €35pp", "costo": 105},
+             "detalle": "2 Rue Roger Verlomme (3e) · bistrô provenzal · especialidad pastis y tapenade · €35pp · reservar con antelación", "costo": 105},
         ]
     },
     {
         "fecha": "Jue 23 Jul", "ciudad": "París", "emoji": "🇫🇷",
         "especial": None,
         "actividades": [
-            {"id": "par_11", "hora": "09:30", "tipo": "atraccion",
+            {"id": "par_14", "hora": "08:30", "tipo": "transporte",
+             "icono": "🚆", "nombre": "RER C → Versalles",
+             "detalle": "Desde Gare du Champ-de-Mars-Tour-Eiffel · ~35 min · billete Navigo o €4.35 suelto · apearse en Versailles-Rive Gauche", "costo": 26},
+            {"id": "par_15", "hora": "09:30", "tipo": "atraccion",
              "icono": "👑", "nombre": "Palacio de Versalles",
-             "detalle": "Place d'Armes — €20pp", "costo": 60},
-            {"id": "par_12", "hora": "19:00", "tipo": "restaurante",
+             "detalle": "Place d'Armes · €20pp adultos · Camila gratis · Palacio + jardines = día completo · comprar online en chateauversailles.fr", "costo": 60},
+            {"id": "par_16", "hora": "13:00", "tipo": "restaurante",
+             "icono": "🍽️", "nombre": "Almuerzo en Versalles",
+             "detalle": "Angelina Versailles (dentro del palacio) o restaurante en el pueblo · €25pp", "costo": 75},
+            {"id": "par_17", "hora": "14:30", "tipo": "atraccion",
+             "icono": "🌳", "nombre": "Jardines y Grandes Trianons",
+             "detalle": "Jardines geométricos de Le Nôtre · Petit Trianon y Trianon de la Reina · incluido en entrada · hasta ~17:30", "costo": 0},
+            {"id": "par_18", "hora": "19:30", "tipo": "restaurante",
              "icono": "🍷", "nombre": "Cena Le Procope",
-             "detalle": "13 Rue de l'Ancienne Comédie — €40pp", "costo": 120},
+             "detalle": "13 Rue de l'Ancienne Comédie (6e) · café literario más antiguo de París (1686) · frente al Odéon · €40pp", "costo": 120},
         ]
     },
     {
         "fecha": "Vie 24 Jul", "ciudad": "París", "emoji": "🇫🇷",
         "especial": None,
         "actividades": [
-            {"id": "par_13", "hora": "09:30", "tipo": "atraccion",
-             "icono": "🎠", "nombre": "Disneyland París",
-             "detalle": "Marne-la-Vallée — €105pp", "costo": 315},
-            {"id": "par_14", "hora": "20:30", "tipo": "restaurante",
-             "icono": "🍷", "nombre": "Cena Chez Janou",
-             "detalle": "2 Rue Roger Verlomme — €35pp", "costo": 105},
+            {"id": "par_19", "hora": "08:30", "tipo": "transporte",
+             "icono": "🚆", "nombre": "RER A → Disneyland París",
+             "detalle": "Desde Châtelet-Les Halles · ~45 min · apearse en Marne-la-Vallée/Chessy · billete Navigo o €8.65 suelto", "costo": 52},
+            {"id": "par_20", "hora": "09:30", "tipo": "atraccion",
+             "icono": "🎠", "nombre": "Disneyland París — 2 parques",
+             "detalle": "Marne-la-Vallée · Booking: 34771199 · 1 día / 2 parques (Disneyland Park + Walt Disney Studios) · €131pp × 3 = €393 · llevar DNI + QR en móvil o impreso · cancelable hasta 21 jul", "costo": 0, "pagado": True},
+            {"id": "par_21", "hora": "21:00", "tipo": "restaurante",
+             "icono": "🍕", "nombre": "Cena informal cerca del apartamento",
+             "detalle": "Zona Rue du Bac o Saint-Germain · cena ligera tras el día en Disneyland · brasserie o delivery", "costo": 60},
         ]
     },
     {
@@ -730,8 +773,11 @@ ITINERARIO_CHECKS = [
              "icono": "🚗", "nombre": "Traslado al aeropuerto Schiphol",
              "detalle": "Taxi ~€35 o tren €5", "costo": 35},
             {"id": "ret_02", "hora": "15:00", "tipo": "transporte",
-             "icono": "✈️", "nombre": "Vuelo AMS → Madrid (Iberia/KLM)",
-             "detalle": "Schiphol → Barajas 15:00→17:40 · €613.19 los 3 (Iberia)", "costo": 613},
+             "icono": "✈️", "nombre": "Vuelo AMS → Madrid IB1346",
+             "detalle": "Schiphol 15:00 → Barajas T4 17:40 · Air Nostrum · Loc Iberia: JMNLJ · 1PC 23kg c/u · llevar DNI · trasladar T4→T1 en bus (~20 min) para UX175 a las 23:45", "costo": 0, "pagado": True},
+            {"id": "ret_ux", "hora": "23:45", "tipo": "transporte",
+             "icono": "✈️", "nombre": "Vuelo Madrid → Lima UX175",
+             "detalle": "Barajas T1 23:45 · Air Europa · Loc: 8ULKTI · Victor 20H · Giovanna 20K · Camila 20J · llega Lima 31 jul 04:25 · llevar DNI", "costo": 0, "pagado": True},
             {"id": "ret_03", "hora": "20:00", "tipo": "restaurante",
              "icono": "🍽️", "nombre": "Cena aeropuerto Barajas",
              "detalle": "Terminal 1 — €20pp", "costo": 60},
@@ -954,20 +1000,25 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                 f"{acts_ok}/{total_dia} ✓"
             )
             with st.expander(label_dia, expanded=False):
-                col1, col2, col3 = st.columns([3, 2, 1])
-                with col1:
-                    st.markdown(f"### {dia['emoji']} {dia['fecha']}")
-                    st.caption(f"📍 {dia['ciudad']}")
-                with col2:
-                    if dia.get("especial"):
-                        st.success(dia["especial"])
-                with col3:
-                    st.metric("Progreso día", f"{acts_ok}/{total_dia}")
-
+                _esp = dia.get("especial")
+                _esp_html = (
+                    f'<span style="background:#ffffff2e; color:#fff; font:600 11px Barlow;'
+                    f' padding:5px 11px; border-radius:20px; white-space:nowrap;">{_esp}</span>'
+                    if _esp else ""
+                )
+                st.markdown(f"""
+<div class="et-citybar" style="margin-bottom:10px;">
+  <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:10px;">
+    <div>
+      <div class="et-citybar-title">{dia['emoji']} {dia['fecha']}</div>
+      <div class="meta">📍 {dia['ciudad']} · {acts_ok}/{total_dia} actividades</div>
+    </div>
+    {_esp_html}
+  </div>
+</div>
+""", unsafe_allow_html=True)
                 if acts_ok == total_dia:
                     st.success("🎉 ¡Día completado!")
-
-                st.divider()
 
                 for act in dia["actividades"]:
                     act_id = act["id"]
@@ -975,36 +1026,46 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                     completado = check_data.get("completado", False)
                     fuera = check_data.get("fuera_orden", False)
 
-                    col1, col2, col3, col4 = st.columns([0.4, 3.5, 1.5, 0.6])
-                    with col1:
-                        st.write(act["icono"])
-                    with col2:
-                        if completado:
-                            st.markdown(
-                                f"~~**{act['hora']}** — {act['nombre']}~~"
-                            )
-                            if fuera:
-                                st.caption("🔀 Visitado fuera de orden")
-                        else:
-                            st.markdown(
-                                f"**{act['hora']}** — {act['nombre']}"
-                            )
-                            st.caption(act["detalle"])
-                    with col3:
-                        _pagado = act.get("pagado", False)
-                        if _pagado:
-                            st.caption("✅ Pagado")
-                        elif st.session_state.get("_show_prices", False):
-                            st.caption(
-                                f"€{act['costo']} · S/.{act['costo']*4}"
-                                if act["costo"] > 0 else "Gratis"
-                            )
-                        else:
-                            st.caption("🔒" if act["costo"] > 0 else "Gratis")
-                    with col4:
-                        nuevo_check = st.checkbox(
-                            "✓", value=completado, key=f"tc_{act_id}"
+                    _bcls = {
+                        "transporte": "et-b-trans", "restaurante": "et-b-food",
+                        "atraccion": "et-b-see", "compras": "et-b-see",
+                    }.get(act.get("tipo", ""), "et-b-see")
+                    if act.get("pagado", False):
+                        _cost = '<span class="et-t et-t-free">✅ Pagado</span>'
+                    elif st.session_state.get("_show_prices", False):
+                        _cost = (
+                            f'<span class="et-t et-t-rate">€{act["costo"]} · S/.{act["costo"]*4}</span>'
+                            if act["costo"] > 0
+                            else '<span class="et-t et-t-free">Gratis</span>'
                         )
+                    else:
+                        _cost = (
+                            '<span class="et-t et-t-info">🔒</span>'
+                            if act["costo"] > 0
+                            else '<span class="et-t et-t-free">Gratis</span>'
+                        )
+                    _fuera = '<span class="et-t et-t-info">🔀 fuera de orden</span>' if fuera else ""
+                    _dim = "opacity:.5;" if completado else ""
+                    _strike = "text-decoration:line-through;" if completado else ""
+                    col_chk, col_card = st.columns([0.55, 6])
+                    with col_chk:
+                        nuevo_check = st.checkbox(
+                            "✓", value=completado, key=f"tc_{act_id}",
+                            label_visibility="collapsed",
+                        )
+                    with col_card:
+                        st.markdown(f"""
+<div class="et-ec" style="{_dim}">
+  <div class="row">
+    <span class="et-badge {_bcls}">{act['icono']}</span>
+    <div>
+      <div class="title" style="{_strike}">{act['hora']} · {act['nombre']}</div>
+      <div class="addr">{act['detalle']}</div>
+    </div>
+  </div>
+  <div class="et-tags">{_cost}{_fuera}</div>
+</div>
+""", unsafe_allow_html=True)
 
                     if nuevo_check != completado:
                         fuera_nueva = False
