@@ -496,7 +496,7 @@ MENU_SECTIONS = [
         "items": [
             #{"key": "🤖 Travel Concierge",    "id": "travel_concierge", "desc": "Lady + itinerario + alertas"},
             {"key": "📋 Lady Travel itinerary",          "id": "itinerary_tracker","desc": "Checks del día"},
-            {"key": "🚄 Trains",              "id": "train_optimizer",  "desc": "Rutas y horarios"},
+            {"key": "🚄 Travels",              "id": "train_optimizer",  "desc": "Rutas y horarios"},
             {"key": "🏨 Hotels",             "id": "hoteles",          "desc": "Reservas por ciudad"},
         ]
     },

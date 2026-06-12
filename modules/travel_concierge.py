@@ -45,6 +45,12 @@ Día 28: Van Gogh → Rijksmuseum
 Día 29: Zaanse Schans → Crucero canales
 Día 30 REGRESO: AMS→MAD (15:00) → LIM (23:45)
 
+=== MUNDIAL 2026 (durante el viaje, partidos en EE.UU. → hora CEST de noche) ===
+SF1: 14 jul 21:00 CEST — los pilla en el vuelo Lima→Madrid, no es viable
+SF2: 15 jul 21:00 CEST (Atlanta) — en Madrid; verla en Malasaña Sports Pub (Marqués de Santa Ana 11, a 5 min del hotel) o Cervecería Deportiva (C. de las Veneras 7)
+3er puesto: 18 jul 23:00 CEST — choca con el bus a Bayona (sale 23:00), no es viable
+FINAL: 19 jul 21:00 CEST (MetLife, Nueva Jersey) — en Bayona durante las Fêtes; The Black Pig o bares de Petit Bayonne
+
 === PRESUPUESTO ===
 Madrid: ~€1,600-1,700 | Bayona: ~€700-800 | París: ~€2,500-2,600
 Bruselas: ~€730-840 | Ámsterdam: ~€1,040-1,220 | TOTAL: ~€6,570-7,160
@@ -285,6 +291,7 @@ COORDS_ACTIVIDAD = {
     "mad_15": (40.4130, -3.7095, "El Botin Madrid"),
     "mad_16": (40.4200, -3.7025, "Gran Via Madrid"),
     "mad_17": (40.4151, -3.7088, "Mercado San Miguel Madrid"),
+    "mad_wc": (40.4244, -3.7051, "Malasaña Sports Pub Madrid"),
     "bay_01": (43.4929, -1.4748, "Gare de Bayonne Francia"),
     "bay_02": (43.4920, -1.4732, "Bakera Bayonne"),
     "bay_03": (43.4932, -1.4751, "Cathedrale Sainte Marie Bayonne"),
@@ -295,6 +302,7 @@ COORDS_ACTIVIDAD = {
     "bay_08": (43.4928, -1.4745, "Bar Basque Bayonne"),
     "bay_09": (43.4918, -1.4752, "Musee du Chocolat Bayonne"),
     "bay_10": (43.4916, -1.4750, "Woods Bayonne"),
+    "bay_wc": (43.4887, -1.4752, "The Black Pig Bayonne"),
     "par_01": (48.8408,  2.3212, "Gare Montparnasse Paris"),
     "par_02": (48.8636,  2.3304, "Angelina Paris"),
     "par_03": (48.8584,  2.2945, "Torre Eiffel Paris"),
@@ -430,7 +438,7 @@ ITINERARIO_CHECKS = [
              "detalle": "Sale Lima 14 jul 10:20 · Loc: 8ULKTI · Victor 20H · Giovanna 20K · Camila 20J · Taxi parada T1 planta 0 · Tarifa fija €33 · ~30-40 min a Malasaña", "costo": 33},
             {"id": "mad_02", "hora": "06:00", "tipo": "atraccion",
              "icono": "🏨", "nombre": "Check-in Gran Central Suites",
-             "detalle": "C/ Minas 12, Madrid · Check-in 15:00-22:00 · Conf: 5048.939.060 · PIN: 8685 · Tel: +34 629 40 13 98 · Cancelación gratis hasta 11 jul · descansar hasta mediodía", "costo": 0},
+             "detalle": "C/ Minas 12, Madrid · Check-in 15:00-22:00 · Conf: 5048.939.060 · PIN: 8685 · Tel: +34 629 40 13 98 · Cancelación gratis hasta 11 jul · descansar hasta mediodía", "costo": 0, "pagado": True},
             {"id": "mad_03", "hora": "12:30", "tipo": "restaurante",
              "icono": "🍳", "nombre": "Brunch Brunchit Chueca",
              "detalle": "C/ Pelayo 18 — €15pp", "costo": 45},
@@ -443,6 +451,9 @@ ITINERARIO_CHECKS = [
             {"id": "mad_06", "hora": "20:30", "tipo": "restaurante",
              "icono": "🍷", "nombre": "Cena Taberna El Sur",
              "detalle": "C/ Torrecilla del Leal 12 — €20pp", "costo": 60},
+            {"id": "mad_wc", "hora": "21:00", "tipo": "atraccion",
+             "icono": "⚽", "nombre": "Semifinal Mundial 2026 (SF2)",
+             "detalle": "Atlanta · 21:00 CEST (3 p.m. ET) · verla en Malasaña Sports Pub (Marqués de Santa Ana 11, ~5 min del hotel) o Cervecería Deportiva (C. de las Veneras 7) · consumición aparte · choca con la cena de El Sur (20:30): elijan bar con cocina o cena rápida antes", "costo": 0},
         ]
     },
     {
@@ -485,6 +496,9 @@ ITINERARIO_CHECKS = [
         "fecha": "Sáb 18 Jul", "ciudad": "Madrid", "emoji": "🇪🇸",
         "especial": None,
         "actividades": [
+            {"id": "mad_co", "hora": "08:45", "tipo": "atraccion",
+             "icono": "🏨", "nombre": "Check-out Gran Central Suites",
+             "detalle": "C/ de las Minas 12 · dejar la habitación · las maletas quedan en custodia del hotel hasta 22:00", "costo": 0},
             {"id": "mad_15", "hora": "09:00", "tipo": "atraccion",
              "icono": "🧳", "nombre": "Dejar maletas en custodia del hotel",
              "detalle": "Gran Central Suites · custodia confirmada hasta 22:00 · gratis", "costo": 0},
@@ -518,12 +532,12 @@ ITINERARIO_CHECKS = [
             {"id": "bay_01", "hora": "04:50", "tipo": "transporte",
              "icono": "🚌", "nombre": "Llegada Bayonne Quai de Lesseps",
              "detalle": "Familia los recoge · descansar en casa familiar hasta mediodía", "costo": 0},
+            {"id": "bay_03", "hora": "06:30", "tipo": "atraccion",
+             "icono": "🏨", "nombre": "Check-in Appartement Bayonne (temprano)",
+             "detalle": "2ème étage, 1 Allée Porteteny, 64100 Bayona · llegada anticipada APROBADA 06:00-07:00 (entrada estándar 17:00-21:00) · dejar maletas y descansar · conf. Booking 5042735332", "costo": 0, "pagado": True},
             {"id": "bay_02", "hora": "12:00", "tipo": "restaurante",
              "icono": "🍳", "nombre": "Almuerzo en casa familiar",
              "detalle": "Primer almuerzo en familia vasca · sin costo estimado", "costo": 0},
-            {"id": "bay_03", "hora": "14:00", "tipo": "atraccion",
-             "icono": "🏨", "nombre": "Check-in apartamento",
-             "detalle": "Check-in ~14:00 · dejar maletas y refrescarse antes de salir", "costo": 0},
             {"id": "bay_04", "hora": "15:00", "tipo": "atraccion",
              "icono": "⛪", "nombre": "Cathédrale Sainte-Marie + Casco Antiguo",
              "detalle": "Place Pasteur · Catedral gótica del s.XIII · Camino de Santiago · Gratis", "costo": 0},
@@ -539,6 +553,9 @@ ITINERARIO_CHECKS = [
             {"id": "bay_08", "hora": "19:00", "tipo": "atraccion",
              "icono": "🎉", "nombre": "Fêtes de Bayonne — último día",
              "detalle": "Pass Fêtes €15pp adultos · Camila gratis (<16) · rojo y blanco · bandas, vaquillas, buvettes · comprar pass online antes del viaje", "costo": 30},
+            {"id": "bay_wc", "hora": "21:00", "tipo": "atraccion",
+             "icono": "🏆", "nombre": "FINAL Mundial 2026 ⚽",
+             "detalle": "MetLife, Nueva Jersey · 21:00 CEST (3 p.m. ET) · justo durante las Fêtes: habrá pantallas por todo Petit Bayonne · pick: The Black Pig (Quai Amiral Jaureguiberry, abre domingo) o cualquier bar de Petit Bayonne · OJO: Le Hit bar cierra los domingos · termina ~23:00, a tiempo para el corso de cierre", "costo": 0},
             {"id": "bay_09", "hora": "22:00", "tipo": "atraccion",
              "icono": "🎆", "nombre": "Corso lumineux + fuegos artificiales de cierre",
              "detalle": "Desfile iluminado + despedida del Roi Léon a medianoche · cierre del festival más grande de Francia", "costo": 0},
@@ -582,8 +599,8 @@ ITINERARIO_CHECKS = [
              "icono": "🚄", "nombre": "TGV INOUI 8534 Bayona → París Montparnasse",
              "detalle": "Sale Bayonne 10:11 · llega Montparnasse 14:22 · Dossier H237J3 · Voiture 16 Bas · Victor Pl.616 · Giovanna Pl.613 (Prioritaire) · Camila Pl.612 · llevar DNI/pasaporte", "costo": 0, "pagado": True},
             {"id": "par_02", "hora": "15:00", "tipo": "atraccion",
-             "icono": "🏨", "nombre": "Check-in apartamento",
-             "detalle": "Dejar maletas · refrescarse · check-in oficial 15:00 · llevar conf. de Booking", "costo": 0},
+             "icono": "🏨", "nombre": "Check-in Aparthotel Adagio (15e)",
+             "detalle": "14 rue du Théâtre, 75015 París · check-in oficial 15:00 · conf. Booking 6449479541 · dejar maletas y refrescarse", "costo": 0},
             {"id": "par_03", "hora": "16:30", "tipo": "restaurante",
              "icono": "🥐", "nombre": "Merienda Angelina Paris — cumpleaños Giovanna",
              "detalle": "226 Rue de Rivoli (1er) · Salón de té histórico 1903 · chocolate l'Africain y Mont-Blanc · €30pp · llegar temprano, suele haber cola", "costo": 90},
@@ -658,7 +675,7 @@ ITINERARIO_CHECKS = [
              "detalle": "Marne-la-Vallée · Booking: 34771199 · 1 día / 2 parques (Disneyland Park + Walt Disney Studios) · €131pp × 3 = €393 · llevar DNI + QR en móvil o impreso · cancelable hasta 21 jul", "costo": 0, "pagado": True},
             {"id": "par_21", "hora": "21:00", "tipo": "restaurante",
              "icono": "🍕", "nombre": "Cena informal cerca del apartamento",
-             "detalle": "Zona Rue du Bac o Saint-Germain · cena ligera tras el día en Disneyland · brasserie o delivery", "costo": 60},
+             "detalle": "Zona Tour Eiffel / Av. Émile Zola (15e, cerca del apartamento) · cena ligera tras el día en Disneyland · brasserie o delivery", "costo": 60},
         ]
     },
     {

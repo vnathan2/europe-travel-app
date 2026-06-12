@@ -238,6 +238,15 @@ def mostrar():
     st.title("🧳 Packing Checker")
     st.caption("Lista de equipaje inteligente con clima real de cada ciudad")
 
+    # Recordatorio de franquicia de equipaje (aplica a todos los vuelos del viaje).
+    # Visible para todos los roles: no involucra precios.
+    st.info(
+        "🧳 **Equipaje por pasajero:** 1 maleta facturada de 23 kg "
+        "(máx. 32 kg con recargo) · 1 maleta de mano ≤10 kg (56×40×25 cm) · "
+        "1 accesorio personal bajo el asiento. "
+        "Aplica en todos los vuelos: Air Europa LIM↔MAD e Iberia AMS→MAD."
+    )
+
     # ── Tabs ───────────────────────────────────────────────────────────────
     tab_clima, tab_lista, tab_criticos = st.tabs([
         "🌤️ Clima por Ciudad", "✅ Lista de Equipaje", "🚨 Solo Críticos"

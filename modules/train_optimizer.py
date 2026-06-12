@@ -1,5 +1,5 @@
 # modules/train_optimizer.py
-# Módulo 7: Train-Route Optimizer
+# Módulo 7: Route Optimizer
 # Rutas de tren del viaje con horarios, precios y links de reserva
 
 import streamlit as st
@@ -56,7 +56,7 @@ RUTAS = [
             "TGV INOUI 8534 · Voiture 16 Bas · Plaza 612 — asientos ya asignados",
             "Sale Bayonne 10:11 · llega Montparnasse 1&2 14:22 · 4h11",
             "Llegar a la estación de Bayona con 20 min de margen mínimo",
-            "Desde Montparnasse al apartamento: metro L12 hasta Rue du Bac · ~15 min",
+            "Desde Montparnasse al apartamento (15e, junto a Torre Eiffel): metro L6 hasta Dupleix · ~15 min",
         ],
         "color": "blue",
     },
@@ -121,23 +121,25 @@ RUTAS = [
         "fecha": "30 julio 2026 (Jueves) — REGRESO",
         "emoji_origen": "🇳🇱",
         "emoji_destino": "🇪🇸",
-        "operador": "Vuelo low-cost (Vueling/Iberia/Ryanair)",
-        "salida": "~15:00–17:00 (AMS Schiphol)",
-        "llegada": "~18:00–20:00 (Madrid Barajas T4)",
-        "duracion": "~2h 30min",
+        "operador": "Iberia IB1346 (op. Air Nostrum)",
+        "salida": "15:00 (AMS Schiphol)",
+        "llegada": "17:40 (Madrid Barajas T4)",
+        "duracion": "2h 40min",
         "cambio": "Vuelo directo",
-        "precio_pp": "€80–120",
-        "precio_familia": "€240–360",
-        "precio_pen": "S/.960–1,440",
-        "clase": "Económica",
-        "reservar_url": "https://www.vueling.com",
-        "alternativa_url": "https://www.skyscanner.com",
-        "estado": "⏳ Por reservar",
+        "precio_pp": "€180.08",
+        "precio_familia": "€540.24",
+        "precio_pen": "~S/.2,160",
+        "clase": "Turista · Tarifa Óptima · 1 maleta facturada (1PC)",
+        "reservar_url": "https://www.iberia.com",
+        "alternativa_url": "https://www.iberia.com",
+        "estado": "✅ Pagado (billetes emitidos)",
         "consejos": [
-            "Llega al aeropuerto Schiphol 2.5h antes — es grande y los controles son lentos",
-            "Vueling y Iberia Express tienen más conexiones Madrid-Ámsterdam",
-            "Confirma que la maleta de bodega está incluida — muchas low-cost la cobran extra",
-            "Desde Barajas T4 tienes el vuelo MAD→LIM a las 23:45 — hay tiempo suficiente",
+            "Billetes emitidos · localizador JMNLJ · 3 pasajeros confirmados",
+            "IB1346 sale Schiphol 15:00 · llega Barajas T4 17:40 (2h40) · operado por Air Nostrum (YW)",
+            "Equipaje por pasajero: 1 maleta facturada de 23 kg (máx. 32 kg con recargo) + 1 de mano ≤10 kg + accesorio personal",
+            "Llega a Schiphol ~2.5h antes: en verano el control de seguridad es lento",
+            "⚠️ Boletos separados (JMNLJ Iberia + 8ULKTI Air Europa): NO hay conexión protegida. Retiren las maletas en Barajas T4 y vuelvan a facturarlas con Air Europa (probable T1) para el UX175",
+            "Conexión MAD→LIM (UX175, 23:45): ~6h de margen, suficiente para el cambio de terminal y re-facturar",
         ],
         "color": "purple",
     },
@@ -178,10 +180,10 @@ def mostrar():
     for _rid in ("mad_bay_alsa", "bay_par"):
         if f"reservado_{_rid}" not in st.session_state:
             st.session_state[f"reservado_{_rid}"] = True
-    st.title("🚄 Train-Route Optimizer")
+    st.title("🚄 Route Optimizer")
     st.caption("Rutas de transporte del viaje con horarios, precios y links de reserva")
 
-    st.warning("⏳ Tienes **3 trayectos por reservar**. Hazlo con anticipación para mejores precios.")
+    st.warning("⏳ Tienes **2 trayectos por reservar**. Hazlo con anticipación para mejores precios.")
 
     tab_rutas, tab_resumen, tab_tips = st.tabs([
         "🗺️ Rutas del Viaje", "💰 Resumen de Costos", "💡 Tips de Viaje en Tren"
