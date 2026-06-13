@@ -528,28 +528,36 @@ ITINERARIO_CHECKS = [
              "detalle": "C/ de las Minas 12 · dejar la habitación · las maletas quedan en custodia del hotel hasta 22:00", "costo": 0},
             {"id": "mad_15", "hora": "09:00", "tipo": "atraccion",
              "icono": "🧳", "nombre": "Dejar maletas en custodia del hotel",
-             "detalle": "Gran Central Suites · custodia confirmada hasta 22:00 · gratis", "costo": 0},
+             "detalle": "Gran Central Suites · custodia confirmada hasta 22:00 · gratis",
+             "traslado": "Mismo hotel: bajas las maletas a recepción", "costo": 0},
             {"id": "mad_16", "hora": "10:00", "tipo": "atraccion",
              "icono": "🎨", "nombre": "Museo del Prado",
-             "detalle": "Paseo del Prado s/n · Adultos: canjear vale del pase en taquilla · Camila: entrada gratis en taquilla, llevar pasaporte · ~2.5h", "costo": 0, "pagado": True},
+             "detalle": "Paseo del Prado s/n · Adultos: canjear vale del pase en taquilla · Camila: entrada gratis en taquilla, llevar pasaporte · ~2.5h",
+             "traslado": "Desde el hotel (C/ Minas): ~25 min a pie cuesta abajo por Gran Vía y Alcalá · taxi ~10 min (€8-10) · o metro L1 Tribunal→Estación del Arte + 6 min a pie", "costo": 0, "pagado": True},
             {"id": "mad_17", "hora": "13:00", "tipo": "restaurante",
              "icono": "🍽️", "nombre": "Almuerzo zona Retiro",
-             "detalle": "Cerca del Prado — €25pp", "costo": 75},
+             "detalle": "Cerca del Prado — €25pp",
+             "traslado": "Desde el Prado: ~5-10 min a pie (el Retiro está cruzando el Paseo del Prado)", "costo": 75},
             {"id": "mad_18", "hora": "15:00", "tipo": "atraccion",
              "icono": "👑", "nombre": "Palacio Real",
-             "detalle": "C/ Bailén s/n · €14pp adultos · ~1.5h", "costo": 42},
+             "detalle": "C/ Bailén s/n · €14pp adultos · ~1.5h",
+             "traslado": "Desde el Retiro: metro L2 Retiro→Ópera directo (~10 min) + 3 min a pie · o taxi ~12-15 min (€8-10)", "costo": 42},
             {"id": "mad_19", "hora": "17:30", "tipo": "compras",
              "icono": "🛍️", "nombre": "Gran Vía + Mercado San Miguel",
-             "detalle": "Compras y tapeo · Plaza de San Miguel s/n", "costo": 50},
+             "detalle": "Compras y tapeo · Plaza de San Miguel s/n",
+             "traslado": "Desde Palacio Real: ~7 min a pie al Mercado San Miguel; Gran Vía a ~12 min a pie", "costo": 50},
             {"id": "mad_20", "hora": "20:00", "tipo": "atraccion",
              "icono": "🧳", "nombre": "Recoger maletas del hotel",
-             "detalle": "Gran Central Suites · C/ de las Minas 12", "costo": 0},
+             "detalle": "Gran Central Suites · C/ de las Minas 12",
+             "traslado": "Desde Sol/Gran Vía: ~10 min a pie al hotel, o metro L1/L5 hasta Tribunal", "costo": 0},
             {"id": "mad_21", "hora": "20:30", "tipo": "transporte",
              "icono": "🚕", "nombre": "Taxi hotel → T4 Aeropuerto (bus ALSA)",
-             "detalle": "T4 Aeropuerto Barajas · ~25 km desde Malasaña · €35-40 en taxi · salir ~20:30", "costo": 38},
+             "detalle": "T4 Aeropuerto Barajas · ~25 km desde Malasaña · €35-40 en taxi · salir ~20:30",
+             "traslado": "Taxi directo Malasaña→T4 (~25 km, 30-40 min, tarifa ~€30-35)", "costo": 38},
             {"id": "mad_22", "hora": "23:00", "tipo": "transporte",
              "icono": "🚌", "nombre": "Bus ALSA Madrid → Bayona",
-             "detalle": "Sale T4 Aeropuerto Madrid 23:00 · llega Bayonne Quai de Lesseps 04:50 · tickets comprados", "costo": 0, "pagado": True},
+             "detalle": "Sale T4 Aeropuerto Madrid 23:00 · llega Bayonne Quai de Lesseps 04:50 · tickets comprados",
+             "traslado": "Ya en la T4: estación de autobuses, andén ALSA", "costo": 0, "pagado": True},
         ]
     },
     {
@@ -1077,6 +1085,13 @@ Responde en español, amigable, con emojis, máximo 120 palabras.
                     check_data = checks.get(act_id, {})
                     completado = check_data.get("completado", False)
                     fuera = check_data.get("fuera_orden", False)
+
+                    if act.get("traslado"):
+                        st.markdown(
+                            f"<div style='margin:1px 0 3px 46px;color:#9aa0a6;"
+                            f"font-size:0.82rem;line-height:1.3;'>↳ 🧭 {act['traslado']}</div>",
+                            unsafe_allow_html=True,
+                        )
 
                     _bcls = {
                         "transporte": "et-b-trans", "restaurante": "et-b-food",
