@@ -136,7 +136,7 @@ MODULOS = {
     "voice_translator": "modules.voice_translator",
     "train_optimizer": "modules.train_optimizer",
     "trip_journal": "modules.trip_journal",
-    "phrase_pocket": "modules.phrase_pocket",
+    "conversor_moneda": "modules.conversor_moneda",
     "itinerary_tracker": "modules.travel_concierge",
     "hoteles": "modules.hoteles",
     "night_life": "modules.night_life",
