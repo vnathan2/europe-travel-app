@@ -127,7 +127,7 @@ def _proyeccion_itinerario():
     # Tramos inter-ciudad (tren/bus/vuelo): ya están en COMPROMETIDOS, no son
     # bolsillo libre. Se excluyen de la proyección para no contar doble.
     intercity = {"mad_22", "par_01", "bru_01", "bru_11", "ret_02"}
-    por_ciudad, por_tipo = {}, {}
+    por_ciudad, por_tipo, matriz = {}, {}, {}
     for dia in itinerario:
         ciudad = dia.get("ciudad", "?")
         for act in dia.get("actividades", []):
@@ -136,12 +136,15 @@ def _proyeccion_itinerario():
             costo = act.get("costo", 0) or 0
             if costo <= 0 or act.get("pagado", False):
                 continue
-            por_ciudad[ciudad] = por_ciudad.get(ciudad, 0.0) + costo
             etq = _TIPO_LABEL.get(act.get("tipo", ""), "📦 Otros")
+            por_ciudad[ciudad] = por_ciudad.get(ciudad, 0.0) + costo
             por_tipo[etq] = por_tipo.get(etq, 0.0) + costo
+            matriz.setdefault(ciudad, {})
+            matriz[ciudad][etq] = matriz[ciudad].get(etq, 0.0) + costo
     return {
         "por_ciudad": por_ciudad,
         "por_tipo": por_tipo,
+        "matriz": matriz,
         "total": sum(por_ciudad.values()),
     }
 
@@ -245,21 +248,28 @@ def _panorama():
         total_proy_eur = proy["total"]
         total_proy_pen = eur_pen(total_proy_eur)
 
-        cpa, cpb = st.columns(2)
-        with cpa:
-            st.markdown("**Por ciudad**")
-            filas_pc = [
-                {"Ciudad": c, "Proyectado": f"€{v:,.0f}", "S/.": f"S/.{eur_pen(v):,.0f}"}
-                for c, v in sorted(proy["por_ciudad"].items(), key=lambda x: -x[1])
-            ]
-            st.dataframe(pd.DataFrame(filas_pc), use_container_width=True, hide_index=True)
-        with cpb:
-            st.markdown("**Por tipo**")
-            filas_pt = [
-                {"Tipo": t, "Proyectado": f"€{v:,.0f}", "S/.": f"S/.{eur_pen(v):,.0f}"}
-                for t, v in sorted(proy["por_tipo"].items(), key=lambda x: -x[1])
-            ]
-            st.dataframe(pd.DataFrame(filas_pt), use_container_width=True, hide_index=True)
+        # Tabla única: tipos por ciudad (filas = ciudades, columnas = tipos)
+        tipos_orden = ["🍽️ Comida", "🎭 Atracciones/Ocio", "🚌 Transporte local", "🛍️ Compras", "📦 Otros"]
+        tipos_pres = [t for t in tipos_orden if any(t in tt for tt in proy["matriz"].values())]
+        filas_m = []
+        for ciudad, tipos in proy["matriz"].items():
+            fila = {"Ciudad": ciudad}
+            tot_c = 0.0
+            for t in tipos_pres:
+                v = tipos.get(t, 0.0)
+                tot_c += v
+                fila[t] = f"€{v:,.0f}" if v else "—"
+            fila["Total"] = f"€{tot_c:,.0f}"
+            filas_m.append(fila)
+        # Fila de totales por tipo
+        fila_tot = {"Ciudad": "▸ Total"}
+        for t in tipos_pres:
+            s = sum(proy["matriz"][c].get(t, 0.0) for c in proy["matriz"])
+            fila_tot[t] = f"€{s:,.0f}"
+        fila_tot["Total"] = f"€{total_proy_eur:,.0f}"
+        filas_m.append(fila_tot)
+        st.dataframe(pd.DataFrame(filas_m), use_container_width=True, hide_index=True)
+        st.caption(f"Total proyectado: €{total_proy_eur:,.0f} ≈ S/.{total_proy_pen:,.0f} · montos en EUR (familia).")
 
         # Lo adicional: ¿el plan cabe en el bolsillo libre?
         esperado_pen = gastado_destino_pen + total_proy_pen
