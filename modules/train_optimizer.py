@@ -45,17 +45,18 @@ RUTAS = [
         "llegada": "14:22 (Gare Montparnasse 1 et 2, París)",
         "duracion": "4h 11min",
         "cambio": "Directo — sin cambio de tren",
-        "precio_pp": "Comprado",
-        "precio_familia": "TGV INOUI 8534",
-        "precio_pen": "Voiture 16 Bas Pl.612",
-        "clase": "2ª clase · tickets comprados",
-        "reservar_url": "https://www.sncf-connect.com",
-        "alternativa_url": "https://www.trainline.com",
-        "estado": "✅ Reservado",
+        "precio_pp": "~€80 prom. (2 adultos + 1 joven)",
+        "precio_familia": "€238.72 los 3 (Omio)",
+        "precio_pen": "S/.~955",
+        "clase": "2ª clase · Semi Flexible",
+        "reservar_url": "https://www.omio.com",
+        "alternativa_url": "https://www.sncf-connect.com",
+        "estado": "✅ Reservado (RC3BKM)",
         "consejos": [
-            "TGV INOUI 8534 · Voiture 16 Bas · Plaza 612 — asientos ya asignados",
+            "Reserva RC3BKM · Coche 16 · asientos 612, 613 y 616 (ya asignados)",
             "Sale Bayonne 10:11 · llega Montparnasse 1&2 14:22 · 4h11",
-            "Llegar a la estación de Bayona con 20 min de margen mínimo",
+            "Billete en la app de Omio (también el PDF offline) · llegar a la estación con 20 min de margen",
+            "Tarifa Semi Flexible: cambio/reembolso gratis hasta 7 días antes; después con cargo (€19 TGV)",
             "Desde Montparnasse al apartamento (15e, junto a Torre Eiffel): metro L6 hasta Dupleix · ~15 min",
         ],
         "color": "blue",
@@ -71,7 +72,7 @@ RUTAS = [
         "salida": "08:55 (París Gare du Nord)",
         "llegada": "10:17 (Bruxelles-Midi)",
         "duracion": "1h 22min",
-        "cambio": "Directo, sin cambio de tren",
+        "cambio": "Directo — sin cambio de tren",
         "precio_pp": "€70.80",
         "precio_familia": "€212.40 (Omio)",
         "precio_pen": "S/.~850",
@@ -146,17 +147,6 @@ RUTAS = [
     },
 ]
 
-# ── Resumen de costos ──────────────────────────────────────────────────────
-def mostrar_resumen_costos():
-    st.subheader("💰 Resumen de Costos de Transporte")
-    total_min = sum([210, 180, 105, 90, 240])
-    total_max = sum([240, 210, 150, 150, 360])
-
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Total mínimo familia", mostrar_precio(f"€{total_min}", "—"))
-    col2.metric("Total máximo familia", mostrar_precio(f"€{total_max}", "—"))
-    col3.metric("Promedio por persona", mostrar_precio(f"€{int((total_min+total_max)/2/3)}", "—"))
-
 # ── Tabla compacta de detalles ─────────────────────────────────────────────
 def tabla_detalles(ruta: dict):
     precio_familia = mostrar_precio(ruta['precio_familia'])
@@ -178,20 +168,29 @@ def tabla_detalles(ruta: dict):
 
 # ── UI Principal ───────────────────────────────────────────────────────────
 def mostrar():
-    for _rid in ("mad_bay_alsa", "bay_par"):
-        if f"reservado_{_rid}" not in st.session_state:
-            st.session_state[f"reservado_{_rid}"] = True
+    for _r in RUTAS:
+        _k = f"reservado_{_r['id']}"
+        if _k not in st.session_state:
+            st.session_state[_k] = _r["estado"].startswith("✅")
     st.title("🚄 Route Optimizer")
     st.caption("Rutas de transporte del viaje con horarios, precios y links de reserva")
 
-    st.warning("⏳ Tienes **2 trayectos por reservar**. Hazlo con anticipación para mejores precios.")
+    _pendientes = sum(
+        1 for _r in RUTAS
+        if not st.session_state.get(f"reservado_{_r['id']}", False)
+    )
+    if _pendientes:
+        st.warning(
+            f"⏳ Tienes **{_pendientes} trayecto"
+            f"{'s' if _pendientes != 1 else ''} por reservar**. "
+            "Hazlo con anticipación para mejores precios."
+        )
+    else:
+        st.success("✅ Todos los trayectos están reservados.")
 
-    tab_rutas, tab_resumen, tab_tips = st.tabs([
-        "🗺️ Rutas del Viaje", "💰 Resumen de Costos", "💡 Tips de Viaje en Tren"
-    ])
-
-    # ── TAB 1: Rutas ───────────────────────────────────────────────────────
-    with tab_rutas:
+    st.markdown("### 🗺️ Rutas del Viaje")
+    rutas_box = st.container()
+    with rutas_box:
         for ruta in RUTAS:
             _ya_lbl = st.session_state.get(f"reservado_{ruta['id']}", False)
             _est_lbl = "✅ Reservado" if _ya_lbl else ruta["estado"]
@@ -219,7 +218,7 @@ def mostrar():
                 # Tabla compacta de detalles
                 tabla_detalles(ruta)
 
-                if ruta["cambio"] != "Directo — sin cambio de tren":
+                if ruta["cambio"] not in ("Directo — sin cambio de tren", "Vuelo directo"):
                     st.warning(f"🔄 Cambio: {ruta['cambio']}")
                 else:
                     st.success(f"✅ {ruta['cambio']}")
@@ -228,20 +227,22 @@ def mostrar():
                 for consejo in ruta["consejos"]:
                     st.write(f"• {consejo}")
 
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.link_button(
-                        f"🎫 Reservar en {ruta['operador'].split('/')[0].strip()}",
-                        ruta["reservar_url"],
-                        use_container_width=True,
-                        type="primary"
-                    )
-                with col2:
-                    st.link_button(
-                        "🔍 Ver alternativas",
-                        ruta["alternativa_url"],
-                        use_container_width=True,
-                    )
+                ya_reservado = st.session_state.get(f"reservado_{ruta['id']}", False)
+                if not ya_reservado:
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.link_button(
+                            f"🎫 Reservar en {ruta['operador'].split('/')[0].strip()}",
+                            ruta["reservar_url"],
+                            use_container_width=True,
+                            type="primary"
+                        )
+                    with col2:
+                        st.link_button(
+                            "🔍 Ver alternativas",
+                            ruta["alternativa_url"],
+                            use_container_width=True,
+                        )
 
                 reservado = st.checkbox(
                     "✅ Ya reservé este trayecto",
@@ -262,60 +263,3 @@ def mostrar():
                             placeholder="Ej: 08:15"
                         )
                     st.success("✅ ¡Trayecto reservado! Guarda el localizador.")
-
-    # ── TAB 2: Resumen ─────────────────────────────────────────────────────
-    with tab_resumen:
-        mostrar_resumen_costos()
-
-    # ── TAB 3: Tips ────────────────────────────────────────────────────────
-    with tab_tips:
-        st.subheader("💡 Tips Generales para Viajar en Tren por Europa")
-
-        with st.expander("🎫 Reservas y Billetes", expanded=True):
-            tips = [
-                "Reserva con 2-3 meses de anticipación para mejores precios",
-                "Los precios suben drásticamente en los últimos 30 días",
-                "El Interrail Pass puede ser conveniente si tienes muchos trayectos",
-                "Descarga los tickets en PDF — guárdalos offline en el celular",
-                "Trainline y Omio comparan precios entre operadores",
-            ]
-            for tip in tips:
-                st.write(f"• {tip}")
-
-        with st.expander("🧳 Equipaje en el tren"):
-            tips = [
-                "Los trenes europeos no tienen límite de equipaje pero sí de espacio",
-                "Pon las maletas grandes en el portaequipajes sobre el asiento",
-                "Nunca pierdas de vista las maletas — especialmente en estaciones",
-                "Las mochilas pequeñas van debajo del asiento delantero",
-                "En el TGV hay espacio para maletas al inicio de cada vagón",
-            ]
-            for tip in tips:
-                st.write(f"• {tip}")
-
-        with st.expander("⏰ Puntualidad y Conexiones"):
-            tips = [
-                "Los trenes europeos son muy puntuales — llega al andén 10 min antes",
-                "Si el tren llega tarde y pierdes conexión, el operador te busca alternativa",
-                "El cambio en Hendaya (Madrid→Bayona) requiere bajar y subir con maletas",
-                "Los Eurostar tienen control de pasaportes — llega 45 min antes mínimo",
-                "Guarda siempre el ticket hasta salir de la estación destino",
-            ]
-            for tip in tips:
-                st.write(f"• {tip}")
-
-        with st.expander("📱 Apps útiles para el viaje en tren"):
-            apps = [
-                ("Trainline", "Compra tickets de múltiples operadores europeos"),
-                ("SNCF Connect", "Trenes en Francia — TGV, Intercités"),
-                ("Renfe", "Trenes en España — AVE, Alvia"),
-                ("Eurostar", "Trenes internacionales UK-Europa"),
-                ("Omio", "Comparador de trenes, buses y vuelos"),
-                ("DB Navigator", "Trenes alemanes — funciona bien en toda Europa"),
-            ]
-            for app, desc in apps:
-                col1, col2 = st.columns([1, 3])
-                with col1:
-                    st.write(f"**{app}**")
-                with col2:
-                    st.write(desc)
