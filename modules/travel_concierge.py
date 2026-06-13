@@ -26,20 +26,20 @@ Conexión AMS→MAD: Iberia IB1346 · 30 jul 15:00 Schiphol → 17:40 T4 · Loc:
 Día 17 CUMPLEAÑOS CAMILA 15 AÑOS: Parque Warner (abre 12:00, cierra 00:00 en julio) → StreetXO
 Día 18: Tour Bernabéu → Gran Vía → Mercado San Miguel; en la noche, bus a Bayona (sale 23:00)
 
-=== BAYONA (19-20 julio) — casa familiar GRATIS ===
+=== BAYONA (19-21 julio) — Appartement Bayonne (pagado) ===
 Bus nocturno Madrid→Bayona (Alsa/FlixBus, sale 23:00 del 18, llega ~05:00; €117.91 los 3)
 
-=== PARÍS (21-24 julio) ===
-TGV INOUI Bayona→París (10:00 → 14:30; €235.19 los 3)
+=== PARÍS (21-25 julio) ===
+TGV INOUI 8534 Bayona→París (10:11 → 14:22; €238.72 los 3)
 Día 21 CUMPLEAÑOS GIOVANNA 46 AÑOS: Torre Eiffel → Arco del Triunfo → Crucero Sena → Le Train Bleu
 Día 22: Louvre → Notre Dame → Sainte Chapelle
 Día 23: Versalles | Día 24: Disneyland París (2 parques)
 
-=== BRUSELAS (25-26 julio) ===
-Eurostar París→Bruselas (08:50 → 10:20; €177.49 los 3)
+=== BRUSELAS (25-27 julio) ===
+Eurostar París→Bruselas (08:55 → 10:17; €212.40 los 3)
 
 === ÁMSTERDAM (27-30 julio) — casa familiar GRATIS ===
-Eurostar Bruselas→Ámsterdam (08:20 → 10:20; €186.49 los 3)
+EuroCity Direct Bruselas→Ámsterdam (07:49 → 10:09; €116.10 los 3, 1 transbordo)
 Día 27: Plaza Dam → Ana Frank → De Kas
 Día 28: Van Gogh → Rijksmuseum
 Día 29: Zaanse Schans → Crucero canales
@@ -534,10 +534,10 @@ ITINERARIO_CHECKS = [
         "actividades": [
             {"id": "bay_01", "hora": "04:50", "tipo": "transporte",
              "icono": "🚌", "nombre": "Llegada Bayonne Quai de Lesseps",
-             "detalle": "Familia los recoge · descansar en casa familiar hasta mediodía", "costo": 0},
+             "detalle": "Familia los recoge en la estación · ir al apartamento (check-in temprano aprobado) a descansar hasta mediodía", "costo": 0},
             {"id": "bay_03", "hora": "06:30", "tipo": "atraccion",
              "icono": "🏨", "nombre": "Check-in Appartement Bayonne (temprano)",
-             "detalle": "2ème étage, 1 Allée Porteteny, 64100 Bayona · llegada anticipada APROBADA 06:00-07:00 (entrada estándar 17:00-21:00) · dejar maletas y descansar · conf. Booking 5042735332", "costo": 0, "pagado": True},
+             "detalle": "2ème étage, 1 Allée Porteteny, 64100 Bayona · llegada anticipada APROBADA 06:00-07:00 (entrada estándar 17:00-21:00) · dejar maletas y descansar · Conf: 5042735332 · PIN: 9984 · Tel: +33 7 60 51 79 56 · NO reembolsable", "costo": 0, "pagado": True},
             {"id": "bay_02", "hora": "12:00", "tipo": "restaurante",
              "icono": "🍳", "nombre": "Almuerzo en casa familiar",
              "detalle": "Primer almuerzo en familia vasca · sin costo estimado", "costo": 0},
@@ -600,7 +600,7 @@ ITINERARIO_CHECKS = [
         "actividades": [
             {"id": "par_01", "hora": "10:11", "tipo": "transporte",
              "icono": "🚄", "nombre": "TGV INOUI 8534 Bayona → París Montparnasse",
-             "detalle": "Sale Bayonne 10:11 · llega Montparnasse 14:22 · Dossier H237J3 · Voiture 16 Bas · Victor Pl.616 · Giovanna Pl.613 (Prioritaire) · Camila Pl.612 · llevar DNI/pasaporte", "costo": 0, "pagado": True},
+             "detalle": "Sale Bayonne 10:11 · llega Montparnasse 14:22 · Reserva Omio RC3BKM · Voiture 16 Bas · Victor Pl.616 · Giovanna Pl.613 (Prioritaire) · Camila Pl.612 · llevar DNI/pasaporte", "costo": 0, "pagado": True},
             {"id": "par_02", "hora": "15:00", "tipo": "atraccion",
              "icono": "🏨", "nombre": "Check-in Aparthotel Adagio (15e)",
              "detalle": "14 rue du Théâtre, 75015 París · check-in oficial 15:00 · conf. Booking 6449479541 · dejar maletas y refrescarse", "costo": 0},
