@@ -39,7 +39,7 @@ Día 23: Versalles | Día 24: Disneyland París (2 parques)
 Eurostar París→Bruselas (08:55 → 10:17; €216 los 3, reservado X7FNNK)
 
 === ÁMSTERDAM (27-30 julio) — casa familiar GRATIS ===
-EuroCity Direct Bruselas→Ámsterdam (07:49 → 10:09; €116.10 los 3, 1 transbordo)
+EuroCity Direct Bruselas→Ámsterdam (07:49 → 10:09; €116.10 los 3, reservado JTHDBFR, 1 transbordo)
 Día 27: Plaza Dam → Ana Frank → De Kas
 Día 28: Van Gogh → Rijksmuseum
 Día 29: Zaanse Schans → Crucero canales
@@ -825,8 +825,8 @@ ITINERARIO_CHECKS = [
              "detalle": "Check-out 08:00-11:00 · salir ~07:00 para el EuroCity Direct 07:49 · self check-out, dejar llaves en caja de seguridad", "costo": 0},
             {"id": "bru_11", "hora": "07:49", "tipo": "transporte",
              "icono": "🚆", "nombre": "EuroCity Direct → Ámsterdam",
-             "detalle": "Bruxelles-Midi 07:49 → Amsterdam Centraal 10:09 · EuroCity Direct · 1 transbordo fácil · €116.10 los 3 (Omio)",
-             "traslado": "Desde el hotel (Louise): a Bruxelles-Midi · tranvía/metro ~7 min, salir con margen", "costo": 116},
+             "detalle": "Bruxelles-Midi 07:49 → Schiphol 09:47 (EuroCity Direct 9527) · transbordo ~6 min a Sprinter 8226 → Amsterdam Centraal 10:09 · Reserva JTHDBFR · €116.10 los 3 (Omio)",
+             "traslado": "Desde el hotel (Louise): a Bruxelles-Midi · tranvía/metro ~7 min, salir con margen", "costo": 116, "pagado": True},
             {"id": "ams_01", "hora": "11:00", "tipo": "transporte",
              "icono": "🏠", "nombre": "Llegada casa familiar",
              "detalle": "Amsterdam Centraal → casa",

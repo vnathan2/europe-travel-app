@@ -48,7 +48,7 @@ COMPROMETIDOS = [
     {"concepto": "Bus ALSA Madrid→Bayona",                    "monto": 117.91,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "reservado"},
     {"concepto": "TGV Bayona→París",                          "monto": 238.72,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "reservado"},
     {"concepto": "Eurostar París→Bruselas",                   "monto": 216.00,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
-    {"concepto": "EuroCity Direct Bruselas→Ámsterdam",        "monto": 116.10,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "por comprar"},
+    {"concepto": "EuroCity Direct Bruselas→Ámsterdam",        "monto": 116.10,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
     {"concepto": "Vuelo Ámsterdam→Madrid (IB1346)",           "monto": 540.24,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
     # Atracciones
     {"concepto": "Torre Eiffel 2º piso + champán (los 3)",    "monto": 133.50,  "moneda": "EUR", "categoria": "🎢 Atracciones", "estado": "pagado"},
@@ -325,7 +325,7 @@ def _panorama():
 
     recs.append(
         "💵 Para el bolsillo libre conviene combinar algo de efectivo en euros + tarjeta sin comisión. "
-        "El tren 'por comprar' que queda (EuroCity Direct Bruselas→Ámsterdam) aún no sale de tu tarjeta."
+        "Todos los travels (buses, trenes y vuelos) ya están pagados."
     )
 
     for r in recs:
