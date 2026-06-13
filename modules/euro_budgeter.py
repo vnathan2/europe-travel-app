@@ -13,39 +13,55 @@ CATEGORIAS = ["🍽️ Comida", "🚌 Transporte", "🏨 Hospedaje", "🎭 Ocio"
 CIUDADES = ["Madrid", "Bayona", "París", "Bruselas", "Ámsterdam"]
 COLECCION = "gastos_viaje"
 
-# Presupuesto SOLO en destino (comida, ocio, compras, transporte local).
-# NO incluye hoteles, trenes, vuelos ni seguro (esos son costos comprometidos aparte).
-PRESUPUESTO_TOTAL_DESTINO = 7985.0
-PRESUPUESTO_CIUDAD = {
-    "Madrid":    1650.0,
-    "Bayona":     750.0,
-    "París":     2550.0,
-    "Bruselas":   785.0,
-    "Ámsterdam": 1130.0,
-}
-# Suma por ciudad = 6865; el resto hasta 7985 (1120) es colchón/imprevistos.
+# ── Modelo de presupuesto (confirmado por el usuario, jun 2026) ────────────
+# El vuelo internacional (Lima↔Madrid) y el seguro se pagaron ANTES. Lo que
+# quedó del presupuesto familiar fueron S/.32.000, y de ese pote salen hospedaje,
+# travels y atracciones. El resto es el bolsillo libre (comida, ocio, compras,
+# transporte local).
+PRESUPUESTO_POST_VUELOS_PEN = 32000.0
+
+# Tasa de planificación EUR→PEN para convertir los montos fijos comprometidos.
+# El Panorama usa la tasa en tiempo real; esta solo alimenta el Dashboard rápido.
+TASA_PLAN_PEN = 4.0
 
 # Fechas del viaje (para el cálculo de gasto diario sugerido)
 TRIP_INICIO = date(2026, 7, 15)
 TRIP_FIN = date(2026, 7, 30)
 
-# ── Costos comprometidos (reservas reales ya hechas) ───────────────────────
-# Fuente: confirmaciones de Booking, boletos Air Europa/Iberia, Omio e Interseguro.
-# París incluye €67,60 de impuesto municipal que se paga on-site.
-# Vuelo Lima↔Madrid: tarifa base (no incluye EMD de asientos pre-reservados, ~USD 250).
-GASTOS_FIJOS = [
-    {"concepto": "Hotel Madrid (Gran Central Suites)",      "monto": 464.60,  "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
-    {"concepto": "Hotel Bayona (Appartement Bayonne)",      "monto": 490.77,  "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
-    {"concepto": "Hotel París (Adagio Tour Eiffel)",        "monto": 1177.60, "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
-    {"concepto": "Hotel Bruselas (Stephanie by Reside)",    "monto": 386.50,  "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
-    {"concepto": "Bus ALSA Madrid→Bayona",                  "monto": 117.91,  "moneda": "EUR", "categoria": "🚌 Transporte", "estado": "reservado"},
-    {"concepto": "TGV Bayona→París",                        "monto": 238.72,  "moneda": "EUR", "categoria": "🚌 Transporte", "estado": "reservado"},
-    {"concepto": "Eurostar París→Bruselas",                 "monto": 212.40,  "moneda": "EUR", "categoria": "🚌 Transporte", "estado": "por comprar"},
-    {"concepto": "EuroCity Direct Bruselas→Ámsterdam",      "monto": 116.10,  "moneda": "EUR", "categoria": "🚌 Transporte", "estado": "por comprar"},
-    {"concepto": "Vuelo Ámsterdam→Madrid (IB1346)",         "monto": 540.24,  "moneda": "EUR", "categoria": "✈️ Vuelos",     "estado": "pagado"},
-    {"concepto": "Vuelo Lima↔Madrid (Air Europa, los 3)",   "monto": 4967.52, "moneda": "USD", "categoria": "✈️ Vuelos",     "estado": "pagado"},
-    {"concepto": "Seguro de viaje (Interseguro, los 3)",    "monto": 171.99,  "moneda": "USD", "categoria": "🛡️ Seguro",     "estado": "pagado"},
+# ── Gastos pagados ANTES del pote (informativos, no se descuentan) ─────────
+# Fuente: boletos Air Europa (los 3) e Interseguro (los 3). Montos reales en soles.
+GASTOS_PREVIOS = [
+    {"concepto": "Vuelo Lima↔Madrid (Air Europa, los 3)", "monto": 17500.00, "moneda": "PEN"},
+    {"concepto": "Seguro de viaje (Interseguro, los 3)",  "monto": 558.84,   "moneda": "PEN"},
 ]
+
+# ── Comprometido que SÍ sale del pote de S/.32.000 ─────────────────────────
+# Fuente: confirmaciones de Booking, Omio, boleto Iberia y comprobantes de atracciones.
+# París (hospedaje) incluye €67,60 de impuesto municipal que se paga on-site.
+COMPROMETIDOS = [
+    # Hospedaje
+    {"concepto": "Hotel Madrid (Gran Central Suites)",        "monto": 464.60,  "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
+    {"concepto": "Hotel Bayona (Appartement Bayonne)",        "monto": 490.77,  "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
+    {"concepto": "Hotel París (Adagio Tour Eiffel)",          "monto": 1177.60, "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
+    {"concepto": "Hotel Bruselas (Stephanie by Reside)",      "monto": 386.50,  "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
+    # Travels
+    {"concepto": "Bus ALSA Madrid→Bayona",                    "monto": 117.91,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "reservado"},
+    {"concepto": "TGV Bayona→París",                          "monto": 238.72,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "reservado"},
+    {"concepto": "Eurostar París→Bruselas",                   "monto": 212.40,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "por comprar"},
+    {"concepto": "EuroCity Direct Bruselas→Ámsterdam",        "monto": 116.10,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "por comprar"},
+    {"concepto": "Vuelo Ámsterdam→Madrid (IB1346)",           "monto": 540.24,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
+    # Atracciones
+    {"concepto": "Torre Eiffel 2º piso + champán (los 3)",    "monto": 133.50,  "moneda": "EUR", "categoria": "🎢 Atracciones", "estado": "pagado"},
+    {"concepto": "Disneyland Paris 1 día/2 parques (los 3)",  "monto": 393.00,  "moneda": "EUR", "categoria": "🎢 Atracciones", "estado": "pagado"},
+    {"concepto": "Tour Bernabéu (2 adulto + 1 infantil)",     "monto": 117.00,  "moneda": "EUR", "categoria": "🎢 Atracciones", "estado": "pagado"},
+    {"concepto": "Parque Warner (3 entradas + 3 Warren)",     "monto": 149.70,  "moneda": "EUR", "categoria": "🎢 Atracciones", "estado": "pagado"},
+    {"concepto": "Pase del Arte Madrid (2 adulto, menor free)", "monto": 77.20, "moneda": "EUR", "categoria": "🎢 Atracciones", "estado": "pagado"},
+]
+
+# Comprometido total en EUR (todos los ítems están en EUR) y bolsillo libre en EUR
+# a tasa de planificación, para el Dashboard rápido.
+_COMPROMETIDO_EUR = sum(g["monto"] for g in COMPROMETIDOS)
+BOLSILLO_LIBRE_EUR = round(PRESUPUESTO_POST_VUELOS_PEN / TASA_PLAN_PEN - _COMPROMETIDO_EUR, 2)
 
 
 # ── Firestore: Lectura con CACHÉ (Ahorro de dinero) ───────────────────────
@@ -87,124 +103,131 @@ def _panorama():
     def eur_pen(e: float) -> float:
         return e * tc_pen
 
-    def usd_eur(u: float) -> float:
-        return u / tc_usd if tc_usd else 0.0
-
-    def usd_pen(u: float) -> float:
-        return eur_pen(usd_eur(u))
+    def pen_eur(p: float) -> float:
+        return p / tc_pen if tc_pen else 0.0
 
     st.caption(f"💱 Tasas usadas: 1 EUR = S/.{tc_pen:.3f} = ${tc_usd:.3f} · fuente: {rates['fuente']}")
+    st.caption(
+        "Modelo: el vuelo internacional y el seguro se pagaron antes. Lo que quedó "
+        f"(S/.{PRESUPUESTO_POST_VUELOS_PEN:,.0f}) cubre hospedaje, travels, atracciones "
+        "y el bolsillo libre (comida, ocio, compras, transporte local)."
+    )
 
-    # ── 1) Costos comprometidos (reservas reales) ──────────────────────
-    st.subheader("🔒 Costos comprometidos (reservas ya hechas)")
-    st.caption("No se descuentan del presupuesto en destino. Son lo que cuesta la infraestructura del viaje.")
+    # ── 1) Pagado antes del pote (informativo) ─────────────────────────
+    st.subheader("✅ Pagado antes del presupuesto")
+    prev_total_pen = sum(g["monto"] for g in GASTOS_PREVIOS)
+    filas_prev = [{"Concepto": g["concepto"], "Soles": f"S/.{g['monto']:,.2f}"} for g in GASTOS_PREVIOS]
+    st.dataframe(pd.DataFrame(filas_prev), use_container_width=True, hide_index=True)
+    st.caption(
+        f"Subtotal previo: S/.{prev_total_pen:,.0f}. Ya está fuera; no sale de los "
+        f"S/.{PRESUPUESTO_POST_VUELOS_PEN:,.0f}."
+    )
 
-    filas, total_eur = [], 0.0
-    for g in GASTOS_FIJOS:
-        e = g["monto"] if g["moneda"] == "EUR" else usd_eur(g["monto"])
+    st.divider()
+
+    # ── 2) Comprometido que SÍ sale del pote ───────────────────────────
+    st.subheader("🔒 Comprometido (sale de los S/.32.000)")
+    filas, total_eur, grupos = [], 0.0, {}
+    for g in COMPROMETIDOS:
+        e = g["monto"]  # todos en EUR
         total_eur += e
+        grupos[g["categoria"]] = grupos.get(g["categoria"], 0.0) + e
         filas.append({
             "Concepto": g["concepto"],
             "Categoría": g["categoria"],
-            "Original": f"{g['monto']:,.2f} {g['moneda']}",
             "EUR": f"€{e:,.2f}",
             "PEN": f"S/.{eur_pen(e):,.0f}",
             "Estado": g["estado"],
         })
     st.dataframe(pd.DataFrame(filas), use_container_width=True, hide_index=True)
 
-    usd_items = sum(g["monto"] for g in GASTOS_FIJOS if g["moneda"] == "USD")
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Total comprometido", f"€{total_eur:,.0f}", f"S/.{eur_pen(total_eur):,.0f}")
-    c2.metric("De eso, en USD", f"${usd_items:,.0f}", f"≈ €{usd_eur(usd_items):,.0f}")
-    c3.metric("Ese USD en soles", f"S/.{usd_pen(usd_items):,.0f}")
+    comprometido_pen = eur_pen(total_eur)
+    cols = st.columns(len(grupos))
+    for col, (cat, val) in zip(cols, grupos.items()):
+        col.metric(cat, f"€{val:,.0f}", f"S/.{eur_pen(val):,.0f}")
+    st.caption(f"Total comprometido: €{total_eur:,.2f} ≈ S/.{comprometido_pen:,.0f}.")
 
     st.divider()
 
-    # ── 2) Presupuesto en destino por ciudad ───────────────────────────
-    st.subheader("🎯 Presupuesto en destino (comida · ocio · compras · transporte local)")
+    # ── 3) El pote y el saldo libre ────────────────────────────────────
+    st.subheader(f"🎯 El pote de S/.{PRESUPUESTO_POST_VUELOS_PEN:,.0f}")
 
     df = obtener_gastos_cached()
-    gastado_ciudad = {}
-    if not df.empty and "ciudad" in df.columns and "monto_eur" in df.columns:
-        gastado_ciudad = df.groupby("ciudad")["monto_eur"].sum().to_dict()
+    gastado_destino_pen = 0.0
+    if not df.empty:
+        if "monto_pen" in df.columns:
+            gastado_destino_pen = float(df["monto_pen"].sum())
+        elif "monto_eur" in df.columns:
+            gastado_destino_pen = eur_pen(float(df["monto_eur"].sum()))
 
-    filas2, total_presup, total_gastado = [], 0.0, 0.0
-    for ciudad, presup in PRESUPUESTO_CIUDAD.items():
-        gast = float(gastado_ciudad.get(ciudad, 0.0))
-        pend = presup - gast
-        total_presup += presup
-        total_gastado += gast
-        filas2.append({
-            "Ciudad": ciudad,
-            "Presupuesto": f"€{presup:,.0f}",
-            "Gastado": f"€{gast:,.0f}",
-            "Pendiente": f"€{pend:,.0f}",
-            "Pendiente S/.": f"S/.{eur_pen(pend):,.0f}",
-        })
-    st.dataframe(pd.DataFrame(filas2), use_container_width=True, hide_index=True)
-
-    colchon = PRESUPUESTO_TOTAL_DESTINO - total_presup
-    pendiente_total = PRESUPUESTO_TOTAL_DESTINO - total_gastado
-    pct = (total_gastado / PRESUPUESTO_TOTAL_DESTINO * 100) if PRESUPUESTO_TOTAL_DESTINO else 0.0
+    bolsillo_libre_pen = PRESUPUESTO_POST_VUELOS_PEN - comprometido_pen
+    saldo_pen = bolsillo_libre_pen - gastado_destino_pen
+    usado_pen = comprometido_pen + gastado_destino_pen
+    pct = (usado_pen / PRESUPUESTO_POST_VUELOS_PEN * 100) if PRESUPUESTO_POST_VUELOS_PEN else 0.0
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Presupuesto destino", f"€{PRESUPUESTO_TOTAL_DESTINO:,.0f}")
-    c2.metric("Gastado", f"€{total_gastado:,.0f}", f"{pct:.0f}%")
-    c3.metric("Pendiente", f"€{pendiente_total:,.0f}", f"S/.{eur_pen(pendiente_total):,.0f}")
-    c4.metric("Colchón/imprevistos", f"€{colchon:,.0f}")
+    c1.metric("Presupuesto", f"S/.{PRESUPUESTO_POST_VUELOS_PEN:,.0f}")
+    c2.metric("Comprometido", f"S/.{comprometido_pen:,.0f}", f"€{total_eur:,.0f}")
+    c3.metric("Bolsillo libre", f"S/.{bolsillo_libre_pen:,.0f}", f"≈€{pen_eur(bolsillo_libre_pen):,.0f}")
+    c4.metric("Gastado en destino", f"S/.{gastado_destino_pen:,.0f}")
     st.progress(min(pct / 100, 1.0))
-
-    # ── Costo total del viaje (panorama completo) ──────────────────────
-    gran_total = total_eur + PRESUPUESTO_TOTAL_DESTINO
-    st.info(
-        f"🧾 **Costo total estimado del viaje:** comprometido €{total_eur:,.0f} + "
-        f"presupuesto en destino €{PRESUPUESTO_TOTAL_DESTINO:,.0f} = "
-        f"**€{gran_total:,.0f}** (≈ S/.{eur_pen(gran_total):,.0f})"
+    st.success(
+        f"💰 **Saldo disponible (comida · ocio · compras · transporte local): "
+        f"S/.{saldo_pen:,.0f}** (≈ €{pen_eur(saldo_pen):,.0f})"
+    )
+    st.caption(
+        "⚠️ No registres hospedaje, travels ni atracciones como gastos diarios: ya están "
+        "en 'Comprometido'. Si los anotas también, se duplican."
     )
 
     st.divider()
 
-    # ── 3) Recomendaciones ─────────────────────────────────────────────
+    # ── 4) Gastado en destino por ciudad (informativo) ─────────────────
+    if not df.empty and "ciudad" in df.columns and "monto_eur" in df.columns:
+        st.subheader("🗺️ Gastado en destino por ciudad")
+        gc = df.groupby("ciudad")["monto_eur"].sum().to_dict()
+        filas_c = [
+            {"Ciudad": c, "Gastado": f"€{v:,.0f}", "Gastado S/.": f"S/.{eur_pen(v):,.0f}"}
+            for c, v in gc.items()
+        ]
+        st.dataframe(pd.DataFrame(filas_c), use_container_width=True, hide_index=True)
+        st.divider()
+
+    # ── 5) Recomendaciones ─────────────────────────────────────────────
     st.subheader("💡 Recomendaciones")
     hoy = date.today()
     recs = []
 
-    for ciudad, presup in PRESUPUESTO_CIUDAD.items():
-        gast = float(gastado_ciudad.get(ciudad, 0.0))
-        if gast > presup:
-            recs.append(f"⚠️ **{ciudad}** está sobre su presupuesto en destino (€{gast:,.0f} de €{presup:,.0f}).")
-        elif presup > 0 and gast >= 0.9 * presup:
-            recs.append(f"🟡 **{ciudad}** va al {gast / presup * 100:.0f}% de su presupuesto.")
-
-    if pct >= 90:
-        recs.append(f"🔴 Llevas el {pct:.0f}% del presupuesto en destino. Cuida el gasto restante.")
+    if saldo_pen < 0:
+        recs.append(f"🔴 Te pasaste del bolsillo libre por S/.{abs(saldo_pen):,.0f}. Hay que recortar o ampliar el pote.")
+    elif bolsillo_libre_pen > 0 and saldo_pen <= 0.1 * bolsillo_libre_pen:
+        recs.append(f"🟠 Te queda solo el {saldo_pen / bolsillo_libre_pen * 100:.0f}% del bolsillo libre. Cuida el gasto.")
     elif pct >= 60:
-        recs.append(f"🟡 Vas en {pct:.0f}% del presupuesto en destino.")
-    elif total_gastado > 0:
-        recs.append(f"🟢 Vas cómodo: {pct:.0f}% del presupuesto en destino consumido.")
+        recs.append(f"🟡 Llevas el {pct:.0f}% del pote usado (comprometido + destino).")
+    else:
+        recs.append(f"🟢 Vas cómodo: {pct:.0f}% del pote usado. Bolsillo libre sano.")
 
-    dias_viaje = max((TRIP_FIN - TRIP_INICIO).days, 1)
+    dias_viaje = max((TRIP_FIN - TRIP_INICIO).days + 1, 1)
     if hoy < TRIP_INICIO:
         faltan = (TRIP_INICIO - hoy).days
-        diario = PRESUPUESTO_TOTAL_DESTINO / dias_viaje
+        diario = saldo_pen / dias_viaje if dias_viaje else 0.0
         recs.append(
-            f"🗓️ Faltan **{faltan} días** para el viaje. Presupuesto diario sugerido en destino: "
-            f"~€{diario:,.0f} (S/.{eur_pen(diario):,.0f}) sobre {dias_viaje} días."
+            f"🗓️ Faltan **{faltan} días** para el viaje. Gasto diario sugerido del bolsillo libre: "
+            f"~S/.{diario:,.0f} (€{pen_eur(diario):,.0f}) sobre {dias_viaje} días."
         )
     elif TRIP_INICIO <= hoy <= TRIP_FIN:
         quedan = (TRIP_FIN - hoy).days + 1
-        diario = pendiente_total / quedan if quedan else 0.0
+        diario = saldo_pen / quedan if quedan else 0.0
         recs.append(
-            f"🗓️ Te quedan **{quedan} días** de viaje. Con lo pendiente puedes gastar "
-            f"~€{diario:,.0f}/día (S/.{eur_pen(diario):,.0f})."
+            f"🗓️ Te quedan **{quedan} días** de viaje. Con el saldo puedes gastar "
+            f"~S/.{diario:,.0f}/día (€{pen_eur(diario):,.0f})."
         )
     else:
         recs.append("🗓️ El viaje terminó. Revisa el resumen final en el Dashboard.")
 
     recs.append(
-        f"💵 Para llevar todo el presupuesto en destino en efectivo: €{PRESUPUESTO_TOTAL_DESTINO:,.0f} "
-        f"≈ S/.{eur_pen(PRESUPUESTO_TOTAL_DESTINO):,.0f}. Recomendable combinar algo de efectivo + tarjeta sin comisión."
+        "💵 Para el bolsillo libre conviene combinar algo de efectivo en euros + tarjeta sin comisión. "
+        "Los trenes 'por comprar' (Eurostar y EuroCity Direct) aún no salen de tu tarjeta."
     )
 
     for r in recs:
@@ -212,9 +235,9 @@ def _panorama():
 
     st.divider()
 
-    # ── 4) Simulador de efectivo (migrado del Conversor) ───────────────
+    # ── 6) Simulador de efectivo ───────────────────────────────────────
     st.subheader("🧮 Simulador de efectivo")
-    euros_custom = st.slider("Euros a llevar:", 100, 10000, 7000, step=100)
+    euros_custom = st.slider("Euros a llevar:", 100, 10000, max(int(pen_eur(saldo_pen)), 100), step=100)
     s1, s2 = st.columns(2)
     s1.metric(f"€{euros_custom:,} en soles", f"S/.{eur_pen(euros_custom):,.0f}")
     s2.metric(f"€{euros_custom:,} en dólares", f"${euros_custom * tc_usd:,.0f}")
@@ -277,13 +300,13 @@ def mostrar():
     with tab_dashboard:
         df = obtener_gastos_cached()
         if not df.empty:
-            presupuesto_total = PRESUPUESTO_TOTAL_DESTINO
+            presupuesto_total = BOLSILLO_LIBRE_EUR
             gastado = df["monto_eur"].sum()
 
             c1, c2 = st.columns(2)
             texto_gasto = f"€{gastado:.2f}"
             c1.metric("Total Gastado", mostrar_precio(texto_gasto))
-            c2.metric("Disponible", mostrar_precio(f"€{presupuesto_total - gastado:.2f}"))
+            c2.metric("Disponible (bolsillo libre)", mostrar_precio(f"€{presupuesto_total - gastado:.2f}"))
 
             st.bar_chart(df.groupby("categoria")["monto_eur"].sum())
             st.dataframe(df[["fecha", "ciudad", "descripcion", "monto_eur"]])
