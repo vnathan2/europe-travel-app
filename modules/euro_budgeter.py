@@ -45,8 +45,8 @@ COMPROMETIDOS = [
     {"concepto": "Hotel París (Adagio Tour Eiffel)",          "monto": 1177.60, "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
     {"concepto": "Hotel Bruselas (Stephanie by Reside)",      "monto": 386.50,  "moneda": "EUR", "categoria": "🏨 Hospedaje",  "estado": "pagado"},
     # Travels
-    {"concepto": "Bus ALSA Madrid→Bayona",                    "monto": 117.91,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "reservado"},
-    {"concepto": "TGV Bayona→París",                          "monto": 238.72,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "reservado"},
+    {"concepto": "Bus ALSA Madrid→Bayona",                    "monto": 117.91,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
+    {"concepto": "TGV Bayona→París",                          "monto": 238.72,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
     {"concepto": "Eurostar París→Bruselas",                   "monto": 216.00,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
     {"concepto": "EuroCity Direct Bruselas→Ámsterdam",        "monto": 116.10,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
     {"concepto": "Vuelo Ámsterdam→Madrid (IB1346)",           "monto": 540.24,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
@@ -58,9 +58,10 @@ COMPROMETIDOS = [
     {"concepto": "Pase del Arte Madrid (2 adulto, menor free)", "monto": 77.20, "moneda": "EUR", "categoria": "🎢 Atracciones", "estado": "pagado"},
 ]
 
-# Comprometido total en EUR (todos los ítems están en EUR) y bolsillo libre en EUR
-# a tasa de planificación, para el Dashboard rápido.
+# Comprometido total en EUR (todos los ítems están en EUR).
 _COMPROMETIDO_EUR = sum(g["monto"] for g in COMPROMETIDOS)
+# Valor de respaldo a tasa de planificación. El Dashboard y el Panorama usan la
+# tasa EUR→PEN en vivo; esta constante queda solo como fallback de referencia.
 BOLSILLO_LIBRE_EUR = round(PRESUPUESTO_POST_VUELOS_PEN / TASA_PLAN_PEN - _COMPROMETIDO_EUR, 2)
 
 
@@ -79,14 +80,18 @@ def obtener_gastos_cached() -> pd.DataFrame:
     return pd.DataFrame(gastos)
 
 
-@st.cache_data(ttl=3600)  # tasas para el Panorama (1 hora)
+@st.cache_data(ttl=3600)  # USD para el simulador (1 hora); el PEN es canónico
 def _rates_panorama() -> dict:
-    """1 EUR = PEN soles = USD dólares. Con fallback si no hay conexión."""
+    """Tasa ÚNICA para todo el módulo: el PEN viene de get_exchange_rate() (la
+    misma tasa que usa el encabezado, el registro y el Dashboard), para que el
+    Panorama cuadre al céntimo con el resto. El USD solo alimenta el simulador
+    de efectivo y no interviene en ningún cálculo de presupuesto."""
+    pen = float(get_exchange_rate())
     try:
         r = requests.get("https://api.exchangerate-api.com/v4/latest/EUR", timeout=5).json()["rates"]
-        return {"PEN": float(r.get("PEN", 4.0)), "USD": float(r.get("USD", 1.08)), "fuente": "tiempo real"}
+        return {"PEN": pen, "USD": float(r.get("USD", 1.08)), "fuente": "tiempo real"}
     except Exception:
-        return {"PEN": 4.0, "USD": 1.08, "fuente": "respaldo (sin conexión)"}
+        return {"PEN": pen, "USD": 1.08, "fuente": "PEN en vivo · USD de respaldo"}
 
 
 def _es_admin() -> bool:
@@ -279,6 +284,16 @@ def _panorama():
             "el 'Gastado en destino' es la referencia principal."
         )
         st.divider()
+    else:
+        st.subheader("🔮 Gastos pendientes proyectados (según el itinerario)")
+        if proy is None:
+            st.warning(
+                "No se pudo leer el itinerario para proyectar los pendientes (incluido el margen). "
+                "Verifica que `modules/travel_concierge.py` exista y exponga `ITINERARIO_CHECKS`."
+            )
+        else:
+            st.info("El itinerario no tiene gastos pendientes por proyectar.")
+        st.divider()
 
     # ── 4) Gastado en destino por ciudad (informativo) ─────────────────
     if not df.empty and "ciudad" in df.columns and "monto_eur" in df.columns:
@@ -398,7 +413,9 @@ def mostrar():
     with tab_dashboard:
         df = obtener_gastos_cached()
         if not df.empty:
-            presupuesto_total = BOLSILLO_LIBRE_EUR
+            presupuesto_total = round(
+                PRESUPUESTO_POST_VUELOS_PEN / tipo_cambio - _COMPROMETIDO_EUR, 2
+            )
             gastado = df["monto_eur"].sum()
 
             c1, c2 = st.columns(2)
