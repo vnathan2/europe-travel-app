@@ -15,10 +15,10 @@ COLECCION = "gastos_viaje"
 
 # ── Modelo de presupuesto (confirmado por el usuario, jun 2026) ────────────
 # El vuelo internacional (Lima↔Madrid) y el seguro se pagaron ANTES. Lo que
-# quedó del presupuesto familiar fueron S/.32.000, y de ese pote salen hospedaje,
+# quedó del presupuesto familiar fueron S/.35.000, y de ese pote salen hospedaje,
 # travels y atracciones. El resto es el bolsillo libre (comida, ocio, compras,
 # transporte local).
-PRESUPUESTO_POST_VUELOS_PEN = 32000.0
+PRESUPUESTO_POST_VUELOS_PEN = 35000.0
 
 # Tasa de planificación EUR→PEN para convertir los montos fijos comprometidos.
 # El Panorama usa la tasa en tiempo real; esta solo alimenta el Dashboard rápido.
@@ -35,7 +35,7 @@ GASTOS_PREVIOS = [
     {"concepto": "Seguro de viaje (Interseguro, los 3)",  "monto": 558.84,   "moneda": "PEN"},
 ]
 
-# ── Comprometido que SÍ sale del pote de S/.32.000 ─────────────────────────
+# ── Comprometido que SÍ sale del pote de S/.35.000 ─────────────────────────
 # Fuente: confirmaciones de Booking, Omio, boleto Iberia y comprobantes de atracciones.
 # París (hospedaje) incluye €67,60 de impuesto municipal que se paga on-site.
 COMPROMETIDOS = [
@@ -181,7 +181,7 @@ def _panorama():
     st.divider()
 
     # ── 2) Comprometido que SÍ sale del pote ───────────────────────────
-    st.subheader("🔒 Comprometido (sale de los S/.32.000)")
+    st.subheader("🔒 Comprometido (sale de los S/.35.000)")
     filas, total_eur, grupos = [], 0.0, {}
     for g in COMPROMETIDOS:
         e = g["monto"]  # todos en EUR
