@@ -36,7 +36,7 @@ Día 22: Louvre → Notre Dame → Sainte Chapelle
 Día 23: Versalles | Día 24: Disneyland París (2 parques)
 
 === BRUSELAS (25-27 julio) ===
-Eurostar París→Bruselas (08:55 → 10:17; €212.40 los 3)
+Eurostar París→Bruselas (08:55 → 10:17; €216 los 3, reservado X7FNNK)
 
 === ÁMSTERDAM (27-30 julio) — casa familiar GRATIS ===
 EuroCity Direct Bruselas→Ámsterdam (07:49 → 10:09; €116.10 los 3, 1 transbordo)
@@ -763,7 +763,7 @@ ITINERARIO_CHECKS = [
         "actividades": [
             {"id": "bru_01", "hora": "08:55", "tipo": "transporte",
              "icono": "🚄", "nombre": "Eurostar París → Bruselas",
-             "detalle": "Gare du Nord 08:55 → Bruxelles-Midi 10:17 · Eurostar · €212.40 los 3 (Omio)", "costo": 212},
+             "detalle": "Gare du Nord 08:55 → Bruxelles-Midi 10:17 · Eurostar 9317 · Coche 7 · asientos 12/16/15 · Reserva X7FNNK · €216 los 3 (Omio, incl. Savings Pass)", "costo": 216, "pagado": True},
             {"id": "bru_13", "hora": "10:30", "tipo": "atraccion",
              "icono": "🏨", "nombre": "Check-in Stephanie by Reside",
              "detalle": "Chaussée de Charleroi 51B, Bruselas (Louise) · Check-in 16:00-00:00 · dejar maletas en guardaequipaje al llegar (10:17), habitación desde 16:00 · Conf: 5921899300 · PIN: 8909 · Tel: +32 488 37 21 42 · Cancelación gratis hasta 24 jun",

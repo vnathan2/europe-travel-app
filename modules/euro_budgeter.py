@@ -47,7 +47,7 @@ COMPROMETIDOS = [
     # Travels
     {"concepto": "Bus ALSA Madrid→Bayona",                    "monto": 117.91,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "reservado"},
     {"concepto": "TGV Bayona→París",                          "monto": 238.72,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "reservado"},
-    {"concepto": "Eurostar París→Bruselas",                   "monto": 212.40,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "por comprar"},
+    {"concepto": "Eurostar París→Bruselas",                   "monto": 216.00,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
     {"concepto": "EuroCity Direct Bruselas→Ámsterdam",        "monto": 116.10,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "por comprar"},
     {"concepto": "Vuelo Ámsterdam→Madrid (IB1346)",           "monto": 540.24,  "moneda": "EUR", "categoria": "🚌 Travels",    "estado": "pagado"},
     # Atracciones
@@ -119,10 +119,15 @@ def _proyeccion_itinerario():
     if not itinerario:
         return None
 
+    # Tramos inter-ciudad (tren/bus/vuelo): ya están en COMPROMETIDOS, no son
+    # bolsillo libre. Se excluyen de la proyección para no contar doble.
+    intercity = {"mad_22", "par_01", "bru_01", "bru_11", "ret_02"}
     por_ciudad, por_tipo = {}, {}
     for dia in itinerario:
         ciudad = dia.get("ciudad", "?")
         for act in dia.get("actividades", []):
+            if act.get("id") in intercity:
+                continue
             costo = act.get("costo", 0) or 0
             if costo <= 0 or act.get("pagado", False):
                 continue
@@ -320,7 +325,7 @@ def _panorama():
 
     recs.append(
         "💵 Para el bolsillo libre conviene combinar algo de efectivo en euros + tarjeta sin comisión. "
-        "Los trenes 'por comprar' (Eurostar y EuroCity Direct) aún no salen de tu tarjeta."
+        "El tren 'por comprar' que queda (EuroCity Direct Bruselas→Ámsterdam) aún no sale de tu tarjeta."
     )
 
     for r in recs:
