@@ -271,13 +271,16 @@ def _panorama():
         st.dataframe(pd.DataFrame(filas_m), use_container_width=True, hide_index=True)
         st.caption(f"Total proyectado: €{total_proy_eur:,.0f} ≈ S/.{total_proy_pen:,.0f} · montos en EUR (familia).")
 
-        # Lo adicional: ¿el plan cabe en el bolsillo libre?
-        esperado_pen = gastado_destino_pen + total_proy_pen
+        # Estimación de cierre SIN doble conteo: los gastos registrados van
+        # "consumiendo" el plan, no se suman aparte. Antes del viaje = proyección;
+        # si te pasas del plan = tu gasto real (lo que sea mayor).
+        esperado_pen = max(total_proy_pen, gastado_destino_pen)
         margen_pen = bolsillo_libre_pen - esperado_pen
         m1, m2, m3 = st.columns(3)
         m1.metric("Proyectado pendiente", f"S/.{total_proy_pen:,.0f}", f"€{total_proy_eur:,.0f}")
-        m2.metric("Gasto total esperado", f"S/.{esperado_pen:,.0f}",
-                  help="Gastado registrado + proyectado pendiente")
+        m2.metric("Gasto total estimado al cierre", f"S/.{esperado_pen:,.0f}",
+                  help="El mayor entre la proyección del plan y lo que ya llevas gastado. "
+                       "Los gastos registrados consumen el plan, no se suman aparte.")
         m3.metric("Margen vs bolsillo libre", f"S/.{margen_pen:,.0f}", f"≈€{pen_eur(margen_pen):,.0f}")
         if margen_pen >= 0:
             st.success(
@@ -286,12 +289,12 @@ def _panorama():
             )
         else:
             st.warning(
-                f"⚠️ El plan proyectado excede el bolsillo libre en ~S/.{abs(margen_pen):,.0f} "
+                f"⚠️ La estimación de cierre excede el bolsillo libre en ~S/.{abs(margen_pen):,.0f} "
                 f"(≈ €{pen_eur(abs(margen_pen)):,.0f}). Conviene recortar gasto o ampliar el pote."
             )
         st.caption(
-            "La proyección es una estimación del plan. A medida que registres gastos reales, "
-            "el 'Gastado en destino' es la referencia principal."
+            "Estimación al cierre = el mayor entre el plan proyectado y tu gasto ya registrado, "
+            "para no contar doble. El 'Saldo disponible' de arriba es tu referencia real del día a día."
         )
         st.divider()
     else:
