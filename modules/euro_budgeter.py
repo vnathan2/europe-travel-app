@@ -94,6 +94,48 @@ def _es_admin() -> bool:
     return bool(st.session_state.get("_show_prices", False))
 
 
+# ── Proyección de gastos pendientes según el itinerario ────────────────────
+_TIPO_LABEL = {
+    "restaurante": "🍽️ Comida",
+    "atraccion":   "🎭 Atracciones/Ocio",
+    "compras":     "🛍️ Compras",
+    "transporte":  "🚌 Transporte local",
+}
+
+
+@st.cache_data(ttl=3600)
+def _proyeccion_itinerario():
+    """Suma los gastos del itinerario que aún NO están pagados (costo > 0 y sin
+    'pagado'), agrupados por ciudad y por tipo. Montos en EUR (total familia).
+    Fuente: ITINERARIO_CHECKS de travel_concierge. Devuelve None si no se puede leer."""
+    itinerario = None
+    try:
+        from modules.travel_concierge import ITINERARIO_CHECKS as itinerario
+    except Exception:
+        try:
+            from travel_concierge import ITINERARIO_CHECKS as itinerario
+        except Exception:
+            return None
+    if not itinerario:
+        return None
+
+    por_ciudad, por_tipo = {}, {}
+    for dia in itinerario:
+        ciudad = dia.get("ciudad", "?")
+        for act in dia.get("actividades", []):
+            costo = act.get("costo", 0) or 0
+            if costo <= 0 or act.get("pagado", False):
+                continue
+            por_ciudad[ciudad] = por_ciudad.get(ciudad, 0.0) + costo
+            etq = _TIPO_LABEL.get(act.get("tipo", ""), "📦 Otros")
+            por_tipo[etq] = por_tipo.get(etq, 0.0) + costo
+    return {
+        "por_ciudad": por_ciudad,
+        "por_tipo": por_tipo,
+        "total": sum(por_ciudad.values()),
+    }
+
+
 # ── Panorama de presupuesto (solo ADMIN) ───────────────────────────────────
 def _panorama():
     rates = _rates_panorama()
@@ -181,6 +223,57 @@ def _panorama():
     )
 
     st.divider()
+
+    # ── 3b) Proyección de gastos pendientes (según itinerario) ─────────
+    proy = _proyeccion_itinerario()
+    if proy and proy["total"] > 0:
+        st.subheader("🔮 Gastos pendientes proyectados (según el itinerario)")
+        st.caption(
+            "Estimación de lo que falta gastar en destino (comida, ocio, compras y transporte "
+            "local) según el plan. No incluye hospedaje, travels ni atracciones ya pagados."
+        )
+        total_proy_eur = proy["total"]
+        total_proy_pen = eur_pen(total_proy_eur)
+
+        cpa, cpb = st.columns(2)
+        with cpa:
+            st.markdown("**Por ciudad**")
+            filas_pc = [
+                {"Ciudad": c, "Proyectado": f"€{v:,.0f}", "S/.": f"S/.{eur_pen(v):,.0f}"}
+                for c, v in sorted(proy["por_ciudad"].items(), key=lambda x: -x[1])
+            ]
+            st.dataframe(pd.DataFrame(filas_pc), use_container_width=True, hide_index=True)
+        with cpb:
+            st.markdown("**Por tipo**")
+            filas_pt = [
+                {"Tipo": t, "Proyectado": f"€{v:,.0f}", "S/.": f"S/.{eur_pen(v):,.0f}"}
+                for t, v in sorted(proy["por_tipo"].items(), key=lambda x: -x[1])
+            ]
+            st.dataframe(pd.DataFrame(filas_pt), use_container_width=True, hide_index=True)
+
+        # Lo adicional: ¿el plan cabe en el bolsillo libre?
+        esperado_pen = gastado_destino_pen + total_proy_pen
+        margen_pen = bolsillo_libre_pen - esperado_pen
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Proyectado pendiente", f"S/.{total_proy_pen:,.0f}", f"€{total_proy_eur:,.0f}")
+        m2.metric("Gasto total esperado", f"S/.{esperado_pen:,.0f}",
+                  help="Gastado registrado + proyectado pendiente")
+        m3.metric("Margen vs bolsillo libre", f"S/.{margen_pen:,.0f}", f"≈€{pen_eur(margen_pen):,.0f}")
+        if margen_pen >= 0:
+            st.success(
+                f"✅ El plan cabe en el bolsillo libre: queda ~S/.{margen_pen:,.0f} "
+                f"(≈ €{pen_eur(margen_pen):,.0f}) de margen para imprevistos."
+            )
+        else:
+            st.warning(
+                f"⚠️ El plan proyectado excede el bolsillo libre en ~S/.{abs(margen_pen):,.0f} "
+                f"(≈ €{pen_eur(abs(margen_pen)):,.0f}). Conviene recortar gasto o ampliar el pote."
+            )
+        st.caption(
+            "La proyección es una estimación del plan. A medida que registres gastos reales, "
+            "el 'Gastado en destino' es la referencia principal."
+        )
+        st.divider()
 
     # ── 4) Gastado en destino por ciudad (informativo) ─────────────────
     if not df.empty and "ciudad" in df.columns and "monto_eur" in df.columns:
