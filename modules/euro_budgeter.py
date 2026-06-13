@@ -14,11 +14,11 @@ CIUDADES = ["Madrid", "Bayona", "París", "Bruselas", "Ámsterdam"]
 COLECCION = "gastos_viaje"
 
 # ── Modelo de presupuesto (confirmado por el usuario, jun 2026) ────────────
-# El vuelo internacional (Lima↔Madrid) y el seguro se pagaron ANTES. Lo que
-# quedó del presupuesto familiar fueron S/.35.000, y de ese pote salen hospedaje,
-# travels y atracciones. El resto es el bolsillo libre (comida, ocio, compras,
-# transporte local).
-PRESUPUESTO_POST_VUELOS_PEN = 35000.0
+# S/.54.000 es el PRESUPUESTO TOTAL del viaje. De ese total se descuenta TODO:
+# el vuelo internacional (Lima↔Madrid) y el seguro (ya pagados), el comprometido
+# (hospedaje, travels, atracciones) y el bolsillo libre (comida, ocio, compras,
+# transporte local). Bolsillo libre = total − ya pagado − comprometido.
+PRESUPUESTO_TOTAL_PEN = 54000.0
 
 # Tasa de planificación EUR→PEN para convertir los montos fijos comprometidos.
 # El Panorama usa la tasa en tiempo real; esta solo alimenta el Dashboard rápido.
@@ -28,14 +28,15 @@ TASA_PLAN_PEN = 4.0
 TRIP_INICIO = date(2026, 7, 15)
 TRIP_FIN = date(2026, 7, 30)
 
-# ── Gastos pagados ANTES del pote (informativos, no se descuentan) ─────────
+# ── Ya pagado, SALE del total (vuelos + seguro) ────────────────────────────
 # Fuente: boletos Air Europa (los 3) e Interseguro (los 3). Montos reales en soles.
 GASTOS_PREVIOS = [
     {"concepto": "Vuelo Lima↔Madrid (Air Europa, los 3)", "monto": 17500.00, "moneda": "PEN"},
     {"concepto": "Seguro de viaje (Interseguro, los 3)",  "monto": 558.84,   "moneda": "PEN"},
 ]
+_PREVIOS_PEN = sum(g["monto"] for g in GASTOS_PREVIOS)
 
-# ── Comprometido que SÍ sale del pote de S/.35.000 ─────────────────────────
+# ── Comprometido que SÍ sale del total de S/.54.000 ────────────────────────
 # Fuente: confirmaciones de Booking, Omio, boleto Iberia y comprobantes de atracciones.
 # París (hospedaje) incluye €67,60 de impuesto municipal que se paga on-site.
 COMPROMETIDOS = [
@@ -62,7 +63,7 @@ COMPROMETIDOS = [
 _COMPROMETIDO_EUR = sum(g["monto"] for g in COMPROMETIDOS)
 # Valor de respaldo a tasa de planificación. El Dashboard y el Panorama usan la
 # tasa EUR→PEN en vivo; esta constante queda solo como fallback de referencia.
-BOLSILLO_LIBRE_EUR = round(PRESUPUESTO_POST_VUELOS_PEN / TASA_PLAN_PEN - _COMPROMETIDO_EUR, 2)
+BOLSILLO_LIBRE_EUR = round((PRESUPUESTO_TOTAL_PEN - _PREVIOS_PEN) / TASA_PLAN_PEN - _COMPROMETIDO_EUR, 2)
 
 
 # ── Firestore: Lectura con CACHÉ (Ahorro de dinero) ───────────────────────
@@ -163,19 +164,19 @@ def _panorama():
 
     st.caption(f"💱 Tasas usadas: 1 EUR = S/.{tc_pen:.3f} = ${tc_usd:.3f} · fuente: {rates['fuente']}")
     st.caption(
-        "Modelo: el vuelo internacional y el seguro se pagaron antes. Lo que quedó "
-        f"(S/.{PRESUPUESTO_POST_VUELOS_PEN:,.0f}) cubre hospedaje, travels, atracciones "
-        "y el bolsillo libre (comida, ocio, compras, transporte local)."
+        f"Modelo: S/.{PRESUPUESTO_TOTAL_PEN:,.0f} es el total del viaje. De ahí se "
+        "descuenta TODO: vuelos y seguro (ya pagados), el comprometido (hospedaje, "
+        "travels, atracciones) y el bolsillo libre (comida, ocio, compras, transporte local)."
     )
 
-    # ── 1) Pagado antes del pote (informativo) ─────────────────────────
-    st.subheader("✅ Pagado antes del presupuesto")
+    # ── 1) Ya pagado, sale del total (vuelos + seguro) ─────────────────
+    st.subheader("✈️ Ya pagado (vuelos + seguro)")
     prev_total_pen = sum(g["monto"] for g in GASTOS_PREVIOS)
     filas_prev = [{"Concepto": g["concepto"], "Soles": f"S/.{g['monto']:,.2f}"} for g in GASTOS_PREVIOS]
     st.dataframe(pd.DataFrame(filas_prev), use_container_width=True, hide_index=True)
     st.caption(
-        f"Subtotal previo: S/.{prev_total_pen:,.0f}. Ya está fuera; no sale de los "
-        f"S/.{PRESUPUESTO_POST_VUELOS_PEN:,.0f}."
+        f"Subtotal ya pagado: S/.{prev_total_pen:,.0f}. Sale del total de "
+        f"S/.{PRESUPUESTO_TOTAL_PEN:,.0f}."
     )
 
     st.divider()
@@ -204,8 +205,8 @@ def _panorama():
 
     st.divider()
 
-    # ── 3) El pote y el saldo libre ────────────────────────────────────
-    st.subheader(f"🎯 El pote de S/.{PRESUPUESTO_POST_VUELOS_PEN:,.0f}")
+    # ── 3) El total y el saldo libre ───────────────────────────────────
+    st.subheader(f"🎯 El total de S/.{PRESUPUESTO_TOTAL_PEN:,.0f}")
 
     df = obtener_gastos_cached()
     gastado_destino_pen = 0.0
@@ -215,24 +216,30 @@ def _panorama():
         elif "monto_eur" in df.columns:
             gastado_destino_pen = eur_pen(float(df["monto_eur"].sum()))
 
-    bolsillo_libre_pen = PRESUPUESTO_POST_VUELOS_PEN - comprometido_pen
+    bolsillo_libre_pen = PRESUPUESTO_TOTAL_PEN - prev_total_pen - comprometido_pen
     saldo_pen = bolsillo_libre_pen - gastado_destino_pen
-    usado_pen = comprometido_pen + gastado_destino_pen
-    pct = (usado_pen / PRESUPUESTO_POST_VUELOS_PEN * 100) if PRESUPUESTO_POST_VUELOS_PEN else 0.0
+    usado_pen = prev_total_pen + comprometido_pen + gastado_destino_pen
+    pct = (usado_pen / PRESUPUESTO_TOTAL_PEN * 100) if PRESUPUESTO_TOTAL_PEN else 0.0
 
     c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Presupuesto", f"S/.{PRESUPUESTO_POST_VUELOS_PEN:,.0f}")
-    c2.metric("Comprometido", f"S/.{comprometido_pen:,.0f}", f"€{total_eur:,.0f}")
-    c3.metric("Bolsillo libre", f"S/.{bolsillo_libre_pen:,.0f}", f"≈€{pen_eur(bolsillo_libre_pen):,.0f}")
-    c4.metric("Gastado en destino", f"S/.{gastado_destino_pen:,.0f}")
+    c1.metric("Total del viaje", f"S/.{PRESUPUESTO_TOTAL_PEN:,.0f}")
+    c2.metric("− Ya pagado", f"S/.{prev_total_pen:,.0f}", help="Vuelos + seguro")
+    c3.metric("− Comprometido", f"S/.{comprometido_pen:,.0f}", f"€{total_eur:,.0f}")
+    c4.metric("= Bolsillo libre", f"S/.{bolsillo_libre_pen:,.0f}", f"≈€{pen_eur(bolsillo_libre_pen):,.0f}")
     st.progress(min(pct / 100, 1.0))
-    st.success(
-        f"💰 **Saldo disponible (comida · ocio · compras · transporte local): "
-        f"S/.{saldo_pen:,.0f}** (≈ €{pen_eur(saldo_pen):,.0f})"
-    )
+    if saldo_pen >= 0:
+        st.success(
+            f"💰 **Saldo disponible (comida · ocio · compras · transporte local): "
+            f"S/.{saldo_pen:,.0f}** (≈ €{pen_eur(saldo_pen):,.0f}) · gastado en destino: S/.{gastado_destino_pen:,.0f}"
+        )
+    else:
+        st.error(
+            f"🔴 **Bolsillo libre en rojo: S/.{saldo_pen:,.0f}** (≈ €{pen_eur(saldo_pen):,.0f}). "
+            f"El total no alcanza para cubrir el bolsillo proyectado · gastado: S/.{gastado_destino_pen:,.0f}"
+        )
     st.caption(
-        "⚠️ No registres hospedaje, travels ni atracciones como gastos diarios: ya están "
-        "en 'Comprometido'. Si los anotas también, se duplican."
+        "⚠️ No registres vuelos, seguro, hospedaje, travels ni atracciones como gastos diarios: "
+        "ya están arriba en 'Ya pagado' y 'Comprometido'. Si los anotas, se duplican."
     )
 
     st.divider()
@@ -427,7 +434,7 @@ def mostrar():
         df = obtener_gastos_cached()
         if not df.empty:
             presupuesto_total = round(
-                PRESUPUESTO_POST_VUELOS_PEN / tipo_cambio - _COMPROMETIDO_EUR, 2
+                (PRESUPUESTO_TOTAL_PEN - _PREVIOS_PEN) / tipo_cambio - _COMPROMETIDO_EUR, 2
             )
             gastado = df["monto_eur"].sum()
 
