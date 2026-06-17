@@ -274,6 +274,11 @@ CIUDAD_POR_FECHA = {
 }
 
 COORDS_ACTIVIDAD = {
+    # ── Lima (día previo) ─────────────────────────────────────────────
+    "pre_01": (-12.0219, -77.1143, "Tienda Entel — activar roaming"),
+    "pre_02": (-12.0219, -77.1143, "Lima — checklist documentos"),
+    "pre_03": (-12.0219, -77.1143, "Lima — checklist equipaje"),
+    "pre_04": (-12.0219, -77.6097, "Aeropuerto Jorge Chávez — vuelo UX176"),
     # ── Madrid ──
     "mad_01": (40.4719, -3.5719, "Barajas T1"),
     "mad_02": (40.4249, -3.7033, "Gran Central Suites"),
@@ -456,6 +461,23 @@ Máximo 80 palabras, en español, con emojis.
 # ══════════════════════════════════════════════════════════════════════════
 ITINERARIO_CHECKS = [
     {
+        "fecha": "Lun 14 Jul", "ciudad": "Lima", "emoji": "🇵🇪",
+        "actividades": [
+            {"id": "pre_01", "hora": "09:00", "tipo": "transporte",
+             "icono": "📱", "nombre": "Activar Roaming Entel (los 3)",
+             "detalle": "Llamar al *105 o ir a tienda Entel · activar Roaming Internacional en los 3 números (Jonathan, Giovanna, Camila) · debe quedar confirmado con al menos 24h antes del vuelo · pedir constancia de activación", "costo": 0},
+            {"id": "pre_02", "hora": "10:00", "tipo": "transporte",
+             "icono": "✅", "nombre": "Checklist final de documentos",
+             "detalle": "Verificar: 3 pasaportes vigentes · tickets Air Europa UX176 (loc 8ULKTI) · voucher seguro Interseguro (A66-8JIEDM) · tickets de atracciones en PDF offline · billete EuroCity impreso en papel A4 (obligatorio) · app Omio con X7FNNK y JTHDBFR descargadas offline", "costo": 0},
+            {"id": "pre_03", "hora": "11:00", "tipo": "transporte",
+             "icono": "🧳", "nombre": "Checklist final de equipaje",
+             "detalle": "Verificar: adaptadores tipo F (2 uds) · power banks cargados · bloqueador solar SPF50+ · medicamentos básicos · candados TSA · ropa impermeable para Bruselas/Ámsterdam · zapatos cómodos para caminar", "costo": 0},
+            {"id": "pre_04", "hora": "08:00", "tipo": "transporte",
+             "icono": "✈️", "nombre": "Vuelo Lima → Madrid UX176",
+             "detalle": "Jorge Chávez T1 · salida 10:20 · presentarse con al menos 3h de anticipación (07:20) · Air Europa UX176 · loc 8ULKTI · asientos Victor 20H · Giovanna 20K · Camila 20J · llega Madrid 15 jul 05:10", "costo": 0, "pagado": True},
+        ]
+    },
+    {
         "fecha": "Mié 15 Jul", "ciudad": "Madrid", "emoji": "🇪🇸",
         "especial": None,
         "actividades": [
@@ -621,8 +643,8 @@ ITINERARIO_CHECKS = [
              "traslado": "Mismo Petit Bayonne, ~2 min a pie (Rue Pannecau)", "costo": 30},
             {"id": "bay_08", "hora": "19:00", "tipo": "atraccion",
              "icono": "🎉", "nombre": "Fêtes de Bayonne — último día",
-             "detalle": "Pass Fêtes €15pp adultos · Camila gratis (<16) · rojo y blanco · bandas, vaquillas, buvettes · comprar pass online antes del viaje",
-             "traslado": "En las calles del centro · las Fêtes toman todo el casco antiguo", "costo": 30},
+             "detalle": "Pass Fêtes lo compra nuestra familia (gratis para nosotros) · rojo y blanco · bandas, vaquillas, buvettes",
+             "traslado": "En las calles del centro · las Fêtes toman todo el casco antiguo", "costo": 0},
             {"id": "bay_f19", "hora": "20:00", "tipo": "restaurante",
              "icono": "🎪", "nombre": "Comida y bebidas en las Fêtes",
              "detalle": "Consumo en puestos y barras de las Fêtes de Bayonne · ~€15pp",
