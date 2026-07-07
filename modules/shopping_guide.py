@@ -1,7 +1,9 @@
 # modules/shopping_guide.py
 # 🛒 Shopping Guide — Tiendas, ofertas y souvenirs por ciudad
-# Categorías: Ropa, Zapatos/Carteras, Souvenirs, Tecnología/Comics/Anime,
-#             Gastronomía para llevar, Perfumes/Cosméticos, Joyería, Outlets
+# Vista alineada con el módulo Attractions: cards con gradiente por ciudad,
+# rating en estrellas, badges de precio y de "para quién", productos, tip y
+# link a Maps. Filtros: ciudad, categoría, persona y búsqueda. Conserva el
+# fallback de Lady (Tavily + Gemini) y las guías de Tax Free / equipaje.
 
 import json
 import os
@@ -16,27 +18,19 @@ from utils.price_helper import mostrar_precio
 # ══════════════════════════════════════════════════════════════════════════
 
 def _buscar_con_lady(busqueda: str, ciudad: str, para: str) -> str:
-    """
-    Cuando la búsqueda local no encuentra resultados,
-    Lady usa Tavily + Gemini para buscar en internet.
-    """
+    """Cuando la búsqueda local no encuentra resultados, Lady busca en internet."""
     try:
-        # 1. Buscar con Tavily
         from tavily import TavilyClient
 
         from utils.gcp_client import get_secret
 
-        api_key = os.getenv("TAVILY_API_KEY")
-        if not api_key:
-            api_key = get_secret("TAVILY_API_KEY")
-
+        api_key = os.getenv("TAVILY_API_KEY") or get_secret("TAVILY_API_KEY")
         client = TavilyClient(api_key=api_key)
 
-        # Construir query orientada a compras
         ciudad_en = {
             "Madrid": "Madrid Spain", "Bayona": "Bayonne France",
             "París": "Paris France", "Bruselas": "Brussels Belgium",
-            "Ámsterdam": "Amsterdam Netherlands", "Europa": "Europe"
+            "Ámsterdam": "Amsterdam Netherlands", "Europa": "Europe",
         }.get(ciudad, ciudad)
 
         query = f"tiendas donde comprar {busqueda} en {ciudad_en} turistas dirección precio"
@@ -47,19 +41,15 @@ def _buscar_con_lady(busqueda: str, ciudad: str, para: str) -> str:
             resultados_txt += f"Respuesta directa: {response['answer']}\n\n"
         for r in response.get("results", []):
             resultados_txt += f"- {r.get('title','')}: {r.get('content','')[:200]}\n"
-
     except Exception as e:
         resultados_txt = f"No se pudo buscar en internet: {e}"
 
     try:
-        # 2. Lady procesa y formatea con Gemini
         import google.generativeai as genai
 
         from utils.gcp_client import get_secret as gs
 
-        gemini_key = os.getenv("GEMINI_API_KEY")
-        if not gemini_key:
-            gemini_key = gs("GEMINI_API_KEY")
+        gemini_key = os.getenv("GEMINI_API_KEY") or gs("GEMINI_API_KEY")
         genai.configure(api_key=gemini_key)
         model = genai.GenerativeModel("gemini-2.5-flash")
 
@@ -90,22 +80,31 @@ Basándote en esa información, dame una respuesta útil con:
 Responde en español, con tu estilo simpático de perrita viajera, con emojis.
 Máximo 300 palabras. Si no encontraste información suficiente, sé honesta y sugiere alternativas."""
 
-        respuesta = model.generate_content(prompt).text
-        return respuesta
-
+        return model.generate_content(prompt).text
     except Exception as e:
-        return f"🐾 ¡Woof! No pude conectarme ahora mismo para buscar. Error: {e}\n\nIntenta buscar directamente en Google Maps: **{busqueda} {ciudad}**"
+        return (f"🐾 ¡Woof! No pude conectarme ahora mismo para buscar. Error: {e}\n\n"
+                f"Intenta buscar directamente en Google Maps: **{busqueda} {ciudad}**")
 
 # ══════════════════════════════════════════════════════════════════════════
-# HELPERS
+# DATOS Y TEMA VISUAL (alineado con attractions.py y utils/ui_theme.py)
 # ══════════════════════════════════════════════════════════════════════════
 
-def maps_url(nombre: str, ciudad: str) -> str:
-    q = requests.utils.quote(f"{nombre} {ciudad}")
-    return f"https://www.google.com/maps/search/?api=1&query={q}"
+def _cargar_tiendas() -> dict:
+    ruta = os.path.join(os.path.dirname(__file__), "..", "data", "shopping.json")
+    with open(ruta, encoding="utf-8") as f:
+        return json.load(f)
 
-def precio_tag(nivel: int) -> str:
-    return "€" * nivel + "·" * (3 - nivel)
+
+TIENDAS = _cargar_tiendas()
+
+_CIUDAD_TEMA = {
+    "Madrid":    {"grad": "linear-gradient(135deg, #C8102E 0%, #8B0000 100%)", "emoji": "🇪🇸", "accent": "#FFD700"},
+    "Bayona":    {"grad": "linear-gradient(135deg, #4A90D9 0%, #1a3a5c 100%)", "emoji": "🇫🇷", "accent": "#E8C547"},
+    "París":     {"grad": "linear-gradient(135deg, #5B9BD5 0%, #C9A227 100%)", "emoji": "🇫🇷", "accent": "#E8C547"},
+    "Bruselas":  {"grad": "linear-gradient(135deg, #F5A623 0%, #E8340A 100%)", "emoji": "🇧🇪", "accent": "#FFD700"},
+    "Ámsterdam": {"grad": "linear-gradient(135deg, #E8453C 0%, #1F5C99 100%)", "emoji": "🇳🇱", "accent": "#FF6B35"},
+}
+_DEFAULT_TEMA = {"grad": "linear-gradient(135deg, #1A73E8 0%, #0D47A1 100%)", "emoji": "📍", "accent": "#FFD700"}
 
 CATEGORIA_EMOJI = {
     "Ropa y Moda":          "👗",
@@ -113,7 +112,7 @@ CATEGORIA_EMOJI = {
     "Souvenirs":            "🎁",
     "Tecnología / Geek":    "🎮",
     "Gastronomía":          "🍫",
-    "Perfumes y Cosméticos":"💄",
+    "Perfumes y Cosméticos": "💄",
     "Joyería y Accesorios": "💎",
     "Outlets y Ofertas":    "🏷️",
 }
@@ -125,202 +124,211 @@ PARA_QUIEN = {
     "Todos":    "👨‍👩‍👧",
 }
 
-# ══════════════════════════════════════════════════════════════════════════
-# BASE DE DATOS DE TIENDAS
-# ══════════════════════════════════════════════════════════════════════════
 
-def _cargar_tiendas() -> dict:
-    # Catalogo de tiendas en data/shopping.json (editable sin tocar Python ni redeploy de codigo).
-    ruta = os.path.join(os.path.dirname(__file__), "..", "data", "shopping.json")
-    with open(ruta, encoding="utf-8") as f:
-        return json.load(f)
+def _maps_url(nombre: str, ciudad: str) -> str:
+    q = requests.utils.quote(f"{nombre} {ciudad}")
+    return f"https://www.google.com/maps/search/?api=1&query={q}"
 
 
-TIENDAS = _cargar_tiendas()
+def _estrellas(rating):
+    if not rating:
+        return "Sin calificación"
+    llenas = int(rating)
+    media = 1 if (rating - llenas) >= 0.5 else 0
+    vacias = 5 - llenas - media
+    return "★" * llenas + ("⯪" if media else "") + "☆" * vacias
+
+
+def _card(t: dict, ciudad: str, tema: dict):
+    """Card visual de una tienda, con el mismo estilo que Attractions."""
+    accent = tema["accent"]
+    rating = t.get("rating")
+    cat_emoji = CATEGORIA_EMOJI.get(t["categoria"], "🛍️")
+
+    rating_txt = (
+        f"<span style='color:{accent}; font-size:15px; letter-spacing:1px;'>{_estrellas(rating)}</span>"
+        f"<span style='color:#ddd; font-weight:700; margin-left:8px;'>{rating:.1f}</span>"
+        if rating else
+        "<span style='color:#999; font-size:13px;'>Sin calificación</span>"
+    )
+
+    nivel = int(t.get("precio", 1))
+    precio_lbl = {1: "€ · Económico", 2: "€€ · Moderado", 3: "€€€ · Lujo"}.get(nivel, "€")
+    precio_txt = mostrar_precio(precio_lbl)
+
+    # Badges "para quién"
+    para_badges = " ".join(
+        f"<span style='background:rgba(255,255,255,.12); color:#e6ebf2; font-size:11px; "
+        f"font-weight:600; padding:2px 9px; border-radius:20px; margin:0 2px 2px 0; "
+        f"display:inline-block;'>{PARA_QUIEN.get(p, '👤')} {p}</span>"
+        for p in t.get("para", [])
+    )
+
+    # Productos
+    productos_html = "".join(
+        f"<div style='color:#cfd6e0; font-size:13px; line-height:1.5;'>• {p}</div>"
+        for p in t.get("productos", [])
+    )
+
+    tip = t.get("tip", "")
+    tip_html = (
+        f"<div style='color:#9aa4b2; font-size:12.5px; line-height:1.45; margin-top:10px; "
+        f"border-left:3px solid {accent}; padding-left:10px;'>{tip}</div>"
+        if tip else ""
+    )
+    comentario = t.get("comentario", "")
+    coment_html = (
+        f"<div style='color:#7f8a99; font-size:12.5px; font-style:italic; margin-top:8px;'>💬 {comentario}</div>"
+        if comentario else ""
+    )
+
+    maps = _maps_url(t["nombre"], ciudad)
+
+    st.markdown(f"""
+    <div style="
+        border-radius:16px; overflow:hidden; margin-bottom:16px;
+        border:1px solid rgba(255,255,255,.08);
+        box-shadow:0 4px 18px rgba(0,0,0,.28);
+        background:#0e1420;
+    ">
+      <div style="background:{tema['grad']}; padding:16px 18px 14px 18px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+          <div style="font-size:32px; line-height:1;">{cat_emoji}</div>
+          <span style="background:rgba(255,255,255,.15); color:white; font-size:11px;
+                       font-weight:600; padding:3px 10px; border-radius:20px;">{t['categoria']}</span>
+        </div>
+        <div style="font-family:'Barlow Condensed','Barlow',sans-serif; font-weight:700;
+                    font-size:23px; color:white; margin-top:8px; line-height:1.05;">
+          {t['nombre']}
+        </div>
+      </div>
+      <div style="padding:14px 18px 16px 18px;">
+        <div style="margin-bottom:10px;">{rating_txt}</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <span style="background:{accent}22; color:{accent}; font-size:13px; font-weight:700;
+                       padding:5px 12px; border-radius:8px;">💶 {precio_txt}</span>
+          <span style="background:rgba(255,255,255,.06); color:#cfd6e0; font-size:12px;
+                       padding:5px 12px; border-radius:8px;">🕒 {t.get('horario','')}</span>
+        </div>
+        <div style="margin-bottom:10px;">{para_badges}</div>
+        <div style="color:{accent}; font-size:12px; font-weight:700; letter-spacing:.5px; margin-bottom:4px;">🛍️ QUÉ COMPRAR</div>
+        {productos_html}
+        {tip_html}
+        {coment_html}
+        <div style="color:#7f8a99; font-size:12px; margin-top:12px;">
+          📍 {t['direccion']} ·
+          <a href="{maps}" target="_blank" style="color:{accent}; text-decoration:none;">Ver en Maps ↗</a>
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
 
 # ══════════════════════════════════════════════════════════════════════════
 # UI PRINCIPAL
 # ══════════════════════════════════════════════════════════════════════════
 
-def render_tienda_card(tienda: dict, ciudad: str):
-    """Renderiza una card de tienda."""
-    with st.container(border=True):
-        # Header
-        col1, col2, col3 = st.columns([3, 1, 1])
-        with col1:
-            cat_emoji = CATEGORIA_EMOJI.get(tienda["categoria"], "🛍️")
-            st.markdown(f"### {cat_emoji} {tienda['nombre']}")
-            st.caption(f"📍 {tienda['direccion']}")
-        with col2:
-            st.metric("Rating", f"{tienda['rating']}/5")
-        with col3:
-            niveles = {"€": "Económico", "€€": "Moderado", "€€€": "Lujo"}
-            precio_str = "€" * tienda["precio"]
-            st.metric("Precio", mostrar_precio(precio_str), mostrar_precio(niveles.get(precio_str, ""), ""))
-
-        # Para quién
-        para_tags = " ".join([
-            f"{PARA_QUIEN.get(p, '👤')} {p}"
-            for p in tienda["para"]
-        ])
-        st.caption(f"**Para:** {para_tags}")
-
-        # Horario
-        st.caption(f"🕐 {tienda['horario']}")
-
-        st.divider()
-
-        # Productos destacados
-        col1, col2 = st.columns([2, 1])
-        with col1:
-            st.markdown("**🛍️ Qué comprar:**")
-            for prod in tienda["productos"]:
-                st.caption(f"• {prod}")
-
-        with col2:
-            # Botón Maps
-            url = maps_url(tienda["nombre"], ciudad)
-            st.link_button(
-                "📍 Ver en Maps",
-                url,
-                use_container_width=True,
-                type="primary"
-            )
-            st.write("")
-
-        # Tip de ahorro
-        if tienda.get("tip"):
-            st.info(tienda["tip"])
-
-        # Comentario
-        if tienda.get("comentario"):
-            st.caption(f"💬 _{tienda['comentario']}_")
-
-
 def mostrar():
     st.title("🛒 Shopping Guide")
-    st.caption("Tiendas, ofertas y souvenirs curados para la familia — por ciudad y categoría")
+    st.caption("Tiendas, ofertas y souvenirs curados para la familia, por ciudad y categoría.")
 
-    # ── Filtros en la parte superior ──────────────────────────────────────
+    ciudades = list(TIENDAS.keys())
+
+    # ── Filtros ────────────────────────────────────────────────────────────
     col1, col2, col3 = st.columns(3)
-
     with col1:
-        ciudad_sel = st.selectbox(
-            "📍 Ciudad:",
-            ["Todas"] + list(TIENDAS.keys()),
-            key="shop_ciudad"
-        )
+        ciudad_sel = st.selectbox("📍 Ciudad", ["Todas"] + ciudades, key="shop_ciudad")
     with col2:
-        todas_cats = sorted(set(
-            t["categoria"]
-            for tiendas in TIENDAS.values()
-            for t in tiendas
-        ))
-        cat_sel = st.selectbox(
-            "🏷️ Categoría:",
-            ["Todas"] + todas_cats,
-            key="shop_cat"
-        )
+        todas_cats = sorted({t["categoria"] for tds in TIENDAS.values() for t in tds})
+        cat_sel = st.selectbox("🏷️ Categoría", ["Todas"] + todas_cats, key="shop_cat")
     with col3:
-        persona_sel = st.selectbox(
-            "👤 Para quién:",
-            ["Todos", "Jonathan", "Camila", "Giovanna"],
-            key="shop_persona"
-        )
+        persona_sel = st.selectbox("👤 Para quién", ["Todos", "Jonathan", "Camila", "Giovanna"], key="shop_persona")
 
-    # Búsqueda rápida
     busqueda = st.text_input(
-        "🔍 Buscar tienda o producto...",
+        "🔍 Buscar tienda o producto",
         placeholder="ej: chocolate, manga, perfume...",
-        key="shop_busqueda"
+        key="shop_busqueda",
     )
 
-    st.divider()
+    ciudades_mostrar = ciudades if ciudad_sel == "Todas" else [ciudad_sel]
 
-    # ── Aplicar filtros ───────────────────────────────────────────────────
-    ciudades_mostrar = (
-        list(TIENDAS.keys()) if ciudad_sel == "Todas"
-        else [ciudad_sel]
-    )
-
-    total_tiendas = 0
-    CIUDAD_EMOJIS = {
-        "Madrid": "🇪🇸", "Bayona": "🇫🇷", "París": "🇫🇷",
-        "Bruselas": "🇧🇪", "Ámsterdam": "🇳🇱"
-    }
-
+    # ── Aplicar filtros ─────────────────────────────────────────────────────
+    filtradas = {}
     for ciudad in ciudades_mostrar:
         tiendas_ciudad = TIENDAS.get(ciudad, [])
-
-        # Filtrar por categoría
         if cat_sel != "Todas":
             tiendas_ciudad = [t for t in tiendas_ciudad if t["categoria"] == cat_sel]
-
-        # Filtrar por persona
         if persona_sel != "Todos":
-            tiendas_ciudad = [t for t in tiendas_ciudad if persona_sel in t["para"]]
-
-        # Filtrar por búsqueda
+            tiendas_ciudad = [t for t in tiendas_ciudad if persona_sel in t.get("para", [])]
         if busqueda:
-            busq = busqueda.lower()
+            b = busqueda.lower()
             tiendas_ciudad = [
                 t for t in tiendas_ciudad
-                if busq in t["nombre"].lower()
-                or busq in t["comentario"].lower()
-                or any(busq in p.lower() for p in t["productos"])
-                or busq in t["categoria"].lower()
+                if b in t["nombre"].lower()
+                or b in t.get("comentario", "").lower()
+                or any(b in p.lower() for p in t.get("productos", []))
+                or b in t["categoria"].lower()
             ]
+        if tiendas_ciudad:
+            filtradas[ciudad] = tiendas_ciudad
 
-        if not tiendas_ciudad:
+    total = sum(len(v) for v in filtradas.values())
+    st.markdown(
+        f"<div style='color:#9aa4b2; font-size:13px; margin:4px 0 14px 0;'>{total} tienda"
+        f"{'s' if total != 1 else ''} encontrada{'s' if total != 1 else ''}</div>",
+        unsafe_allow_html=True,
+    )
+
+    # ── Render de cards ──────────────────────────────────────────────────────
+    for ciudad in ciudades_mostrar:
+        items = filtradas.get(ciudad)
+        if not items:
             continue
+        tema = _CIUDAD_TEMA.get(ciudad, _DEFAULT_TEMA)
 
-        total_tiendas += len(tiendas_ciudad)
-
-        # Cada ciudad es un desplegable contraído; dentro se elige la tienda
-        emoji = CIUDAD_EMOJIS.get(ciudad, "📍")
-        with st.expander(f"{emoji} {ciudad} — {len(tiendas_ciudad)} tienda(s)", expanded=False):
-            opciones = {
-                f"{CATEGORIA_EMOJI.get(t['categoria'], '🛍️')} {t['nombre']}  ·  {t['categoria']}": t
-                for t in tiendas_ciudad
-            }
-            sel = st.selectbox(
-                "Selecciona una tienda para ver su información:",
-                list(opciones.keys()),
-                key=f"shop_sel_{ciudad}",
+        if ciudad_sel == "Todas":
+            st.markdown(
+                f"<h3 style='margin:18px 0 10px 0;'>{tema['emoji']} {ciudad} "
+                f"<span style='color:#7f8a99; font-size:14px; font-weight:400;'>· {len(items)} tiendas</span></h3>",
+                unsafe_allow_html=True,
             )
-            render_tienda_card(opciones[sel], ciudad)
 
-    if total_tiendas == 0:
+        # Orden por rating desc
+        items = sorted(items, key=lambda x: -(x.get("rating") or 0))
+        col_izq, col_der = st.columns(2)
+        for i, t in enumerate(items):
+            with (col_izq if i % 2 == 0 else col_der):
+                _card(t, ciudad, tema)
+
+    # ── Fallback de Lady si no hay resultados ────────────────────────────────
+    if total == 0:
         if busqueda:
-            # ── Lady fallback: busca en internet ──────────────────────
             ciudad_busqueda = ciudad_sel if ciudad_sel != "Todas" else "Europa"
             st.warning(f"🔍 No encontré **'{busqueda}'** en mi base de datos para {ciudad_busqueda}.")
             st.markdown("### 🐾 Lady busca en internet por ti...")
 
             cache_key = f"lady_search_{busqueda}_{ciudad_busqueda}"
-            if cache_key not in st.session_state:
-                st.session_state[cache_key] = None
+            st.session_state.setdefault(cache_key, None)
 
             if st.session_state[cache_key]:
                 st.success("🐾 Lady encontró esto:")
                 st.markdown(st.session_state[cache_key])
             else:
-                col1, col2 = st.columns([2, 1])
-                with col1:
+                c1, c2 = st.columns([2, 1])
+                with c1:
                     st.caption(
                         f"Lady buscará tiendas de **'{busqueda}'** en **{ciudad_busqueda}** "
                         f"con direcciones, horarios y tips reales."
                     )
-                with col2:
+                with c2:
                     if st.button("🐾 Buscar con Lady", type="primary", use_container_width=True):
                         with st.spinner("🐾 Lady está olfateando las mejores tiendas..."):
-                            resultado = _buscar_con_lady(busqueda, ciudad_busqueda, persona_sel)
-                        st.session_state[cache_key] = resultado
+                            st.session_state[cache_key] = _buscar_con_lady(busqueda, ciudad_busqueda, persona_sel)
                         st.rerun()
         else:
             st.info("🔍 No se encontraron tiendas con los filtros seleccionados. Prueba con otros filtros.")
 
-    # ── Resumen de tips Tax Free ──────────────────────────────────────────
+    # ── Guías Tax Free y equipaje ────────────────────────────────────────────
     with st.expander("💡 Guía Tax Free — Recupera hasta 12% de tus compras", expanded=False):
         st.markdown("""
 **¿Qué es el Tax Free?**
