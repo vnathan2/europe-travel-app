@@ -119,10 +119,55 @@ def _card(a: dict, tema: dict):
     """, unsafe_allow_html=True)
 
 
+def _card_evento(e: dict, tema: dict):
+    """Renderiza una card de evento/festival."""
+    accent = tema["accent"]
+    coincide = e.get("coincide")
+    badge = (
+        "<span style='background:#15917F; color:white; font-size:10px; font-weight:700; "
+        "padding:3px 10px; border-radius:20px; letter-spacing:.5px;'>✓ COINCIDE CON TU VIAJE</span>"
+        if coincide else
+        "<span style='background:rgba(255,255,255,.12); color:#cfd6e0; font-size:10px; "
+        "font-weight:600; padding:3px 10px; border-radius:20px;'>✗ Fuera de tus fechas</span>"
+    )
+    borde = "#15917F" if coincide else "rgba(255,255,255,.12)"
+    nota = e.get("nota")
+    nota_html = (
+        f"<div style='color:#9aa4b2; font-size:12.5px; line-height:1.45; margin-top:8px; "
+        f"border-left:3px solid {accent}; padding-left:10px;'>{nota}</div>"
+        if nota else ""
+    )
+    st.markdown(f"""
+    <div style="
+        border-radius:14px; overflow:hidden; margin-bottom:14px;
+        border:1px solid {borde}; background:#0e1420;
+        box-shadow:0 3px 14px rgba(0,0,0,.25);
+    ">
+      <div style="padding:14px 16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+          <div style="font-size:15px; font-weight:700; color:white; line-height:1.15;">
+            {e.get('emoji','🎉')} {e['nombre']}
+          </div>
+          <div style="white-space:nowrap;">{badge}</div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; margin:8px 0;">
+          <span style="background:{accent}22; color:{accent}; font-size:12px; font-weight:700;
+                       padding:3px 10px; border-radius:8px;">📅 {e['fechas']}</span>
+          <span style="background:rgba(255,255,255,.06); color:#cfd6e0; font-size:12px;
+                       padding:3px 10px; border-radius:8px;">{e['tipo']}</span>
+        </div>
+        <div style="color:#cfd6e0; font-size:13.5px; line-height:1.5;">{e['detalle']}</div>
+        {nota_html}
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 # ── UI Principal ─────────────────────────────────────────────────────────────
 def mostrar():
     data = _cargar_atracciones()
     atracciones = data["atracciones"]
+    eventos = data.get("eventos", [])
     ciudades = data["ciudades"]
 
     st.title("🎭 Attractions")
@@ -139,9 +184,12 @@ def mostrar():
 
     total = sum(1 for a in atracciones if a["ciudad"] in ciudades_mostrar)
     pagadas = sum(1 for a in atracciones if a["ciudad"] in ciudades_mostrar and a.get("pagado"))
+    ev_coincide = sum(1 for e in eventos if e["ciudad"] in ciudades_mostrar and e.get("coincide"))
+    resumen = f"{total} atracciones · {pagadas} ya en el plan/pagadas"
+    if ev_coincide:
+        resumen += f" · 🎉 {ev_coincide} evento{'s' if ev_coincide != 1 else ''} durante tu viaje"
     st.markdown(
-        f"<div style='color:#9aa4b2; font-size:13px; margin:4px 0 14px 0;'>"
-        f"{total} atracciones · {pagadas} ya en el plan/pagadas</div>",
+        f"<div style='color:#9aa4b2; font-size:13px; margin:4px 0 14px 0;'>{resumen}</div>",
         unsafe_allow_html=True,
     )
 
@@ -155,6 +203,23 @@ def mostrar():
             st.markdown(
                 f"<h3 style='margin:18px 0 10px 0;'>{tema['emoji']} {ciudad} "
                 f"<span style='color:#7f8a99; font-size:14px; font-weight:400;'>· {len(items)} atracciones</span></h3>",
+                unsafe_allow_html=True,
+            )
+
+        # Eventos de la ciudad (primero los que coinciden con el viaje)
+        eventos_ciudad = [e for e in eventos if e["ciudad"] == ciudad]
+        if eventos_ciudad:
+            eventos_ciudad.sort(key=lambda x: not x.get("coincide"))
+            st.markdown(
+                f"<div style='font-size:13px; font-weight:700; color:{tema['accent']}; "
+                f"margin:6px 0 8px 0; letter-spacing:.5px;'>🎉 EVENTOS Y FESTIVALES</div>",
+                unsafe_allow_html=True,
+            )
+            for e in eventos_ciudad:
+                _card_evento(e, tema)
+            st.markdown(
+                f"<div style='font-size:13px; font-weight:700; color:{tema['accent']}; "
+                f"margin:14px 0 8px 0; letter-spacing:.5px;'>📍 ATRACCIONES</div>",
                 unsafe_allow_html=True,
             )
 
