@@ -87,9 +87,10 @@ MODULO_CIUDAD = {
     "voice_translator": "default",
     "train_optimizer":  "default",
     "trip_journal":     "default",
-    "phrase_pocket":    "default",
+    "conversor_moneda":    "default",
     "itinerary_tracker":"default",
     "shopping_guide":   "default",
+    "attractions": "default",
     "night_life":       "amsterdam",
     "admin_panel":      "default",
 }
@@ -488,7 +489,7 @@ MENU_SECTIONS = [
         "seccion": "💰 Finanzas",
         "items": [
             {"key": "💰 Euro-Budgeter",      "id": "euro_budgeter",    "desc": "Presupuesto y gastos"},
-            {"key": "💱 Conversor de Moneda", "id": "phrase_pocket",    "desc": "EUR ↔ PEN en tiempo real"},
+            {"key": "💱 Conversor de Moneda", "id": "conversor_moneda",    "desc": "EUR ↔ PEN en tiempo real"},
         ]
     },
     {
@@ -498,6 +499,7 @@ MENU_SECTIONS = [
             {"key": "📋 Lady Travel itinerary",          "id": "itinerary_tracker","desc": "Checks del día"},
             {"key": "🚄 Travels",              "id": "train_optimizer",  "desc": "Rutas y horarios"},
             {"key": "🏨 Hotels",             "id": "hoteles",          "desc": "Reservas por ciudad"},
+            {"key": "🎭 Attractions", "id": "attractions", "desc": "Atracciones por ciudad"},
         ]
     },
     {

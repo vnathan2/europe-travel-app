@@ -139,6 +139,7 @@ MODULOS = {
     "conversor_moneda": "modules.conversor_moneda",
     "itinerary_tracker": "modules.travel_concierge",
     "hoteles": "modules.hoteles",
+    "attractions": "modules.attractions",
     "night_life": "modules.night_life",
     "admin_panel": "modules.admin_panel"
 }
