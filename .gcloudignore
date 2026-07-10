@@ -38,6 +38,8 @@ service-account*.json
 credentials*.json
 # Excepción: el catálogo de tiendas debe viajar en la imagen (no es secreto)
 !data/shopping.json
+!data/attractions.json
+!data/safety.json
 
 # Memorias del usuario (uso local)
 memory/
@@ -48,3 +50,5 @@ CLAUDE.md
 # Datos locales
 data/*.xlsx
 data/*.csv
+!data/attractions.json
+!data/safety.json

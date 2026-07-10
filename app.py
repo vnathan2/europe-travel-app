@@ -140,6 +140,7 @@ MODULOS = {
     "itinerary_tracker": "modules.travel_concierge",
     "hoteles": "modules.hoteles",
     "attractions": "modules.attractions",
+    "seguridad": "modules.safety_guide",
     "night_life": "modules.night_life",
     "admin_panel": "modules.admin_panel"
 }

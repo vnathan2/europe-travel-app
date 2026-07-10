@@ -91,6 +91,7 @@ MODULO_CIUDAD = {
     "itinerary_tracker":"default",
     "shopping_guide":   "default",
     "attractions": "default",
+    "seguridad": "default",
     "night_life":       "amsterdam",
     "admin_panel":      "default",
 }
@@ -500,6 +501,7 @@ MENU_SECTIONS = [
             {"key": "🚄 Travels",              "id": "train_optimizer",  "desc": "Rutas y horarios"},
             {"key": "🏨 Hotels",             "id": "hoteles",          "desc": "Reservas por ciudad"},
             {"key": "🎭 Attractions", "id": "attractions", "desc": "Atracciones por ciudad"},
+            {"key": "🛡️ Seguridad", "id": "seguridad", "desc": "Estafas y zonas por ciudad"},
         ]
     },
     {

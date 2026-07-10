@@ -1,0 +1,176 @@
+{
+  "_meta": {
+    "descripcion": "Guía de seguridad, estafas comunes y zonas a evitar por ciudad. Fuentes: guías de seguridad para viajeros y reportes de estafas 2026. La info general de seguridad es orientativa; la situación puede cambiar.",
+    "actualizado": "2026-07"
+  },
+  "ciudades": ["Madrid", "Bayona", "París", "Bruselas", "Ámsterdam"],
+  "nivel_riesgo": {
+    "Madrid": "Bajo-Medio",
+    "Bayona": "Bajo",
+    "París": "Medio",
+    "Bruselas": "Medio",
+    "Ámsterdam": "Bajo-Medio"
+  },
+  "emergencia": {
+    "Madrid": "Policía: 091 · Emergencias: 112",
+    "Bayona": "Emergencias: 112 · Policía: 17",
+    "París": "Policía: 17 · Emergencias: 112",
+    "Bruselas": "Emergencias: 112 · SOS Turistas: 070-222-666",
+    "Ámsterdam": "Emergencias: 112 · No urgente: 0900-8844"
+  },
+  "ciudades_data": {
+    "Madrid": {
+      "resumen": "Madrid es una ciudad segura, con delitos violentos muy raros. El riesgo real es el hurto menor y las estafas callejeras, concentradas en las zonas más turísticas.",
+      "zonas_precaucion": [
+        "Puerta del Sol, Plaza Mayor y Gran Vía (carteristas, no peligro real)",
+        "Metro en horas punta",
+        "Estación de Atocha",
+        "Lavapiés y Usera de noche (solo precaución extra, no peligrosas)"
+      ],
+      "estafas": [
+        {
+          "nombre": "La ramita de romero",
+          "como_funciona": "Mujeres cerca de Puerta del Sol ofrecen una ramita de romero 'de regalo' y se ofrecen a leerte la mano o la suerte. Luego exigen dinero, a veces con insistencia agresiva.",
+          "como_evitar": "No aceptes nada que te entreguen en la mano sin haberlo pedido. Di 'no, gracias' con firmeza y sigue caminando."
+        },
+        {
+          "nombre": "Taxi con taxímetro 'roto'",
+          "como_funciona": "El conductor dice que el taxímetro no funciona y ofrece un 'precio especial', varias veces más alto que la tarifa real.",
+          "como_evitar": "El trayecto Barajas-centro tiene tarifa fija de €33. Si el taxímetro no está encendido o no es fijo, bajen y busquen otro taxi. Usen apps oficiales (TXMAD) o Uber/Cabify."
+        },
+        {
+          "nombre": "Falsas peticiones/ONG en la calle",
+          "como_funciona": "Se acercan con una carpeta pidiendo firmar una petición benéfica; mientras firmas, un cómplice puede robar del bolso o distraerte para pedir 'donación' agresiva.",
+          "como_evitar": "Las ONG reales no piden dinero en efectivo en la calle. No te detengas, no firmes nada, sigue caminando."
+        },
+        {
+          "nombre": "Carteristas en el metro y zonas concurridas",
+          "como_funciona": "Trabajan en pareja: uno distrae (pregunta, empuja 'sin querer') mientras el otro saca la cartera o el móvil.",
+          "como_evitar": "Mochila adelante en el metro, nunca nada en bolsillo trasero, cartera y pasaporte en bolsillos distintos."
+        }
+      ],
+      "tips_generales": [
+        "El trayecto aeropuerto-centro en taxi oficial es tarifa fija: €33",
+        "Cuidado especial en Puerta del Sol, Plaza Mayor y Gran Vía, sobre todo con mochila/cartera",
+        "Nunca cambies dinero en la calle con desconocidos"
+      ]
+    },
+    "Bayona": {
+      "resumen": "Bayona es una ciudad pequeña y tranquila, con muy bajo riesgo para turistas. Las precauciones estándar de cualquier ciudad europea bastan.",
+      "zonas_precaucion": [
+        "Zonas de bares por la noche durante las Fêtes de Bayonne (mucha gente, alcohol, aglomeración)",
+        "Estación de tren de noche"
+      ],
+      "estafas": [],
+      "tips_generales": [
+        "Como llegan el último día de las Fêtes de Bayonne (19 jul), va a haber MUCHA gente en la calle vestida de blanco y rojo — cuiden objetos de valor en las aglomeraciones igual que en cualquier multitud grande",
+        "Fuera del contexto de fiesta, Bayona no registra estafas turísticas relevantes — es de las ciudades más tranquilas del itinerario"
+      ]
+    },
+    "París": {
+      "resumen": "París es la ciudad con más reportes de hurtos del itinerario (611 robos por cada 100.000 habitantes según Eurostat). No hay peligro físico real, pero las estafas están muy organizadas y dirigidas específicamente a turistas.",
+      "zonas_precaucion": [
+        "Torre Eiffel y Campo de Marte (epicentro de casi todas las estafas)",
+        "Montmartre / escaleras de la Plaza Louise-Michel (Sacré-Cœur)",
+        "Alrededores del Louvre",
+        "Gare du Nord y Gare de l'Est (de noche, y carteristas de día)",
+        "Barbès-Rochechouart y Porte de la Chapelle (noche)",
+        "Metro en horas punta"
+      ],
+      "estafas": [
+        {
+          "nombre": "Pulseras de la amistad",
+          "como_funciona": "Un hombre sonriente te toma la mano 'para un saludo' y te ata rápido una pulsera de hilo. Una vez atada, exige pago (€20-30). Si te niegas, aparecen varios cómplices para intimidar.",
+          "como_evitar": "Manos en los bolsillos cerca de Sacré-Cœur y Torre Eiffel. Si te agarran la mano, retírala firme y di 'No' fuerte. Si ya te la atan, quítatela y déjala en el suelo, no pagues."
+        },
+        {
+          "nombre": "Petición falsa (chicas con portapapeles)",
+          "como_funciona": "Jóvenes que fingen ser sordomudas piden firmar una petición benéfica falsa. Mientras firmas o lees, un cómplice roba del bolsillo, mochila o mesa de café.",
+          "como_evitar": "No te detengas, no firmes nada, ignora completamente y sigue caminando. No dejes el móvil o la cartera sobre la mesa en cafés al aire libre."
+        },
+        {
+          "nombre": "El anillo de oro 'encontrado'",
+          "como_funciona": "Alguien 'encuentra' un anillo dorado en el suelo justo donde caminas y dice que se te cayó. Si lo aceptas, te presiona para pagarle por 'devolvértelo'.",
+          "como_evitar": "Nunca digas que el anillo es tuyo. Simplemente ignora y sigue caminando."
+        },
+        {
+          "nombre": "Entradas falsas para museos",
+          "como_funciona": "Venden entradas 'exclusivas' más baratas cerca de las filas del Louvre u Orsay; al llegar, no sirven para entrar.",
+          "como_evitar": "Compren SIEMPRE entradas oficiales online o en taquilla — ya tienen las suyas confirmadas para las atracciones principales."
+        },
+        {
+          "nombre": "Falsos guías turísticos",
+          "como_funciona": "Cerca de Torre Eiffel y Montmartre, personas sin licencia ofrecen 'tours' baratos de mala calidad y suelen llevarte a tiendas/restaurantes donde cobran comisión.",
+          "como_evitar": "No acepten ofertas de tours espontáneos en la calle."
+        }
+      ],
+      "tips_generales": [
+        "Mochila con cierre delante del cuerpo en el metro y zonas turísticas",
+        "No muestren el teléfono ni dinero en efectivo en la calle",
+        "Tarifa de taxi aeropuerto-París es regulada por ley — pregunten el precio fijo antes de subir",
+        "Si les roban documentos, primero denuncien en comisaría antes de ir a su seguro/embajada"
+      ]
+    },
+    "Bruselas": {
+      "resumen": "Bruselas es razonablemente segura en el centro turístico. El riesgo principal es carterismo en estaciones de tren, y hay barrios periféricos a evitar de noche (no forman parte de su itinerario).",
+      "zonas_precaucion": [
+        "Estaciones Bruxelles-Midi, Bruxelles-Central y Bruxelles-Nord (carteristas, y de noche evitar los alrededores)",
+        "Rue du Midi cerca de Bruxelles-Midi",
+        "Molenbeek, Anderlecht, Anneessens y Bruselas Norte de noche (no están en su itinerario, pero eviten aventurarse ahí tarde)"
+      ],
+      "estafas": [
+        {
+          "nombre": "Petición falsa / distracción con carpeta",
+          "como_funciona": "Igual que en París: se acercan con una carpeta para 'firmar' algo mientras un cómplice roba.",
+          "como_evitar": "No se detengan, ignoren y sigan caminando."
+        },
+        {
+          "nombre": "Taxi con sobreprecio",
+          "como_funciona": "Taxis no oficiales o rutas más largas de lo necesario, cobrando de más al turista.",
+          "como_evitar": "Usen taxis oficiales o apps de transporte."
+        }
+      ],
+      "tips_generales": [
+        "El centro (Grand Place, Galerías, Atomium) es seguro incluso de noche",
+        "Cuidado normal de carterismo en Bruxelles-Midi al llegar en Eurostar y salir en EuroCity",
+        "SOS Turistas: 070-222-666 para asistencia específica a turistas"
+      ]
+    },
+    "Ámsterdam": {
+      "resumen": "Ámsterdam es de las ciudades más seguras del mundo en seguridad personal. El riesgo real no son los delitos violentos sino el hurto menor, las bicicletas (el gran peligro subestimado) y algunas estafas específicas.",
+      "zonas_precaucion": [
+        "Alrededores de Amsterdam Centraal (carteristas y ofertas falsas de hotel)",
+        "Plaza Dam",
+        "Barrio Rojo después de medianoche (turistas ebrios, pequeños hurtos)",
+        "Bijlmer / Ámsterdam-Zuidoost de noche (no está en su itinerario)"
+      ],
+      "estafas": [
+        {
+          "nombre": "Falsa policía",
+          "como_funciona": "Alguien se identifica como policía (a veces con placa falsa) y pide 'revisar' tu billetera o efectivo — y se queda con dinero.",
+          "como_evitar": "La policía real NUNCA pide revisar tu billetera ni tomar efectivo en la calle. Si esto pasa, nieguen y pidan ir a una comisaría."
+        },
+        {
+          "nombre": "Bicicleta 'barata' ofrecida en la calle",
+          "como_funciona": "Ofrecen venderte una bicicleta a precio muy bajo; casi siempre son robadas.",
+          "como_evitar": "No compren bicicletas en la calle — comprar una robada puede costarles una multa de €160."
+        },
+        {
+          "nombre": "Falsas ofertas de hotel en Centraal Station",
+          "como_funciona": "Se acercan a turistas con maletas ofreciendo 'habitaciones de última hora'; terminan en zonas malas con precios mucho más altos de lo prometido.",
+          "como_evitar": "Ignoren estas ofertas — ya tienen su alojamiento resuelto en toda la ruta."
+        },
+        {
+          "nombre": "Taxi no oficial ('gypsy cab')",
+          "como_funciona": "Taxis sin licencia en Schiphol o Centraal Station cobran de más.",
+          "como_evitar": "Usen la fila oficial de taxis o apps como Uber, Bolt o TCA."
+        }
+      ],
+      "tips_generales": [
+        "⚠️ EL RIESGO NÚMERO UNO en Ámsterdam son las bicicletas, no la delincuencia — nunca caminen por los carriles bici (carril rojo/marcado), los ciclistas van muy rápido y no siempre ven a los peatones",
+        "No tomen fotos de las personas en las ventanas del Barrio Rojo — es una falta de respeto e invita a confrontación",
+        "Bolso cerrado con cremallera cerca del cuerpo, sobre todo en Centraal y Plaza Dam"
+      ]
+    }
+  }
+}
