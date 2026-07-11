@@ -97,39 +97,28 @@ def _card_estafa(estafa: dict, tema: dict):
 
 def _card_transporte(trans: dict, tema: dict):
     accent = tema["accent"]
-    apps_html = " ".join(
-        f"<span style='background:{accent}22; color:{accent}; font-size:12px; font-weight:600; "
-        f"padding:3px 10px; border-radius:8px; margin:2px 2px;'>{app}</span>"
-        for app in trans.get("apps", [])
-    )
     tarifa = trans.get("tarifa_fija")
-    tarifa_html = (
-        f"<div style='color:#15917F; font-size:13px; font-weight:700; margin-bottom:8px;'>💶 {tarifa}</div>"
-        if tarifa else ""
+    tarifa_line = f"<div style='color:#15917F; font-size:13px; font-weight:700; margin:6px 0;'>💶 {tarifa}</div>" if tarifa else ""
+    apps_list = ", ".join(trans.get("apps", []))
+
+    st.markdown(
+        f"<div style='border-radius:14px; overflow:hidden; margin-bottom:14px; "
+        f"border:1px solid rgba(255,255,255,.08); background:#0e1420; "
+        f"box-shadow:0 3px 14px rgba(0,0,0,.22);'>"
+        f"<div style='padding:14px 16px;'>"
+        f"<div style='font-size:15px; font-weight:700; color:white; margin-bottom:8px;'>🚕 Cómo tomar taxi</div>"
+        f"<div style='color:#cfd6e0; font-size:13px; line-height:1.5; margin-bottom:8px;'>"
+        f"<strong style='color:{accent};'>Taxi oficial:</strong> {trans.get('taxi_oficial','')}</div>"
+        f"{tarifa_line}"
+        f"<div style='color:#cfd6e0; font-size:13px; line-height:1.5; margin-bottom:8px;'>"
+        f"<strong style='color:{accent};'>Cómo tomarlo:</strong> {trans.get('como_tomar','')}</div>"
+        f"<div style='color:{accent}; font-size:11px; font-weight:700; letter-spacing:.5px; margin-bottom:4px;'>📱 APPS RECOMENDADAS</div>"
+        f"<div style='color:#cfd6e0; font-size:13px; margin-bottom:10px;'>{apps_list}</div>"
+        f"<div style='color:#9aa4b2; font-size:12.5px; line-height:1.45; border-left:3px solid {accent}; padding-left:10px;'>"
+        f"<strong style='color:{accent};'>Tip:</strong> {trans.get('tip','')}</div>"
+        f"</div></div>",
+        unsafe_allow_html=True,
     )
-    st.markdown(f"""
-    <div style="
-        border-radius:14px; overflow:hidden; margin-bottom:14px;
-        border:1px solid rgba(255,255,255,.08); background:#0e1420;
-        box-shadow:0 3px 14px rgba(0,0,0,.22);
-    ">
-      <div style="padding:14px 16px;">
-        <div style="font-size:15px; font-weight:700; color:white; margin-bottom:8px;">🚕 Cómo tomar taxi</div>
-        <div style="color:#cfd6e0; font-size:13px; line-height:1.5; margin-bottom:8px;">
-          <strong style="color:{accent};">Taxi oficial:</strong> {trans.get('taxi_oficial','')}
-        </div>
-        {tarifa_html}
-        <div style="color:#cfd6e0; font-size:13px; line-height:1.5; margin-bottom:8px;">
-          <strong style="color:{accent};">Cómo tomarlo:</strong> {trans.get('como_tomar','')}
-        </div>
-        <div style="color:{accent}; font-size:11px; font-weight:700; letter-spacing:.5px; margin-bottom:6px;">📱 APPS RECOMENDADAS</div>
-        <div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:10px;">{apps_html}</div>
-        <div style="color:#9aa4b2; font-size:12.5px; line-height:1.45; border-left:3px solid {accent}; padding-left:10px;">
-          <strong style="color:{accent};">Tip:</strong> {trans.get('tip','')}
-        </div>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
 
 
 def mostrar():
