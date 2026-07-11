@@ -168,8 +168,10 @@ def mostrar():
 
         st.markdown("<div style='margin-bottom:8px;'></div>", unsafe_allow_html=True)
 
-    with st.expander("💶 Cuánto efectivo llevar y cómo pagar", expanded=False):
-        st.markdown("""
+    # ── Secciones financieras (solo admin) ──────────────────────────────────
+    if st.session_state.get("_is_admin"):
+        with st.expander("💶 Cuánto efectivo llevar y cómo pagar", expanded=False):
+            st.markdown("""
 **Europa es 95% tarjeta.** En las 4 ciudades de tu ruta puedes pagar con tarjeta (débito/crédito Visa o Mastercard) en casi todos los sitios: restaurantes, museos, supermercados, metro, taxis, apps. En Ámsterdam hay sitios que son SOLO tarjeta.
 
 **Efectivo recomendado para todo el viaje: €150-200 entre los 3**
@@ -195,7 +197,35 @@ def mostrar():
 - No cambien dinero en el aeropuerto de Madrid (peor tipo de cambio)
 - No cambien dinero en la calle con desconocidos, jamás
 - Si llevan (entre los 3) más de US$10.000 en efectivo, deben declararlo al salir de Perú y al entrar a España
-        """)
+            """)
+
+        with st.expander("💳 Cómo pagar con Global66 + Google Wallet", expanded=False):
+            st.markdown("""
+**Tu método principal de pago en Europa: Global66 Smart Card vía Google Wallet (contactless/NFC).**
+
+**Antes de salir de Lima (hacer ahora):**
+1. Abrir la app Global66 → cargar soles desde tu banco → convertir a euros
+2. Convertir de una sola vez el monto que piensas gastar (empieza con €1.000-1.500, recargas desde la app si necesitas más) — al convertir todo junto evitas la doble conversión y fijas el tipo de cambio
+3. Verificar que el **NFC esté activado** en tu celular (Ajustes → Conexiones → NFC → Encendido)
+4. Verificar que **Google Wallet sea tu app de pago predeterminada** (Ajustes → Pagos sin contacto → Google Wallet)
+5. Hacer una **compra de prueba** contactless en cualquier tienda en Lima
+6. Anotar tu **PIN de la Smart Card** (es distinto al PIN de tu cuenta Global66) — algunos comercios piden ingresarlo
+
+**Para pagar en Europa:**
+- **En tienda/restaurante:** desbloquea tu celular, acércalo al terminal de pago (datáfono) y listo. Google Wallet se activa automáticamente.
+- **En el metro de París:** acerca el celular directo al torniquete — acepta contactless, no necesitas comprar tickets físicos
+- **Compras online:** ingresa los datos de la tarjeta virtual y confirma con el código SMS que llega a tu número
+
+**Método de pago por situación:**
+
+| Método | Para qué |
+|---|---|
+| **Global66 (Google Wallet)** | Método principal: comercios, restaurantes, metro, apps |
+| **Efectivo €150-200** | Mercados al aire libre, puestos chicos, propinas, emergencia |
+| **Tarjeta banco peruano** | Respaldo si Global66 falla |
+
+**⚠️ NO uses Global66 para retirar efectivo en cajeros** — la comisión de retiro en ATM es muy alta. Para eso lleva los €150-200 en efectivo desde Lima.
+            """)
 
     with st.expander("🆘 Qué hacer si les pasa algo", expanded=False):
         st.markdown("""
