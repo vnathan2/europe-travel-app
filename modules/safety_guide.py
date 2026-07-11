@@ -168,6 +168,35 @@ def mostrar():
 
         st.markdown("<div style='margin-bottom:8px;'></div>", unsafe_allow_html=True)
 
+    with st.expander("💶 Cuánto efectivo llevar y cómo pagar", expanded=False):
+        st.markdown("""
+**Europa es 95% tarjeta.** En las 4 ciudades de tu ruta puedes pagar con tarjeta (débito/crédito Visa o Mastercard) en casi todos los sitios: restaurantes, museos, supermercados, metro, taxis, apps. En Ámsterdam hay sitios que son SOLO tarjeta.
+
+**Efectivo recomendado para todo el viaje: €150-200 entre los 3**
+- Jonathan: ~€100 (pagos familiares)
+- Giovanna: ~€50 (respaldo independiente)
+- Camila: ~€20-30 (algo propio por si se separan en parque o tienda)
+
+**Para qué SÍ necesitas efectivo:**
+- Propinas (€1-2, no son obligatorias en Europa)
+- Mercados al aire libre (Les Halles de Bayonne, Albert Cuyp en Ámsterdam)
+- Vendedores y puestos callejeros pequeños
+- Baños públicos de pago (€0.50-1)
+- Emergencia si la tarjeta falla
+
+**Billetes recomendados:** €20 y €50. No lleven billetes de €100 o €200 — los comercios chicos no los aceptan o no tienen cambio.
+
+**Si se acaba el efectivo allá:**
+- Retiren en cajeros de bancos reales (BBVA, ING, Rabobank)
+- ⚠️ **Eviten los cajeros Euronet** (los que están cerca de atracciones turísticas) — cobran comisiones altísimas y peor tipo de cambio
+
+**NO hacer:**
+- No lleven más de €500 en efectivo (riesgo de pérdida/robo, y no lo necesitan)
+- No cambien dinero en el aeropuerto de Madrid (peor tipo de cambio)
+- No cambien dinero en la calle con desconocidos, jamás
+- Si llevan (entre los 3) más de US$10.000 en efectivo, deben declararlo al salir de Perú y al entrar a España
+        """)
+
     with st.expander("🆘 Qué hacer si les pasa algo", expanded=False):
         st.markdown("""
 **Si les roban o clonan la tarjeta:**
