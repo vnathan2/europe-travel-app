@@ -3,7 +3,13 @@
     "descripcion": "Guía de seguridad, estafas comunes y zonas a evitar por ciudad. Fuentes: guías de seguridad para viajeros y reportes de estafas 2026. La info general de seguridad es orientativa; la situación puede cambiar.",
     "actualizado": "2026-07"
   },
-  "ciudades": ["Madrid", "Bayona", "París", "Bruselas", "Ámsterdam"],
+  "ciudades": [
+    "Madrid",
+    "Bayona",
+    "París",
+    "Bruselas",
+    "Ámsterdam"
+  ],
   "nivel_riesgo": {
     "Madrid": "Bajo-Medio",
     "Bayona": "Bajo",
@@ -53,7 +59,18 @@
         "El trayecto aeropuerto-centro en taxi oficial es tarifa fija: €33",
         "Cuidado especial en Puerta del Sol, Plaza Mayor y Gran Vía, sobre todo con mochila/cartera",
         "Nunca cambies dinero en la calle con desconocidos"
-      ]
+      ],
+      "transporte": {
+        "taxi_oficial": "Blanco con franja roja diagonal en la puerta y cartel 'TAXI' en el techo con luz verde = disponible",
+        "tarifa_fija": "Aeropuerto Barajas → centro: €33 tarifa fija por ley, no negocien",
+        "apps": [
+          "TXMAD (app oficial de taxis de Madrid)",
+          "Uber",
+          "Cabify"
+        ],
+        "como_tomar": "En la calle levanten la mano si ven luz verde encendida en el techo, o en paradas señalizadas (cartel azul). En Barajas usen la parada oficial en planta 0 de T1.",
+        "tip": "Si el taxista dice que el taxímetro no funciona, bajen y busquen otro. Nunca acepten a alguien que se les acerque proactivamente en el aeropuerto."
+      }
     },
     "Bayona": {
       "resumen": "Bayona es una ciudad pequeña y tranquila, con muy bajo riesgo para turistas. Las precauciones estándar de cualquier ciudad europea bastan.",
@@ -65,7 +82,17 @@
       "tips_generales": [
         "Como llegan el último día de las Fêtes de Bayonne (19 jul), va a haber MUCHA gente en la calle vestida de blanco y rojo — cuiden objetos de valor en las aglomeraciones igual que en cualquier multitud grande",
         "Fuera del contexto de fiesta, Bayona no registra estafas turísticas relevantes — es de las ciudades más tranquilas del itinerario"
-      ]
+      ],
+      "transporte": {
+        "taxi_oficial": "Taxis con cartel luminoso 'TAXI' en el techo",
+        "tarifa_fija": null,
+        "apps": [
+          "Uber (disponible en la zona)",
+          "Llamar por teléfono al despacho local"
+        ],
+        "como_tomar": "Bayona es pequeña y la mayoría de trayectos se hacen caminando. Para ir a Biarritz (playa), el bus local es la opción más práctica y barata.",
+        "tip": "No necesitan taxi en Bayona para el itinerario — todo está a distancia caminable. Solo para Biarritz si quieren ir rápido."
+      }
     },
     "París": {
       "resumen": "París es la ciudad con más reportes de hurtos del itinerario (611 robos por cada 100.000 habitantes según Eurostat). No hay peligro físico real, pero las estafas están muy organizadas y dirigidas específicamente a turistas.",
@@ -109,7 +136,18 @@
         "No muestren el teléfono ni dinero en efectivo en la calle",
         "Tarifa de taxi aeropuerto-París es regulada por ley — pregunten el precio fijo antes de subir",
         "Si les roban documentos, primero denuncien en comisaría antes de ir a su seguro/embajada"
-      ]
+      ],
+      "transporte": {
+        "taxi_oficial": "Varios colores, pero siempre con cartel luminoso 'TAXI' en el techo. Si la luz está encendida = disponible.",
+        "tarifa_fija": "Aeropuerto CDG → margen derecha (centro): tarifa regulada por ley. Pregunten el precio fijo antes de subir.",
+        "apps": [
+          "Uber (la mejor opción en París)",
+          "Bolt",
+          "FREE Now"
+        ],
+        "como_tomar": "Por app es lo más seguro: ven el precio antes de subir. En la calle, levanten la mano si la luz está encendida. En aeropuertos y estaciones, sigan las señales oficiales 'Taxis' en el suelo.",
+        "tip": "Eviten tomar taxis de personas que se acerquen en Gare du Nord — es donde más ocurre el sobreprecio. Uber elimina por completo el riesgo del idioma y el regateo."
+      }
     },
     "Bruselas": {
       "resumen": "Bruselas es razonablemente segura en el centro turístico. El riesgo principal es carterismo en estaciones de tren, y hay barrios periféricos a evitar de noche (no forman parte de su itinerario).",
@@ -134,7 +172,18 @@
         "El centro (Grand Place, Galerías, Atomium) es seguro incluso de noche",
         "Cuidado normal de carterismo en Bruxelles-Midi al llegar en Eurostar y salir en EuroCity",
         "SOS Turistas: 070-222-666 para asistencia específica a turistas"
-      ]
+      ],
+      "transporte": {
+        "taxi_oficial": "Taxis con cartel luminoso en el techo",
+        "tarifa_fija": null,
+        "apps": [
+          "Uber",
+          "Bolt",
+          "Taxis Verts (cooperativa oficial, por app o llamada)"
+        ],
+        "como_tomar": "Al salir del Eurostar en Bruxelles-Midi, usen la salida oficial de taxis dentro de la estación, no las ofertas de la calle. Por app es la forma más segura.",
+        "tip": "Bruselas es compacta; muchos trayectos se hacen en metro o caminando. Taxi solo para distancias largas o con equipaje."
+      }
     },
     "Ámsterdam": {
       "resumen": "Ámsterdam es de las ciudades más seguras del mundo en seguridad personal. El riesgo real no son los delitos violentos sino el hurto menor, las bicicletas (el gran peligro subestimado) y algunas estafas específicas.",
@@ -170,7 +219,18 @@
         "⚠️ EL RIESGO NÚMERO UNO en Ámsterdam son las bicicletas, no la delincuencia — nunca caminen por los carriles bici (carril rojo/marcado), los ciclistas van muy rápido y no siempre ven a los peatones",
         "No tomen fotos de las personas en las ventanas del Barrio Rojo — es una falta de respeto e invita a confrontación",
         "Bolso cerrado con cremallera cerca del cuerpo, sobre todo en Centraal y Plaza Dam"
-      ]
+      ],
+      "transporte": {
+        "taxi_oficial": "Taxi es caro en Ámsterdam. La ciudad es pequeña y el transporte público (tranvía, metro) es excelente.",
+        "tarifa_fija": null,
+        "apps": [
+          "Uber",
+          "Bolt",
+          "TCA (Taxi Centrale Amsterdam, app oficial)"
+        ],
+        "como_tomar": "En Schiphol (si lo usan) hay fila oficial señalizada — nunca acepten a quienes se acercan. En la ciudad, usen apps o paradas oficiales. Pero para la mayoría de trayectos el tranvía es mejor opción.",
+        "tip": "No necesitan taxi para su itinerario en Ámsterdam — llegan en tren a Centraal y la casa de Janina probablemente está a distancia de tranvía o caminando. Si usan taxi, nunca a los que se acerquen proactivamente."
+      }
     }
   }
 }
